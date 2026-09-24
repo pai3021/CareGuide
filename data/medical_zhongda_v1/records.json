@@ -1,0 +1,424 @@
+[
+  {
+    "id": "ibuprofen-arginine-0-2g-dosage",
+    "source_id": "nmpa-otc-labels",
+    "kind": "drug_label",
+    "title": "精氨酸布洛芬片 0.2g 说明书用法用量",
+    "content": "该规格以布洛芬计。说明书列出口服，成人和12岁以上患者一次0.2g（1片），一日3次。这是说明书范本信息，不是针对个人的用药方案。",
+    "keywords": [
+      "精氨酸布洛芬片",
+      "用法用量",
+      "说明书",
+      "0.2g"
+    ],
+    "representation": "curated_factual_summary",
+    "drug_name": "精氨酸布洛芬片",
+    "dosage_form": "片剂",
+    "specification": "0.2g",
+    "label_type": "regulatory_template",
+    "locator": "PDF页33；印刷页34",
+    "section": "dosage"
+  },
+  {
+    "id": "ibuprofen-arginine-0-2g-contraindications",
+    "source_id": "nmpa-otc-labels",
+    "kind": "drug_label",
+    "title": "精氨酸布洛芬片 0.2g 禁忌",
+    "content": "范本禁忌包括其他非甾体抗炎药过敏、孕期或哺乳期、胃或十二指肠溃疡、支气管哮喘、肾脏疾病、血液凝固及血细胞生成障碍。该清单仅适用于本范本，个人情况需由医师或药师核实。",
+    "keywords": [
+      "精氨酸布洛芬片",
+      "禁忌",
+      "过敏",
+      "孕妇",
+      "哺乳"
+    ],
+    "representation": "curated_factual_summary",
+    "drug_name": "精氨酸布洛芬片",
+    "dosage_form": "片剂",
+    "specification": "0.2g",
+    "label_type": "regulatory_template",
+    "locator": "PDF页33；印刷页34",
+    "section": "contraindications"
+  },
+  {
+    "id": "ibuprofen-arginine-0-2g-precautions",
+    "source_id": "nmpa-otc-labels",
+    "kind": "drug_label",
+    "title": "精氨酸布洛芬片 0.2g 注意事项",
+    "content": "范本限制对症止痛连续使用不超过5天、解热不超过3天；未缓解需咨询医师或药师。提示避免其他含解热镇痛药的药品及酒精，正在使用其他药品时先咨询医师或药师。完整注意事项应查看原文。",
+    "keywords": [
+      "精氨酸布洛芬片",
+      "注意事项",
+      "感冒药",
+      "酒精"
+    ],
+    "representation": "curated_factual_summary",
+    "drug_name": "精氨酸布洛芬片",
+    "dosage_form": "片剂",
+    "specification": "0.2g",
+    "label_type": "regulatory_template",
+    "locator": "PDF页33；印刷页34",
+    "section": "precautions"
+  },
+  {
+    "id": "ibuprofen-arginine-0-2g-heparin",
+    "source_id": "nmpa-otc-labels",
+    "kind": "drug_interaction",
+    "title": "精氨酸布洛芬片 0.2g 与肝素",
+    "content": "该说明书范本记载：与肝素等抗凝药同用可能延长凝血酶原时间、增加出血倾向。需要医师或药师核对，工具不作个人能否合用的决定。",
+    "keywords": [
+      "精氨酸布洛芬片",
+      "肝素",
+      "相互作用",
+      "抗凝药"
+    ],
+    "representation": "curated_factual_summary",
+    "other_drug": "肝素",
+    "drug_name": "精氨酸布洛芬片",
+    "dosage_form": "片剂",
+    "specification": "0.2g",
+    "label_type": "regulatory_template",
+    "locator": "PDF页33；印刷页34",
+    "section": "interactions"
+  },
+  {
+    "id": "ibuprofen-arginine-0-2g-methotrexate",
+    "source_id": "nmpa-otc-labels",
+    "kind": "drug_interaction",
+    "title": "精氨酸布洛芬片 0.2g 与甲氨蝶呤",
+    "content": "该说明书范本列出与甲氨蝶呤同用会使其血药浓度增高，提示不宜同用。这里只提供已记录的说明书信息，具体用药由医师或药师核实。",
+    "keywords": [
+      "精氨酸布洛芬片",
+      "甲氨蝶呤",
+      "相互作用"
+    ],
+    "representation": "curated_factual_summary",
+    "other_drug": "甲氨蝶呤",
+    "drug_name": "精氨酸布洛芬片",
+    "dosage_form": "片剂",
+    "specification": "0.2g",
+    "label_type": "regulatory_template",
+    "locator": "PDF页33；印刷页34",
+    "section": "interactions"
+  },
+  {
+    "id": "ibuprofen-arginine-0-4g-dosage",
+    "source_id": "nmpa-otc-labels",
+    "kind": "drug_label",
+    "title": "精氨酸布洛芬片 0.4g 说明书用法用量",
+    "content": "该规格以布洛芬计。说明书列出口服，成人和12岁以上患者一次0.4g（1片），一日2次。这是说明书范本信息，不是针对个人的用药方案。",
+    "keywords": [
+      "精氨酸布洛芬片",
+      "用法用量",
+      "说明书",
+      "0.4g"
+    ],
+    "representation": "curated_factual_summary",
+    "drug_name": "精氨酸布洛芬片",
+    "dosage_form": "片剂",
+    "specification": "0.4g",
+    "label_type": "regulatory_template",
+    "locator": "PDF页35；印刷页36",
+    "section": "dosage"
+  },
+  {
+    "id": "ibuprofen-arginine-0-4g-contraindications",
+    "source_id": "nmpa-otc-labels",
+    "kind": "drug_label",
+    "title": "精氨酸布洛芬片 0.4g 禁忌",
+    "content": "范本禁忌包括其他非甾体抗炎药过敏、孕期或哺乳期、胃或十二指肠溃疡、支气管哮喘、肾脏疾病、血液凝固及血细胞生成障碍。该清单仅适用于本范本，个人情况需由医师或药师核实。",
+    "keywords": [
+      "精氨酸布洛芬片",
+      "禁忌",
+      "过敏",
+      "孕妇",
+      "哺乳"
+    ],
+    "representation": "curated_factual_summary",
+    "drug_name": "精氨酸布洛芬片",
+    "dosage_form": "片剂",
+    "specification": "0.4g",
+    "label_type": "regulatory_template",
+    "locator": "PDF页35；印刷页36",
+    "section": "contraindications"
+  },
+  {
+    "id": "ibuprofen-arginine-0-4g-precautions",
+    "source_id": "nmpa-otc-labels",
+    "kind": "drug_label",
+    "title": "精氨酸布洛芬片 0.4g 注意事项",
+    "content": "范本限制对症止痛连续使用不超过5天、解热不超过3天；未缓解需咨询医师或药师。提示避免其他含解热镇痛药的药品及酒精，正在使用其他药品时先咨询医师或药师。完整注意事项应查看原文。",
+    "keywords": [
+      "精氨酸布洛芬片",
+      "注意事项",
+      "感冒药",
+      "酒精"
+    ],
+    "representation": "curated_factual_summary",
+    "drug_name": "精氨酸布洛芬片",
+    "dosage_form": "片剂",
+    "specification": "0.4g",
+    "label_type": "regulatory_template",
+    "locator": "PDF页35；印刷页36",
+    "section": "precautions"
+  },
+  {
+    "id": "ibuprofen-arginine-0-4g-heparin",
+    "source_id": "nmpa-otc-labels",
+    "kind": "drug_interaction",
+    "title": "精氨酸布洛芬片 0.4g 与肝素",
+    "content": "该说明书范本记载：与肝素等抗凝药同用可能延长凝血酶原时间、增加出血倾向。需要医师或药师核对，工具不作个人能否合用的决定。",
+    "keywords": [
+      "精氨酸布洛芬片",
+      "肝素",
+      "相互作用",
+      "抗凝药"
+    ],
+    "representation": "curated_factual_summary",
+    "other_drug": "肝素",
+    "drug_name": "精氨酸布洛芬片",
+    "dosage_form": "片剂",
+    "specification": "0.4g",
+    "label_type": "regulatory_template",
+    "locator": "PDF页35；印刷页36",
+    "section": "interactions"
+  },
+  {
+    "id": "ibuprofen-arginine-0-4g-methotrexate",
+    "source_id": "nmpa-otc-labels",
+    "kind": "drug_interaction",
+    "title": "精氨酸布洛芬片 0.4g 与甲氨蝶呤",
+    "content": "该说明书范本列出与甲氨蝶呤同用会使其血药浓度增高，提示不宜同用。这里只提供已记录的说明书信息，具体用药由医师或药师核实。",
+    "keywords": [
+      "精氨酸布洛芬片",
+      "甲氨蝶呤",
+      "相互作用"
+    ],
+    "representation": "curated_factual_summary",
+    "other_drug": "甲氨蝶呤",
+    "drug_name": "精氨酸布洛芬片",
+    "dosage_form": "片剂",
+    "specification": "0.4g",
+    "label_type": "regulatory_template",
+    "locator": "PDF页35；印刷页36",
+    "section": "interactions"
+  },
+  {
+    "id": "ketotifen-nasal-dosage",
+    "source_id": "nmpa-otc-labels",
+    "kind": "drug_label",
+    "title": "富马酸酮替芬鼻喷雾剂 说明书用法用量",
+    "content": "范本规格为15毫升含16.7毫克（以酮替芬计），每喷0.15毫克。说明书列出鼻腔喷雾一次1至2喷，一日1至3次。这是原文用法信息，不适用于个人剂量决定。",
+    "keywords": [
+      "富马酸酮替芬鼻喷雾剂",
+      "说明书",
+      "用法用量"
+    ],
+    "representation": "curated_factual_summary",
+    "section": "dosage",
+    "drug_name": "富马酸酮替芬鼻喷雾剂",
+    "dosage_form": "鼻喷雾剂",
+    "specification": "15ml:16.7mg",
+    "label_type": "regulatory_template",
+    "locator": "PDF页32；印刷页33"
+  },
+  {
+    "id": "ketotifen-nasal-contraindications",
+    "source_id": "nmpa-otc-labels",
+    "kind": "drug_label",
+    "title": "富马酸酮替芬鼻喷雾剂 禁忌与注意事项",
+    "content": "范本禁忌列出服用降糖药的糖尿病患者；注意事项要求孕妇慎用、哺乳期在医师指导下使用，对本品过敏者禁用，并提示驾驶及操作精密仪器等工作风险。完整说明应查看原文。",
+    "keywords": [
+      "富马酸酮替芬鼻喷雾剂",
+      "禁忌",
+      "注意事项"
+    ],
+    "representation": "curated_factual_summary",
+    "section": "contraindications",
+    "drug_name": "富马酸酮替芬鼻喷雾剂",
+    "dosage_form": "鼻喷雾剂",
+    "specification": "15ml:16.7mg",
+    "label_type": "regulatory_template",
+    "locator": "PDF页32；印刷页33"
+  },
+  {
+    "id": "ketotifen-nasal-alcohol",
+    "source_id": "nmpa-otc-labels",
+    "kind": "drug_interaction",
+    "title": "富马酸酮替芬鼻喷雾剂 与酒精",
+    "content": "说明书范本记载与中枢神经抑制剂、酒精或抗组胺药并用可能增强镇静作用。当前只收录酒精这一明确条目，不是完整相互作用数据库。",
+    "keywords": [
+      "富马酸酮替芬鼻喷雾剂",
+      "酒精",
+      "相互作用"
+    ],
+    "representation": "curated_factual_summary",
+    "section": "interactions",
+    "other_drug": "酒精",
+    "drug_name": "富马酸酮替芬鼻喷雾剂",
+    "dosage_form": "鼻喷雾剂",
+    "specification": "15ml:16.7mg",
+    "label_type": "regulatory_template",
+    "locator": "PDF页32；印刷页33"
+  },
+  {
+    "id": "headache-care-warning",
+    "source_id": "nhs-headaches",
+    "kind": "care_guidance",
+    "title": "头痛 就医风险信息",
+    "content": "NHS 公众资料将突然发生且极度疼痛的头痛、伴麻木无力或意识混乱等列为需要立即求助的情况。中文摘要只用于资料查询，不提供个人风险排除；急救联系方式应以所在地为准。",
+    "keywords": [
+      "头痛",
+      "突然",
+      "剧烈",
+      "无力",
+      "意识",
+      "就医"
+    ],
+    "representation": "curated_factual_summary"
+  },
+  {
+    "id": "headache-diary",
+    "source_id": "nhs-headaches",
+    "kind": "care_guidance",
+    "title": "头痛 记录与就医准备",
+    "content": "NHS 资料提到记录头痛日记有助于了解诱因；反复头痛或自行处理后未改善、加重时应寻求医护帮助。这里提供一般信息，不判断个人病因。",
+    "keywords": [
+      "头痛",
+      "日记",
+      "记录",
+      "反复",
+      "就医准备"
+    ],
+    "representation": "curated_factual_summary"
+  },
+  {
+    "id": "zhongda-booking-channel",
+    "source_id": "zhongda-outpatient",
+    "kind": "hospital_guide",
+    "title": "中大医院本部预约入口",
+    "content": "官网门诊指南提供“预约挂号”入口，链接至医院互联网医院页面。这里只指引官方入口，不查询号源，也不完成挂号；请在页面核对本部及具体就诊地点。",
+    "keywords": [
+      "中大医院",
+      "本部",
+      "预约挂号",
+      "官网",
+      "入口"
+    ],
+    "representation": "curated_factual_summary",
+    "section": "channels",
+    "hospital_id": "zhongda",
+    "hospital_name": "东南大学附属中大医院",
+    "campus": "本部"
+  },
+  {
+    "id": "zhongda-opening-hours",
+    "source_id": "zhongda-outpatient",
+    "kind": "hospital_guide",
+    "title": "中大医院门诊开诊与挂号时间",
+    "content": "官网门诊指南列出：周一至周六上午8:00—12:00、下午14:00—17:30，周日上午8:00—12:00；挂号时间提前半小时。页面另提示丁家桥与湖南路门诊可能涉及不同就诊地址，须以挂号单为准。",
+    "keywords": [
+      "门诊时间",
+      "开诊",
+      "挂号时间",
+      "丁家桥",
+      "湖南路"
+    ],
+    "representation": "curated_factual_summary",
+    "section": "process",
+    "hospital_id": "zhongda",
+    "hospital_name": "东南大学附属中大医院",
+    "campus": "本部"
+  },
+  {
+    "id": "zhongda-visit-flow",
+    "source_id": "zhongda-outpatient",
+    "kind": "hospital_guide",
+    "title": "中大医院门诊就诊流程",
+    "content": "官网门诊指南列出挂号、按挂号单楼层候诊及叫号、医生看诊后缴费，再到相应部门检查、取药或治疗的流程。请按挂号单上的实际就诊地址与现场指引办理。",
+    "keywords": [
+      "门诊流程",
+      "候诊",
+      "缴费",
+      "挂号单"
+    ],
+    "representation": "curated_factual_summary",
+    "section": "process",
+    "hospital_id": "zhongda",
+    "hospital_name": "东南大学附属中大医院",
+    "campus": "本部"
+  },
+  {
+    "id": "zhongda-insurance-materials",
+    "source_id": "zhongda-outpatient",
+    "kind": "hospital_guide",
+    "title": "中大医院门诊挂号材料",
+    "content": "官网门诊指南写明：医保患者凭医保卡或医保码，非医保患者携身份证至挂号处或自助机办理挂号。",
+    "keywords": [
+      "医保卡",
+      "医保码",
+      "身份证",
+      "挂号材料"
+    ],
+    "representation": "curated_factual_summary",
+    "section": "materials",
+    "hospital_id": "zhongda",
+    "hospital_name": "东南大学附属中大医院",
+    "campus": "本部"
+  },
+  {
+    "id": "zhongda-special-card",
+    "source_id": "zhongda-card",
+    "kind": "hospital_guide",
+    "title": "中大医院特殊人群就诊卡办理",
+    "content": "官网就诊卡办理页写明：外籍人士及无身份证号码的新生儿，可到丁家桥门诊二楼预约中心或湖南路一楼综合服务中心办理C卡；自费患者可携身份证原件至窗口或自助机直接挂号。页面提及C卡工本费，金额请以医院当前公示为准。",
+    "keywords": [
+      "C卡",
+      "外籍",
+      "新生儿",
+      "自费",
+      "身份证"
+    ],
+    "representation": "curated_factual_summary",
+    "section": "materials",
+    "hospital_id": "zhongda",
+    "hospital_name": "东南大学附属中大医院",
+    "campus": "本部"
+  },
+  {
+    "id": "zhongda-medicine-pickup",
+    "source_id": "zhongda-pharmacy",
+    "kind": "hospital_guide",
+    "title": "中大医院普通门诊取药流程",
+    "content": "官网取药须知写明：普通患者缴费后在药房门口取药报到机报到，在相应窗口等候叫号取药，并听取药师用药交代。这里只说明取药流程，不给个人用药方案。",
+    "keywords": [
+      "取药",
+      "药房",
+      "报到机",
+      "叫号"
+    ],
+    "representation": "curated_factual_summary",
+    "section": "process",
+    "hospital_id": "zhongda",
+    "hospital_name": "东南大学附属中大医院",
+    "campus": "本部"
+  },
+  {
+    "id": "zhongda-respiratory-main-campus",
+    "source_id": "zhongda-respiratory",
+    "kind": "department",
+    "title": "中大医院本部呼吸内科资料范围",
+    "content": "官网呼吸内科介绍明确提到本部设有该科床位，并介绍肺结节、呼吸道疾病及慢性咳嗽等诊疗方向。页面同时涉及江北院区；本摘要不代表这些服务均在本部开设门诊，具体出诊和地点须查官方挂号页。",
+    "keywords": [
+      "呼吸内科",
+      "本部",
+      "慢性咳嗽",
+      "肺结节"
+    ],
+    "representation": "curated_factual_summary",
+    "department": "呼吸内科",
+    "hospital_id": "zhongda",
+    "hospital_name": "东南大学附属中大医院",
+    "campus": "本部"
+  }
+]

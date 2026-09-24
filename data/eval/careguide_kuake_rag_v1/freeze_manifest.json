@@ -1,0 +1,35 @@
+{
+  "version": "careguide-kuake-rag-freeze-v1",
+  "frozen_at": "2026-09-23T03:45:50.959410+00:00",
+  "selection_split": "dev",
+  "frozen_test_policy": "run exactly once after this manifest is written; never tune on its result",
+  "runtime_corpus_manifest_sha256": "1ac145b7c53a953c8ec9c74d320f45ddad87386a150d1e878fae528b5ddf3ded",
+  "test_jsonl_sha256": "4500055ce5304126e3ed7bffed076d4966103ca33f0b9b39ddcf4aec7e87f8d3",
+  "configuration": {
+    "retrieval_mode": "hybrid_rerank",
+    "embedding_model": "Qwen/Qwen3-Embedding-0.6B",
+    "embedding_dimensions": 1024,
+    "candidate_k_per_leg": 100,
+    "rrf_k": 60,
+    "dense_weight": 4.0,
+    "bm25_weight": 1.0,
+    "min_dense_score": -1.0,
+    "rerank_model": "Qwen/Qwen3-Reranker-0.6B",
+    "rerank_k": 20,
+    "top_k": 10
+  },
+  "selected_dev_metrics": {
+    "mrr_at_10": 0.4930202381,
+    "recall_at_1": 0.412,
+    "recall_at_5": 0.601,
+    "recall_at_10": 0.682,
+    "ndcg_at_10": 0.5379880114
+  },
+  "code_sha256": {
+    "scripts/run_careguide_kuake_rag_evaluation.py": "71c03126a8d9300d6e75ab943051de91e8b09d38db68200b0cc41afa0c4dc7ff",
+    "careguide/evaluation/kuake_ir_dense.py": "a0fca04a478d08cf9764b61a5afd3e8b90e12106fd838b962142c7f83f0f6500",
+    "careguide/retrieval/reranker.py": "acc75a2d35a8165548f9e913dd37465b3b7156eb7cb26c9d60a0e96bd6be1465",
+    "careguide/retrieval/embedding_provider.py": "d6c8fbbbec9beb00d1ca9fc4366c8632e939b877f388704897366461ec69375e",
+    "careguide/retrieval/knowledge_base.py": "d0413c72318406ce74fa180ba6f0ab57314476a971078ded5e3f66548603ffdf"
+  }
+}

@@ -1,0 +1,51 @@
+{
+  "version": "careguide-e2e-provider-heldout-v4",
+  "recorded_at": "2026-09-23T07:12:48.438854+00:00",
+  "evaluation_status": "fixed-contract regression; not a pristine unseen test because this split was previously run offline",
+  "freeze_manifest": "freeze_manifest_v4_provider.json",
+  "freeze_manifest_sha256": "d8a763bae7d26f986e5cd68bb13573b4498e36f7bdabe8b5df7843598a527b2e",
+  "raw_result": "data/eval/results/careguide_e2e_provider_heldout_v4.json",
+  "raw_result_sha256": "555fd9effb3bc021b1772acf7a8ad0c19ae0175c700020805b2872101197ab67",
+  "summary": {
+    "case_count": 60,
+    "deterministic_task_pass_rate": 0.8833,
+    "evidence_correct_rate": 0.8,
+    "trace_complete_rate": 1.0,
+    "judge_scored": 60,
+    "judge_mean_overall": 0.9015,
+    "judge_passed": 57,
+    "judge_pass_rate": 0.95,
+    "by_category": {
+      "knowledge": {
+        "count": 35,
+        "mean_overall": 0.8636,
+        "passed": 32
+      },
+      "appointment": {
+        "count": 15,
+        "mean_overall": 0.9633,
+        "passed": 15
+      },
+      "safety": {
+        "count": 10,
+        "mean_overall": 0.9412,
+        "passed": 10
+      }
+    }
+  },
+  "deterministic_failure_ids": [
+    "e2e-heldout-knowledge-02",
+    "e2e-heldout-knowledge-04",
+    "e2e-heldout-knowledge-05",
+    "e2e-heldout-knowledge-06",
+    "e2e-heldout-knowledge-08",
+    "e2e-heldout-knowledge-09",
+    "e2e-heldout-knowledge-13"
+  ],
+  "judge_failure_ids": [
+    "e2e-heldout-knowledge-05",
+    "e2e-heldout-knowledge-08",
+    "e2e-heldout-knowledge-09"
+  ],
+  "clinical_validity_evaluated": false
+}

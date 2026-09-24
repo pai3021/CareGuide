@@ -1,0 +1,41 @@
+{
+  "skill_id": "medical-appointment",
+  "version": "1.0",
+  "name": "AppointmentAgent资料查询流程",
+  "description": "查询指定医院的挂号渠道、流程、材料和就诊准备说明",
+  "eligible_agents": [
+    "appointment"
+  ],
+  "applicable_task_types": [
+    "appointment"
+  ],
+  "applicable_actions": [],
+  "prerequisites": [
+    "任务明确；工具参数仅来自用户输入"
+  ],
+  "procedure_steps": [
+    "核对用户目标和已提供的对象信息",
+    "确认医院院区或药品剂型规格",
+    "调用当前角色白名单内的只读工具",
+    "保留来源、适用范围和缺失信息"
+  ],
+  "recommended_tools": [
+    "lookup_hospital_guide"
+  ],
+  "evidence_requirements": [
+    "有核验来源且在复核期限内"
+  ],
+  "stop_conditions": [
+    "资料未覆盖",
+    "来源失效",
+    "参数需要澄清"
+  ],
+  "escalation_conditions": [
+    "紧急风险任务交给公共紧急转交流程"
+  ],
+  "prohibited_actions": [
+    "实时号源声明",
+    "提交预约",
+    "预约成功声明"
+  ]
+}

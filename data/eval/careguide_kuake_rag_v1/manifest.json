@@ -1,0 +1,25 @@
+{
+  "version": "careguide-kuake-rag-eval-v1",
+  "source_dataset": "CBLUE KUAKE-IR train",
+  "runtime_corpus_version": "careguide-kuake-rag-v1",
+  "runtime_corpus_manifest_sha256": "1ac145b7c53a953c8ec9c74d320f45ddad87386a150d1e878fae528b5ddf3ded",
+  "seed": "careguide-kuake-rag-v1-20260922",
+  "split_unit": "unique_gold_document",
+  "official_dev_used": false,
+  "official_test_used": false,
+  "heldout_policy": "test is frozen and must not be used for tuning before version freeze",
+  "files": {
+    "train.jsonl": {
+      "count": 8000,
+      "sha256": "a2bd2f6a9f107469e4f6083cfae057a50035a53c971c319fadbf25614ce7860a"
+    },
+    "dev.jsonl": {
+      "count": 1000,
+      "sha256": "17e19a6df14aa2b18080ea433eb15756adfa4a4d7f4634085113c342855d4c69"
+    },
+    "test.jsonl": {
+      "count": 1000,
+      "sha256": "4500055ce5304126e3ed7bffed076d4966103ca33f0b9b39ddcf4aec7e87f8d3"
+    }
+  }
+}

@@ -1,0 +1,11 @@
+{"case_id":"DEV-IR-001","query":"精氨酸布洛芬片0.2g说明书用法用量","candidate_ids":["ibuprofen-arginine-0-2g-dosage","ibuprofen-arginine-0-4g-dosage","ibuprofen-arginine-0-2g-precautions"],"relevant_ids":["ibuprofen-arginine-0-2g-dosage"]}
+{"case_id":"DEV-IR-002","query":"精氨酸布洛芬片0.2g禁忌","candidate_ids":["ibuprofen-arginine-0-2g-contraindications","ibuprofen-arginine-0-4g-contraindications","ibuprofen-arginine-0-2g-precautions"],"relevant_ids":["ibuprofen-arginine-0-2g-contraindications"]}
+{"case_id":"DEV-IR-003","query":"精氨酸布洛芬片0.2g和肝素相互作用","candidate_ids":["ibuprofen-arginine-0-2g-heparin","ibuprofen-arginine-0-2g-methotrexate","ibuprofen-arginine-0-4g-heparin"],"relevant_ids":["ibuprofen-arginine-0-2g-heparin"]}
+{"case_id":"DEV-IR-004","query":"富马酸酮替芬鼻喷雾剂禁忌","candidate_ids":["ketotifen-nasal-dosage","ketotifen-nasal-contraindications","ketotifen-nasal-alcohol"],"relevant_ids":["ketotifen-nasal-contraindications"]}
+{"case_id":"DEV-IR-005","query":"北京大学国际医院本院微信挂号流程","candidate_ids":["pkuih-channels","pkuih-process","pkuih-materials","pkuih-cancellation"],"relevant_ids":["pkuih-process"]}
+{"case_id":"DEV-IR-006","query":"北京大学国际医院本院取号材料","candidate_ids":["pkuih-channels","pkuih-process","pkuih-materials","pkuih-cancellation"],"relevant_ids":["pkuih-materials"]}
+{"case_id":"DEV-IR-007","query":"北京大学第一医院大兴院区复诊挂号","candidate_ids":["pkufh-daxing-channels","pkufh-daxing-process","pkufh-daxing-followup"],"relevant_ids":["pkufh-daxing-followup"]}
+{"case_id":"DEV-IR-008","query":"头痛就诊前记录日记","candidate_ids":["headache-care-warning","headache-diary"],"relevant_ids":["headache-diary"]}
+{"case_id":"DEV-IR-009","query":"北京大学国际医院本院神经内科科室介绍","candidate_ids":["pkuih-neurology-scope","pkuih-gastroenterology-scope"],"relevant_ids":["pkuih-neurology-scope"]}
+{"case_id":"DEV-IR-010","query":"阿司匹林产品说明书（当前无资料）","candidate_ids":["ibuprofen-arginine-0-2g-dosage","ibuprofen-arginine-0-2g-contraindications"],"relevant_ids":[],"hard_negative":true}
+{"case_id":"DEV-IR-011","query":"精氨酸布洛芬片0.2g与维生素C合用相互作用（当前无资料）","candidate_ids":["ibuprofen-arginine-0-2g-heparin","ibuprofen-arginine-0-2g-methotrexate"],"relevant_ids":[],"hard_negative":true}

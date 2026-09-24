@@ -1,0 +1,12 @@
+{
+  "dataset_manifest_sha256": "a11bea064666ae54a78b860b291415bf49b5f55abbd3ae73d758d44c97a13be3",
+  "case_count": 360,
+  "schema_and_labels_valid": true,
+  "unique_ids": true,
+  "disjoint_scenario_families": true,
+  "no_cross_split_normalized_message_duplicates": true,
+  "cross_split_trigram_threshold": 0.65,
+  "near_duplicate_flags": [],
+  "recognition_evaluation_run": false,
+  "limitations": "String checks cannot establish semantic independence or clinical validity."
+}

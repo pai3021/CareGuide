@@ -1,0 +1,19 @@
+{
+  "version": "careguide-kuake-rag-v1",
+  "source_count": 3,
+  "record_count": 10015,
+  "files": {
+    "sources.json": "16e6ba802b5ef38d6a084fbb56a18e8809f44875d9f9afefb194b2455aa2c0d8",
+    "records.json": "569028ca17708c8ba2023c0a9e68a8b215686ed524dd41ad94172e5fe727f01c"
+  },
+  "composition": {
+    "kuake_ir_train_records": 10000,
+    "retained_sourced_guidance_and_drug_records": 15
+  },
+  "selection": {
+    "seed": "careguide-kuake-rag-v1-20260922",
+    "unique_gold_document": true,
+    "official_dev_used": false,
+    "official_test_used": false
+  }
+}

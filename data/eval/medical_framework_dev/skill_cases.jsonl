@@ -1,0 +1,6 @@
+{"case_id":"DEV-SK-001","agent":"triage","task_type":"symptom_query","expected_skill":"medical-triage"}
+{"case_id":"DEV-SK-002","agent":"medication","task_type":"medication_query","expected_skill":"medical-medication"}
+{"case_id":"DEV-SK-003","agent":"appointment","task_type":"appointment","expected_skill":"medical-appointment"}
+{"case_id":"DEV-SK-004","agent":"triage","task_type":"appointment","expected_skill":null}
+{"case_id":"DEV-SK-005","agent":"medication","task_type":"symptom_query","expected_skill":null}
+{"case_id":"DEV-SK-006","agent":"appointment","task_type":"emergency","expected_skill":null}

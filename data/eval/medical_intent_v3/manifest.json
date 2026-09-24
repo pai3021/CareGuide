@@ -1,0 +1,55 @@
+{
+  "version": "careguide-medical-intent-v3",
+  "labels": [
+    "symptom_information",
+    "department_navigation",
+    "care_preparation",
+    "report_process_guidance",
+    "followup_guidance",
+    "drug_label",
+    "drug_dosage_information",
+    "drug_contraindications",
+    "drug_precautions",
+    "drug_interactions",
+    "hospital_information",
+    "appointment_policy",
+    "appointment_materials",
+    "doctor_search",
+    "slot_search",
+    "appointment_create",
+    "appointment_reschedule",
+    "appointment_cancel",
+    "appointment_status",
+    "handoff_request",
+    "handoff_query"
+  ],
+  "boundary_labels": [
+    "urgent_handoff",
+    "diagnosis_request",
+    "individualized_medication",
+    "out_of_scope"
+  ],
+  "heldout_policy": "never used by runtime or tuning",
+  "files": {
+    "dev.jsonl": {
+      "count": 630,
+      "sha256": "749e6b169045aa9cc8a6415e535b7f2a0d0a69394531fbd4c04a383839965306"
+    },
+    "heldout.jsonl": {
+      "count": 210,
+      "sha256": "45db59ff98a5645073e197523f1c9f3f4b92cefbc6b26218528e4e416ec8b9b2"
+    },
+    "boundary_dev.jsonl": {
+      "count": 80,
+      "sha256": "6c2f8c931ffc3b53c5ea8a63466f16548223816aa15a01db4a2ae206c491bcd4"
+    },
+    "boundary_heldout.jsonl": {
+      "count": 40,
+      "sha256": "c884133898a50df3df3cd62b589a7496c8959e4edb3fccc8099fc060b1413304"
+    },
+    "workflow_cases.jsonl": {
+      "count": 120,
+      "sha256": "c7dc895a658ec3858d393f3b6c7bf39efbdaec4a053223d1394fd5501f776ef8"
+    }
+  }
+}

@@ -1,0 +1,54 @@
+{
+  "version": "careguide-e2e-provider-freeze-v4",
+  "frozen_at": "2026-09-23T07:07:41.776019+00:00",
+  "evaluation_status": "fixed-contract regression; heldout was previously executed in offline mode",
+  "heldout_policy": "provider run after this manifest; no tuning on its result; do not describe as pristine unseen test",
+  "dataset_manifest_sha256": "6af68e7b50e07c7f6e72b0a517d0572ae2314a3faffcbf78ec5d2e1848652110",
+  "heldout_jsonl_sha256": "7729890e2bef1cd9c18eab54e112001fd1424431e2fb68e5b7462540fa5d359a",
+  "upstream_releases": {
+    "intent_release_sha256": "5951b9f36316fc7896645ebda90883550ef7d35366bd9c36a69fd3f63976072a",
+    "rag_freeze_manifest_sha256": "23e87c56e7d31978756b6a60197301b4c81741169ed208b76a61eb22d1580e40"
+  },
+  "execution_profile": {
+    "intent_semantic_backend": "local_ngram_workflow_isolation",
+    "released_intent_model_evaluated_separately": "careguide-intent-roberta-v1",
+    "retrieval": "hybrid_rrf_dense4_bm25_1_top100_rerank20",
+    "hospital_backend": "in_memory_synthetic_contract",
+    "agent_execution": "provider_tool_loop",
+    "agent_model": "mimo-v2.5",
+    "agent_tool_policy": "one successful call per read tool; care-guidance query bound to exact user message; top_k=1",
+    "judge_provider_scope": "dedicated_judge_provider",
+    "judge_model": "deepseek-v4-flash",
+    "judge_thinking": false,
+    "judge_json_mode": true,
+    "judge_pass_threshold": 0.75
+  },
+  "dev_result_sha256": "86a48bf92b2d343989a343423c465744eea91abd1b2cd24e3ae8c7766902bd30",
+  "dev_summary": {
+    "case_count": 60,
+    "deterministic_task_pass_rate": 1.0,
+    "evidence_correct_rate": 1.0,
+    "judge_scored": 60,
+    "judge_mean_overall": 0.9273,
+    "judge_passed": 58,
+    "judge_pass_rate": 0.9667
+  },
+  "limitations": [
+    "synthetic workflow contracts",
+    "in-memory hospital state",
+    "no patient data",
+    "no clinical-validity scoring",
+    "heldout previously executed with offline agent configuration",
+    "fine-tuned intent checkpoint evaluated separately"
+  ],
+  "code_sha256": {
+    "scripts/run_e2e_evaluation.py": "f7cae867249307d5ac5f26e95630becd2560fb17012d6e291bcb35958aa6c56e",
+    "careguide/agent_orchestrator.py": "5c6d39e7ede27bd02b0315589789d519cccb61daaab6d12e62cce822a86df82a",
+    "careguide/qic_intent_recognizer.py": "e5ac92f191909f74bb286e40f365b19f81e31b714600522d4d258fc987a645b3",
+    "careguide/evaluator.py": "aa5a2f5acacf4559a1536cf1fca66ced5ac00f0122b3f55ffe75e452baf60cd0",
+    "careguide/retrieval/knowledge_base.py": "d0413c72318406ce74fa180ba6f0ab57314476a971078ded5e3f66548603ffdf",
+    "careguide/hospital_workflow.py": "1ac690ffb3b32dbcb0db319e050b221d10b5ca4aabcc71223fa557e5033dccdc",
+    "careguide/appointment_service.py": "5f8a9d5b2d0b895d1c4fa22e8c8a9a947ac3b96374da17b6ac79cf0365f60c95",
+    "careguide/action_store.py": "2524f14edc698d2c9547940fca198166d221b25604c362740b82f2eb7ad2030b"
+  }
+}

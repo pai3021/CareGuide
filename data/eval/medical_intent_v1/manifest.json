@@ -1,0 +1,62 @@
+{
+  "version": "careguide-medical-intent-v1",
+  "created_at": "2026-09-18",
+  "labels": [
+    "symptom_query",
+    "medication_query",
+    "appointment",
+    "emergency"
+  ],
+  "files": {
+    "dev.jsonl": {
+      "sha256": "44bfa292f8f7024bbf7a49331b92ca38130bde4b8374fc631e86036981a32dbf",
+      "count": 240,
+      "primary_intent_counts": {
+        "symptom_query": 50,
+        "medication_query": 50,
+        "appointment": 50,
+        "emergency": 50,
+        "__boundary__": 40
+      },
+      "disposition_counts": {
+        "route": 150,
+        "urgent_handoff": 50,
+        "needs_clarification": 20,
+        "out_of_scope": 20
+      },
+      "multi_intent_count": 16,
+      "multi_turn_count": 0
+    },
+    "heldout.jsonl": {
+      "sha256": "19177d522ddd1e2e9ef90f50ffd0fffb1a04d5625f8c85bce278c90607e56e66",
+      "count": 120,
+      "primary_intent_counts": {
+        "symptom_query": 25,
+        "medication_query": 25,
+        "appointment": 25,
+        "emergency": 25,
+        "__boundary__": 20
+      },
+      "disposition_counts": {
+        "route": 75,
+        "urgent_handoff": 25,
+        "needs_clarification": 10,
+        "out_of_scope": 10
+      },
+      "multi_intent_count": 10,
+      "multi_turn_count": 20
+    }
+  },
+  "total": 360,
+  "synthetic": true,
+  "clinical_reviewed": false,
+  "recognizer_implemented": false,
+  "evaluation_run": false,
+  "split_policy": "Preassigned hand-authored scenario groups; no random paraphrase splitting",
+  "heldout_policy": "Only explicit evaluator access; never prompts, embedding templates, rules or tuning",
+  "limitations": [
+    "Constructed by the same developer; not independent clinical annotation or real patient distribution",
+    "Developer reviewed routing labels; emergency labels require professional review",
+    "Class balancing is an application challenge set, not estimated traffic prevalence"
+  ]
+}

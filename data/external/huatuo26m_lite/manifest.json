@@ -1,0 +1,19 @@
+{
+  "version": "careguide-huatuo26m-lite-slice-v1",
+  "dataset": "FreedomIntelligence/Huatuo26M-Lite",
+  "revision": "90ce61699e90568db82cdce4c4035c6918d70aa6",
+  "license": "Apache-2.0",
+  "license_file": "../LICENSE-APACHE-2.0.txt",
+  "upstream_rows": 177703,
+  "upstream_sha256": "84b849f07ab3b9517443f5efeb6c7230dcadf1f71ccaf41f3bf889e53618d4e8",
+  "selection": {
+    "seed": 20260921,
+    "score": 5,
+    "stratified_by": "label",
+    "excluded_label": "急诊科"
+  },
+  "file": {
+    "count": 1000,
+    "sha256": "ea186a5e94efc7718e4e3bc1af8a71850703536451200b7293ac65dcff444b59"
+  }
+}

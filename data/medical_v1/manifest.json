@@ -1,0 +1,11 @@
+{
+  "version": "careguide-medical-corpus-v1",
+  "verified_at": "2026-09-17",
+  "clinical_reviewed": false,
+  "source_count": 6,
+  "record_count": 24,
+  "files": {
+    "sources.json": "eb36a526c04ae764bfe5a748b4a73168bf687066fbee3874273b86899a08593d",
+    "records.json": "2ddc795bdb9872ceae827a922f7dbc22b8179fb302eed065124d0c537ea72629"
+  }
+}

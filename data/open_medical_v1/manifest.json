@@ -1,0 +1,13 @@
+{
+  "version": "careguide-open-medical-v1",
+  "source_count": 3,
+  "record_count": 1015,
+  "files": {
+    "sources.json": "24efe9ab4cab3079149f188d0853c9d963fe95607c2b203dd7ee8e0affe25c9c",
+    "records.json": "06c303ce32437ea036d669e93fb1303b7dae06f97aba8717b34c16506ad64c3d"
+  },
+  "composition": {
+    "huatuo_open_qa": 1000,
+    "retained_sourced_guidance_and_drug_records": 15
+  }
+}

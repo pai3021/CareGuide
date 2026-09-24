@@ -1,0 +1,15 @@
+{
+  "version": "careguide-rag-v3",
+  "heldout_policy": "never used for tuning before freeze",
+  "source_corpus": "medical_zhongda_v2",
+  "files": {
+    "dev.jsonl": {
+      "count": 240,
+      "sha256": "c29ef6c406a0b11a5ca832510f9d9c344931f641f3eeebc81109833dcceefd56"
+    },
+    "heldout.jsonl": {
+      "count": 120,
+      "sha256": "1882284577c1401251629990e79e23fafd81c40acfca0cc72647f4bdfd6868d7"
+    }
+  }
+}

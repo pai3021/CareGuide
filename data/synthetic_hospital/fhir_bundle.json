@@ -1,0 +1,266 @@
+{
+  "resourceType": "Bundle",
+  "type": "transaction",
+  "entry": [
+    {
+      "resource": {
+        "resourceType": "Organization",
+        "id": "careguide-synthetic-hospital",
+        "name": "CareGuide 合成医院"
+      },
+      "request": {
+        "method": "PUT",
+        "url": "Organization/careguide-synthetic-hospital"
+      }
+    },
+    {
+      "resource": {
+        "resourceType": "Location",
+        "id": "demo-campus",
+        "name": "模拟院区",
+        "managingOrganization": {
+          "reference": "Organization/careguide-synthetic-hospital"
+        }
+      },
+      "request": {
+        "method": "PUT",
+        "url": "Location/demo-campus"
+      }
+    },
+    {
+      "resource": {
+        "resourceType": "Patient",
+        "id": "u001",
+        "name": [
+          {
+            "text": "合成患者 u001"
+          }
+        ]
+      },
+      "request": {
+        "method": "PUT",
+        "url": "Patient/u001"
+      }
+    },
+    {
+      "resource": {
+        "resourceType": "Practitioner",
+        "id": "PRA-CARD-01",
+        "name": [
+          {
+            "text": "合成医生甲"
+          }
+        ]
+      },
+      "request": {
+        "method": "PUT",
+        "url": "Practitioner/PRA-CARD-01"
+      }
+    },
+    {
+      "resource": {
+        "resourceType": "Practitioner",
+        "id": "PRA-GASTRO-01",
+        "name": [
+          {
+            "text": "合成医生乙"
+          }
+        ]
+      },
+      "request": {
+        "method": "PUT",
+        "url": "Practitioner/PRA-GASTRO-01"
+      }
+    },
+    {
+      "resource": {
+        "resourceType": "PractitionerRole",
+        "id": "ROLE-CARD-01",
+        "practitioner": {
+          "reference": "Practitioner/PRA-CARD-01"
+        },
+        "organization": {
+          "reference": "Organization/careguide-synthetic-hospital"
+        },
+        "specialty": [
+          {
+            "coding": [
+              {
+                "system": "urn:careguide:department",
+                "code": "cardiology",
+                "display": "心血管内科"
+              }
+            ]
+          }
+        ]
+      },
+      "request": {
+        "method": "PUT",
+        "url": "PractitionerRole/ROLE-CARD-01"
+      }
+    },
+    {
+      "resource": {
+        "resourceType": "PractitionerRole",
+        "id": "ROLE-GASTRO-01",
+        "practitioner": {
+          "reference": "Practitioner/PRA-GASTRO-01"
+        },
+        "organization": {
+          "reference": "Organization/careguide-synthetic-hospital"
+        },
+        "specialty": [
+          {
+            "coding": [
+              {
+                "system": "urn:careguide:department",
+                "code": "gastroenterology",
+                "display": "消化内科"
+              }
+            ]
+          }
+        ]
+      },
+      "request": {
+        "method": "PUT",
+        "url": "PractitionerRole/ROLE-GASTRO-01"
+      }
+    },
+    {
+      "resource": {
+        "resourceType": "Schedule",
+        "id": "SCH-CARD-01",
+        "active": true,
+        "actor": [
+          {
+            "reference": "Practitioner/PRA-CARD-01"
+          }
+        ]
+      },
+      "request": {
+        "method": "PUT",
+        "url": "Schedule/SCH-CARD-01"
+      }
+    },
+    {
+      "resource": {
+        "resourceType": "Schedule",
+        "id": "SCH-GASTRO-01",
+        "active": true,
+        "actor": [
+          {
+            "reference": "Practitioner/PRA-GASTRO-01"
+          }
+        ]
+      },
+      "request": {
+        "method": "PUT",
+        "url": "Schedule/SCH-GASTRO-01"
+      }
+    },
+    {
+      "resource": {
+        "resourceType": "Slot",
+        "id": "SLOT-CARD-001",
+        "schedule": {
+          "reference": "Schedule/SCH-CARD-01"
+        },
+        "status": "free",
+        "start": "2030-01-02T09:00:00+08:00",
+        "end": "2030-01-02T09:15:00+08:00",
+        "serviceType": [
+          {
+            "coding": [
+              {
+                "system": "urn:careguide:department",
+                "display": "心血管内科"
+              }
+            ]
+          }
+        ]
+      },
+      "request": {
+        "method": "PUT",
+        "url": "Slot/SLOT-CARD-001"
+      }
+    },
+    {
+      "resource": {
+        "resourceType": "Slot",
+        "id": "SLOT-CARD-002",
+        "schedule": {
+          "reference": "Schedule/SCH-CARD-01"
+        },
+        "status": "free",
+        "start": "2030-01-02T09:15:00+08:00",
+        "end": "2030-01-02T09:30:00+08:00",
+        "serviceType": [
+          {
+            "coding": [
+              {
+                "system": "urn:careguide:department",
+                "display": "心血管内科"
+              }
+            ]
+          }
+        ]
+      },
+      "request": {
+        "method": "PUT",
+        "url": "Slot/SLOT-CARD-002"
+      }
+    },
+    {
+      "resource": {
+        "resourceType": "Slot",
+        "id": "SLOT-GASTRO-001",
+        "schedule": {
+          "reference": "Schedule/SCH-GASTRO-01"
+        },
+        "status": "free",
+        "start": "2030-01-02T10:00:00+08:00",
+        "end": "2030-01-02T10:15:00+08:00",
+        "serviceType": [
+          {
+            "coding": [
+              {
+                "system": "urn:careguide:department",
+                "display": "消化内科"
+              }
+            ]
+          }
+        ]
+      },
+      "request": {
+        "method": "PUT",
+        "url": "Slot/SLOT-GASTRO-001"
+      }
+    },
+    {
+      "resource": {
+        "resourceType": "Slot",
+        "id": "SLOT-GASTRO-002",
+        "schedule": {
+          "reference": "Schedule/SCH-GASTRO-01"
+        },
+        "status": "free",
+        "start": "2030-01-02T10:15:00+08:00",
+        "end": "2030-01-02T10:30:00+08:00",
+        "serviceType": [
+          {
+            "coding": [
+              {
+                "system": "urn:careguide:department",
+                "display": "消化内科"
+              }
+            ]
+          }
+        ]
+      },
+      "request": {
+        "method": "PUT",
+        "url": "Slot/SLOT-GASTRO-002"
+      }
+    }
+  ]
+}

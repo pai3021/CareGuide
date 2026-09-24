@@ -1,0 +1,8 @@
+fastapi==0.115.5
+pydantic==2.10.3
+uvicorn==0.32.1
+openai==1.68.2
+redis==5.2.1
+httpx==0.28.1
+prometheus-client==0.21.0
+python-dotenv==1.0.1

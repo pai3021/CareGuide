@@ -1,0 +1,54 @@
+{
+  "version": "weknora-import-medical-zhongda-v2",
+  "source_corpus_fingerprint": "e827d112768221437c47b0c51174c179bdec540f961ca26062d5daebf0016528",
+  "files": [
+    {
+      "path": "nhs-headaches.md",
+      "source_id": "nhs-headaches",
+      "sha256": "d302c8f28596a29ae73d3a70bca1c3030b97784859135efd56a66d10d21a1853",
+      "record_count": 2
+    },
+    {
+      "path": "nmpa-otc-labels.md",
+      "source_id": "nmpa-otc-labels",
+      "sha256": "ca0bb4dfd67403356874e2a14129469ee7e6e3c99f4dff2b3b0a0efdd567fc50",
+      "record_count": 13
+    },
+    {
+      "path": "zhongda-card.md",
+      "source_id": "zhongda-card",
+      "sha256": "482cc27a464aa2bf4011baf01d6100cff0524dab93c90aff077bcbbe59b4ec7d",
+      "record_count": 1
+    },
+    {
+      "path": "zhongda-gastroenterology.md",
+      "source_id": "zhongda-gastroenterology",
+      "sha256": "e43f42f42ff0d5757d6763512fe0bcbed9b8da11138407aaa362431c73f114e1",
+      "record_count": 1
+    },
+    {
+      "path": "zhongda-orthopedics.md",
+      "source_id": "zhongda-orthopedics",
+      "sha256": "9d86a42e7d84e0fe090ecfc947d0f146c5ecb09b0991e828d2514f0023781fd0",
+      "record_count": 1
+    },
+    {
+      "path": "zhongda-outpatient.md",
+      "source_id": "zhongda-outpatient",
+      "sha256": "87a1d25eae9a8880c014f48f1179a9ee71b260b7644f2ad09d49c7a5caae8c2d",
+      "record_count": 5
+    },
+    {
+      "path": "zhongda-pharmacy.md",
+      "source_id": "zhongda-pharmacy",
+      "sha256": "85753a23c2d3c9a02163c69dcab42ffa44df7ba5a8dae0ab9ea19d9e97a70b32",
+      "record_count": 1
+    },
+    {
+      "path": "zhongda-respiratory.md",
+      "source_id": "zhongda-respiratory",
+      "sha256": "53e3ce3b3d5002ad837c7fb3893df3d3b3f42263c9d6c60fdca9afd36f240624",
+      "record_count": 1
+    }
+  ]
+}

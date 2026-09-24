@@ -1,0 +1,27 @@
+{
+  "version": "careguide-e2e-v2",
+  "total": 120,
+  "distribution": {
+    "knowledge": 70,
+    "appointment": 30,
+    "safety": 20
+  },
+  "knowledge_contract": {
+    "answerable": 64,
+    "unanswerable": 6,
+    "target_evidence_required_for_answerable": true
+  },
+  "heldout_policy": "heldout must not be read by the development evaluator before freeze",
+  "data_origin": "developer-authored synthetic workflow contracts; no patient data",
+  "manual_clinical_review": false,
+  "files": {
+    "dev.jsonl": {
+      "count": 60,
+      "sha256": "8c01aa3e33dbd064fcaf3e30116afbdaf9975cfbb4c5f2e931f8f23975206ddf"
+    },
+    "heldout.jsonl": {
+      "count": 60,
+      "sha256": "7729890e2bef1cd9c18eab54e112001fd1424431e2fb68e5b7462540fa5d359a"
+    }
+  }
+}

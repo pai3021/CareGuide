@@ -1,0 +1,126 @@
+[
+  {
+    "id": "nmpa-otc-labels",
+    "title": "国家药品监督管理局 · OTC说明书范本；不绑定商品名或生产企业",
+    "url": "https://www.nmpa.gov.cn/directory/web/nmpa/images/1672728602691034318.pdf",
+    "publisher": "国家药品监督管理局",
+    "jurisdiction": "CN",
+    "scope": "OTC说明书范本；不绑定商品名或生产企业",
+    "published_at": null,
+    "verified_at": "2026-09-17",
+    "valid_until": "2027-03-16",
+    "review_status": "developer_source_verified",
+    "clinical_reviewed": false,
+    "verification_method": "developer_visual_pdf_verification",
+    "locator": "PDF页32-36；印刷页33-37",
+    "retrieved_sha256": "c4f5ced5e886b4cff0d1b5915bb418314ac279986da948c167be607d8710c9e4",
+    "evidence_anchors": [
+      "精氨酸布洛芬片",
+      "富马酸酮替芬鼻喷雾剂"
+    ]
+  },
+  {
+    "id": "pkuih-appointment",
+    "title": "北京大学国际医院 · 本院门诊预约挂号",
+    "url": "https://www.pkuih.edu.cn/notice/details_940_1487.html",
+    "publisher": "北京大学国际医院",
+    "jurisdiction": "CN",
+    "scope": "本院门诊预约挂号",
+    "published_at": "2025-11-25",
+    "verified_at": "2026-09-17",
+    "valid_until": "2026-10-17",
+    "review_status": "developer_source_verified",
+    "clinical_reviewed": false,
+    "verification_method": "developer_html_source_verification",
+    "locator": "正文",
+    "retrieved_sha256": "f0ec700b47dd8f49a93ed64fc2d9a99acc154a8a3c6abd68e76a5285eaec711b",
+    "evidence_anchors": [
+      "2025/11/25",
+      "放号时间",
+      "预约识别码",
+      "取消订单"
+    ]
+  },
+  {
+    "id": "pkufh-daxing-appointment",
+    "title": "北京大学第一医院 · 大兴院区挂号指南",
+    "url": "https://www.pkufh.com/Html/News/Articles/61679.html",
+    "publisher": "北京大学第一医院",
+    "jurisdiction": "CN",
+    "scope": "大兴院区挂号指南",
+    "published_at": "2025-05-06",
+    "verified_at": "2026-09-17",
+    "valid_until": "2026-10-17",
+    "review_status": "developer_source_verified",
+    "clinical_reviewed": false,
+    "verification_method": "developer_html_source_verification",
+    "locator": "正文",
+    "retrieved_sha256": "3917073d09327b712479d238757c0507cbdfecab0e8080456bcc403cb8fad29a",
+    "evidence_anchors": [
+      "2025-05-06",
+      "健康大兴APP",
+      "10分钟内",
+      "同一个就诊单元"
+    ]
+  },
+  {
+    "id": "pkuih-neurology",
+    "title": "北京大学国际医院 · 神经内科科室介绍",
+    "url": "https://www.pkuih.edu.cn/department/details_931_3308.html",
+    "publisher": "北京大学国际医院",
+    "jurisdiction": "CN",
+    "scope": "神经内科科室介绍",
+    "published_at": null,
+    "verified_at": "2026-09-17",
+    "valid_until": "2026-12-16",
+    "review_status": "developer_source_verified",
+    "clinical_reviewed": false,
+    "verification_method": "developer_html_source_verification",
+    "locator": "正文",
+    "retrieved_sha256": "9739bc504fed48da57bdfad5bee54dbc813e48df7693227e10db24fcd00537e9",
+    "evidence_anchors": [
+      "头晕头痛",
+      "周围神经病变"
+    ]
+  },
+  {
+    "id": "pkuih-gastroenterology",
+    "title": "北京大学国际医院 · 消化内科科室介绍",
+    "url": "https://www.pkuih.edu.cn/department/details_931_3301.html",
+    "publisher": "北京大学国际医院",
+    "jurisdiction": "CN",
+    "scope": "消化内科科室介绍",
+    "published_at": null,
+    "verified_at": "2026-09-17",
+    "valid_until": "2026-12-16",
+    "review_status": "developer_source_verified",
+    "clinical_reviewed": false,
+    "verification_method": "developer_html_source_verification",
+    "locator": "正文",
+    "retrieved_sha256": "1317b9f90644604f627be423ac8900193b9d457f2176652cb9ca097d2fee35d0",
+    "evidence_anchors": [
+      "内镜中心",
+      "炎症性肠病"
+    ]
+  },
+  {
+    "id": "nhs-headaches",
+    "title": "英国 NHS · 英国公众头痛就医信息；中文摘要非官方译文",
+    "url": "https://www.nhs.uk/symptoms/headaches/",
+    "publisher": "英国 NHS",
+    "jurisdiction": "GB",
+    "scope": "英国公众头痛就医信息；中文摘要非官方译文",
+    "published_at": null,
+    "verified_at": "2026-09-17",
+    "valid_until": "2027-03-16",
+    "review_status": "developer_source_verified",
+    "clinical_reviewed": false,
+    "verification_method": "developer_html_source_verification",
+    "locator": "正文",
+    "retrieved_sha256": "58f13e52809e32b9315fba4453e4e6b8abe2ad74e7ab472a06f20f24ef121f78",
+    "evidence_anchors": [
+      "Keeping a headache diary",
+      "it started suddenly and is extremely painful"
+    ]
+  }
+]

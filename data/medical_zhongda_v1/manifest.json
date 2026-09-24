@@ -1,0 +1,11 @@
+{
+  "version": "careguide-medical-zhongda-v1",
+  "verified_at": "2026-09-19",
+  "clinical_reviewed": false,
+  "source_count": 6,
+  "record_count": 22,
+  "files": {
+    "sources.json": "85d9245c73b5b98df3552c5288641f335a9d92c2e08db099b7080312eabee9c4",
+    "records.json": "9d65a33d556608174a949105fa5efc79cf312964853f6dd3b14a9b283b39fe08"
+  }
+}

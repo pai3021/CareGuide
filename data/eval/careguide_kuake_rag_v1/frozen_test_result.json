@@ -1,0 +1,19 @@
+{
+  "version": "careguide-kuake-rag-frozen-test-result-v1",
+  "freeze_manifest_sha256": "23e87c56e7d31978756b6a60197301b4c81741169ed208b76a61eb22d1580e40",
+  "raw_result_sha256": "73d6df302c44da1d3a0e34a1e0f0952129fe47cd0dfca4b093eb14a80410561c",
+  "evaluated_at": "2026-09-23T03:47:59.988988+00:00",
+  "case_count": 1000,
+  "candidate_gold_coverage": 0.714,
+  "metrics": {
+    "case_count": 1000,
+    "mrr_at_10": 0.4856900793650794,
+    "recall_at_1": 0.407,
+    "recall_at_5": 0.592,
+    "recall_at_10": 0.668,
+    "ndcg_at_10": 0.5291699956924523
+  },
+  "rerank_request_count": 1000,
+  "rerank_input_tokens": 3634740,
+  "policy": "final frozen result; must not be used for further parameter tuning"
+}

@@ -1,0 +1,8 @@
+{
+  "version": "careguide-synthetic-hospital-v1",
+  "seed": 9999,
+  "source_model": "H-AdminSim-inspired administrative schema",
+  "resource_count": 13,
+  "sha256": "9fb1f587b57d89a234456cf5247fdd99f9c213bd90297a0593af04b93dd9db7c",
+  "real_patient_data": false
+}

@@ -1,0 +1,13 @@
+# Apply after explicit medical indexing with docker-compose.yml.
+services:
+  careguide:
+    environment:
+      CAREGUIDE_MEMORY_MODE: redis_chroma
+      CAREGUIDE_MEMORY_EMBEDDING_MODE: remote
+      CAREGUIDE_RETRIEVAL_MODE: hybrid
+      CAREGUIDE_PERSIST_TRACES: "true"
+    depends_on:
+      redis:
+        condition: service_started
+      chromadb:
+        condition: service_started

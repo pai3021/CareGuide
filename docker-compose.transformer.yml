@@ -1,0 +1,13 @@
+# Optional CPU inference profile for the frozen CareGuide-13 RoBERTa release.
+# The checkpoint stays outside the repository and is mounted read-only.
+services:
+  careguide:
+    build:
+      context: .
+      target: transformer
+    environment:
+      CAREGUIDE_QIC_CLASSIFIER_BACKEND: transformer
+      CAREGUIDE_QIC_MODEL_PATH: /models/careguide-intent-roberta-v1
+      CAREGUIDE_QIC_MODEL_DEVICE: cpu
+    volumes:
+      - ${CAREGUIDE_QIC_MODEL_HOST_PATH:-./models/careguide-intent-roberta-v1}:/models/careguide-intent-roberta-v1:ro

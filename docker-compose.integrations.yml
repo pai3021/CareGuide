@@ -1,0 +1,56 @@
+# Full synthetic-hospital profile. Embedded open-data RAG remains the default.
+# WeKnora v0.8.0 may be deployed separately and selected explicitly through
+# CAREGUIDE_KNOWLEDGE_BACKEND=weknora_mcp.
+services:
+  careguide:
+    environment:
+      CAREGUIDE_INTENT_TAXONOMY: qic
+      CAREGUIDE_KNOWLEDGE_BACKEND: ${CAREGUIDE_KNOWLEDGE_BACKEND:-embedded}
+      CAREGUIDE_WEKNORA_MCP_URL: ${CAREGUIDE_WEKNORA_MCP_URL:-}
+      CAREGUIDE_WEKNORA_MCP_TOKEN: ${CAREGUIDE_WEKNORA_MCP_TOKEN:-}
+      CAREGUIDE_WEKNORA_SEARCH_TOOL: ${CAREGUIDE_WEKNORA_SEARCH_TOOL:-hybrid_search}
+      CAREGUIDE_WEKNORA_KB_ID: ${CAREGUIDE_WEKNORA_KB_ID:-}
+      CAREGUIDE_HOSPITAL_BACKEND: fhir
+      CAREGUIDE_FHIR_BASE_URL: http://fhir:8080/fhir
+      NO_PROXY: redis,chromadb,fhir,127.0.0.1,localhost
+    depends_on:
+      fhir-ready:
+        condition: service_completed_successfully
+  fhir:
+    image: hapiproject/hapi:v8.12.0-1
+    profiles: [integrations]
+    ports: ["127.0.0.1:8080:8080"]
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://fhir-db:5432/hapi
+      SPRING_DATASOURCE_USERNAME: hapi
+      SPRING_DATASOURCE_PASSWORD: ${CAREGUIDE_FHIR_DB_PASSWORD:-careguide-local-fhir}
+      SPRING_DATASOURCE_DRIVERCLASSNAME: org.postgresql.Driver
+      SPRING_JPA_PROPERTIES_HIBERNATE_DIALECT: ca.uhn.fhir.jpa.model.dialect.HapiFhirPostgresDialect
+      # Appointment writes must be visible to the immediately following state
+      # assertion; the starter otherwise reuses identical searches briefly.
+      HAPI_FHIR_REUSE_CACHED_SEARCH_RESULTS_MILLIS: "-1"
+    depends_on:
+      fhir-db:
+        condition: service_healthy
+  fhir-ready:
+    image: curlimages/curl:8.10.1
+    profiles: [integrations]
+    command: ["--fail", "--silent", "--show-error", "--output", "/dev/null", "--retry", "60", "--retry-delay", "2", "--retry-connrefused", "http://fhir:8080/fhir/metadata"]
+    depends_on:
+      fhir:
+        condition: service_started
+  fhir-db:
+    image: postgres:16.4-alpine
+    profiles: [integrations]
+    environment:
+      POSTGRES_DB: hapi
+      POSTGRES_USER: hapi
+      POSTGRES_PASSWORD: ${CAREGUIDE_FHIR_DB_PASSWORD:-careguide-local-fhir}
+    volumes: [careguide-fhir-db:/var/lib/postgresql/data]
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U hapi -d hapi"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+volumes:
+  careguide-fhir-db:

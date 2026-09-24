@@ -1,0 +1,42 @@
+{
+  "skill_id": "medical-medication",
+  "version": "1.0",
+  "name": "MedicationAgent资料查询流程",
+  "description": "查询指定药品和规格的说明书信息；仅在可靠数据覆盖时查询相互作用",
+  "eligible_agents": [
+    "medication"
+  ],
+  "applicable_task_types": [
+    "medication_query"
+  ],
+  "applicable_actions": [],
+  "prerequisites": [
+    "任务明确；工具参数仅来自用户输入"
+  ],
+  "procedure_steps": [
+    "核对用户目标和已提供的对象信息",
+    "确认医院院区或药品剂型规格",
+    "调用当前角色白名单内的只读工具",
+    "保留来源、适用范围和缺失信息"
+  ],
+  "recommended_tools": [
+    "lookup_drug_label",
+    "lookup_drug_interaction"
+  ],
+  "evidence_requirements": [
+    "有核验来源且在复核期限内"
+  ],
+  "stop_conditions": [
+    "资料未覆盖",
+    "来源失效",
+    "参数需要澄清"
+  ],
+  "escalation_conditions": [
+    "紧急风险任务交给公共紧急转交流程"
+  ],
+  "prohibited_actions": [
+    "个体化剂量决定",
+    "调整用药",
+    "未命中即认定无相互作用"
+  ]
+}

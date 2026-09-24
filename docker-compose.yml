@@ -1,0 +1,94 @@
+name: careguide
+services:
+  careguide:
+    build:
+      context: .
+      target: production
+    ports: ["127.0.0.1:8010:8000"]
+    environment:
+      CAREGUIDE_LLM_API_KEY: ${CAREGUIDE_LLM_API_KEY:-}
+      CAREGUIDE_LLM_BASE_URL: ${CAREGUIDE_LLM_BASE_URL:-https://api.openai.com/v1}
+      CAREGUIDE_LLM_MODEL: ${CAREGUIDE_LLM_MODEL:-gpt-4o-mini}
+      CAREGUIDE_INTENT_EMBEDDING_MODE: ${CAREGUIDE_INTENT_EMBEDDING_MODE:-local_ngram}
+      CAREGUIDE_INTENT_TAXONOMY: ${CAREGUIDE_INTENT_TAXONOMY:-qic}
+      CAREGUIDE_QIC_CLASSIFIER_BACKEND: ${CAREGUIDE_QIC_CLASSIFIER_BACKEND:-fusion}
+      CAREGUIDE_QIC_MODEL_PATH: ${CAREGUIDE_QIC_MODEL_PATH:-}
+      CAREGUIDE_QIC_MODEL_DEVICE: ${CAREGUIDE_QIC_MODEL_DEVICE:-auto}
+      CAREGUIDE_QIC_LLM_GATE_MARGIN: ${CAREGUIDE_QIC_LLM_GATE_MARGIN:-0.25}
+      CAREGUIDE_QIC_LLM_OVERRIDE_CONFIDENCE: ${CAREGUIDE_QIC_LLM_OVERRIDE_CONFIDENCE:-0.95}
+      CAREGUIDE_KNOWLEDGE_BACKEND: ${CAREGUIDE_KNOWLEDGE_BACKEND:-embedded}
+      CAREGUIDE_WEKNORA_MCP_URL: ${CAREGUIDE_WEKNORA_MCP_URL:-}
+      CAREGUIDE_WEKNORA_MCP_TOKEN: ${CAREGUIDE_WEKNORA_MCP_TOKEN:-}
+      CAREGUIDE_WEKNORA_SEARCH_TOOL: ${CAREGUIDE_WEKNORA_SEARCH_TOOL:-hybrid_search}
+      CAREGUIDE_WEKNORA_KB_ID: ${CAREGUIDE_WEKNORA_KB_ID:-}
+      CAREGUIDE_HOSPITAL_BACKEND: ${CAREGUIDE_HOSPITAL_BACKEND:-disabled}
+      CAREGUIDE_FHIR_BASE_URL: ${CAREGUIDE_FHIR_BASE_URL:-http://127.0.0.1:8080/fhir}
+      CAREGUIDE_EMBEDDING_API_KEY: ${CAREGUIDE_EMBEDDING_API_KEY:-}
+      CAREGUIDE_EMBEDDING_BASE_URL: ${CAREGUIDE_EMBEDDING_BASE_URL:-https://api.siliconflow.cn/v1}
+      CAREGUIDE_EMBEDDING_MODEL: ${CAREGUIDE_EMBEDDING_MODEL:-Qwen/Qwen3-Embedding-0.6B}
+      CAREGUIDE_EMBEDDING_DIMENSIONS: ${CAREGUIDE_EMBEDDING_DIMENSIONS:-1024}
+      CAREGUIDE_EMBEDDING_FORMAT: ${CAREGUIDE_EMBEDDING_FORMAT:-float}
+      CAREGUIDE_RERANK_API_KEY: ${CAREGUIDE_RERANK_API_KEY:-}
+      CAREGUIDE_RERANK_BASE_URL: ${CAREGUIDE_RERANK_BASE_URL:-https://api.siliconflow.cn/v1}
+      CAREGUIDE_RERANK_MODEL: ${CAREGUIDE_RERANK_MODEL:-Qwen/Qwen3-Reranker-0.6B}
+      CAREGUIDE_RERANK_ENABLED: ${CAREGUIDE_RERANK_ENABLED:-false}
+      CAREGUIDE_RERANK_CANDIDATES: ${CAREGUIDE_RERANK_CANDIDATES:-20}
+      CAREGUIDE_MAX_TOOL_ROUNDS: ${CAREGUIDE_MAX_TOOL_ROUNDS:-5}
+      CAREGUIDE_MEMORY_MODE: ${CAREGUIDE_MEMORY_MODE:-session}
+      CAREGUIDE_MEMORY_EMBEDDING_MODE: ${CAREGUIDE_MEMORY_EMBEDDING_MODE:-remote}
+      CAREGUIDE_RETRIEVAL_MODE: ${CAREGUIDE_RETRIEVAL_MODE:-bm25}
+      CAREGUIDE_MIN_DENSE_SCORE: ${CAREGUIDE_MIN_DENSE_SCORE:--1.0}
+      CAREGUIDE_RRF_DENSE_WEIGHT: ${CAREGUIDE_RRF_DENSE_WEIGHT:-4}
+      CAREGUIDE_RRF_BM25_WEIGHT: ${CAREGUIDE_RRF_BM25_WEIGHT:-1}
+      CAREGUIDE_HYBRID_CANDIDATES: ${CAREGUIDE_HYBRID_CANDIDATES:-100}
+      CAREGUIDE_CORPUS_DIR: /app/data/careguide_kuake_rag_v1
+      CAREGUIDE_BUSINESS_DB: /app/data/runtime/careguide.sqlite3
+      CAREGUIDE_PERSIST_TRACES: ${CAREGUIDE_PERSIST_TRACES:-true}
+      CAREGUIDE_JUDGE_API_KEY: ${CAREGUIDE_JUDGE_API_KEY:-}
+      CAREGUIDE_JUDGE_BASE_URL: ${CAREGUIDE_JUDGE_BASE_URL:-}
+      CAREGUIDE_JUDGE_MODEL: ${CAREGUIDE_JUDGE_MODEL:-}
+      CAREGUIDE_REDIS_URL: redis://redis:6379/0
+      CAREGUIDE_CHROMA_HOST: chromadb
+      CAREGUIDE_CHROMA_PORT: "8000"
+      NO_PROXY: redis,chromadb,127.0.0.1,localhost
+    volumes:
+      - careguide-business:/app/data/runtime
+      - careguide-retrieval:/app/data/chroma
+      - careguide-traces:/app/data/traces
+  frontend:
+    build: ./frontend
+    ports: ["127.0.0.1:5175:80"]
+    depends_on: [careguide]
+  redis:
+    image: redis:7-alpine
+    profiles: [memory]
+    ports: ["127.0.0.1:6380:6379"]
+    volumes: [careguide-redis:/data]
+    command: [redis-server, --appendonly, "yes"]
+  chromadb:
+    image: chromadb/chroma:0.5.23
+    profiles: [memory]
+    ports: ["127.0.0.1:8002:8000"]
+    volumes: [careguide-chroma:/chroma/chroma]
+    environment:
+      IS_PERSISTENT: "TRUE"
+      ANONYMIZED_TELEMETRY: "FALSE"
+  prometheus:
+    image: prom/prometheus:v3.5.0
+    profiles: [monitor]
+    ports: ["127.0.0.1:19091:9090"]
+    command:
+      - --config.file=/etc/prometheus/prometheus.yml
+      - --storage.tsdb.path=/prometheus
+      - --storage.tsdb.retention.time=200h
+    volumes:
+      - ./config/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - careguide-prometheus:/prometheus
+    depends_on: [careguide]
+volumes:
+  careguide-redis:
+  careguide-chroma:
+  careguide-business:
+  careguide-retrieval:
+  careguide-traces:
+  careguide-prometheus:

@@ -1,0 +1,81 @@
+{
+  "version": "careguide-intent-v4-13class-v1",
+  "labels": [
+    "疾病表述",
+    "指标解读",
+    "医疗费用",
+    "治疗方案",
+    "功效作用",
+    "病情诊断",
+    "其他",
+    "注意事项",
+    "病因分析",
+    "就医建议",
+    "后果表述",
+    "appointment_action",
+    "emergency"
+  ],
+  "split_seed": "careguide-intent-v4-2026-09-22",
+  "split_policy": "stratified QIC rows; custom scenario families never cross splits",
+  "official_qic_dev_used": false,
+  "clinical_reviewed": false,
+  "files": {
+    "train.jsonl": {
+      "count": 5132,
+      "sha256": "a7d2aee78445bde6393ba391f00ebfa04e449ceaa164d7b63d35fd5f9a2cb0f9",
+      "labels": {
+        "疾病表述": 416,
+        "指标解读": 96,
+        "医疗费用": 124,
+        "治疗方案": 1225,
+        "功效作用": 259,
+        "病情诊断": 614,
+        "其他": 1132,
+        "注意事项": 455,
+        "病因分析": 107,
+        "就医建议": 260,
+        "后果表述": 164,
+        "appointment_action": 140,
+        "emergency": 140
+      }
+    },
+    "validation.jsonl": {
+      "count": 1102,
+      "sha256": "9465a9be6e6884c765919ef826c0c317512268f13ca89b1ffd343d9068d95218",
+      "labels": {
+        "疾病表述": 89,
+        "指标解读": 21,
+        "医疗费用": 27,
+        "治疗方案": 262,
+        "功效作用": 56,
+        "病情诊断": 132,
+        "其他": 243,
+        "注意事项": 98,
+        "病因分析": 23,
+        "就医建议": 56,
+        "后果表述": 35,
+        "appointment_action": 30,
+        "emergency": 30
+      }
+    },
+    "test.jsonl": {
+      "count": 1097,
+      "sha256": "62d78ea81c712c4c7209f826796d7afcad85bcb1b04dc45c7fd0b4ed2640d342",
+      "labels": {
+        "疾病表述": 89,
+        "指标解读": 20,
+        "医疗费用": 26,
+        "治疗方案": 263,
+        "功效作用": 55,
+        "病情诊断": 131,
+        "其他": 242,
+        "注意事项": 97,
+        "病因分析": 23,
+        "就医建议": 55,
+        "后果表述": 36,
+        "appointment_action": 30,
+        "emergency": 30
+      }
+    }
+  }
+}

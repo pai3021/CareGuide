@@ -1,0 +1,41 @@
+{
+  "release": "careguide-intent-roberta-v1",
+  "status": "released_after_single_frozen_test",
+  "base_model": "hfl/chinese-roberta-wwm-ext",
+  "dataset": "careguide-intent-v4-13class-v1",
+  "training": {
+    "seed": 42,
+    "epochs": 5,
+    "learning_rate": 0.00002,
+    "batch_size": 32,
+    "max_length": 128,
+    "class_weight_power": 0.5
+  },
+  "validation": {
+    "count": 1102,
+    "accuracy": 0.8439201451905626,
+    "macro_f1": 0.8551477326089005,
+    "appointment_action_f1": 0.9473684210526315,
+    "emergency_f1": 0.9836065573770492
+  },
+  "checkpoint": {
+    "storage": "external checkpoint; not distributed in Git",
+    "size": "391M",
+    "sha256": {
+      "config.json": "dee21d960296e9a0706ccfd3e8ef8c046d2012cc71afb88c0f3df2502c1795c1",
+      "model.safetensors": "af84e4747efa782d11606eebe812c02b8d4e3bf5ca1752412646570be0d12006",
+      "tokenizer.json": "c7ba00afa614e4581d2f462585dae1a33436d2d97f5fcfb874e6894cbe01df6e",
+      "vocab.txt": "45bbac6b341c319adc98a532532882e91a9cefc0329aa57bac9ae761c27b291c"
+    }
+  },
+  "frozen_test": {
+    "access_count_for_release": 1,
+    "count": 1097,
+    "accuracy": 0.837739288969918,
+    "macro_f1": 0.8365566872759488,
+    "appointment_action_f1": 0.9491525423728814,
+    "emergency_f1": 0.9666666666666667,
+    "result_sha256": "d4344c4983b4bb03d14bff3e7efc5664dafdd8f526b57ca6cc0638fe71d66ba5",
+    "note": "The earlier launcher failed during top-level import before main or dataset access; preserved in the remote failure log and not counted as an evaluation."
+  }
+}

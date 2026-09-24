@@ -1,0 +1,17 @@
+.env
+.env.*
+!.env.example
+.git
+frontend/node_modules
+frontend/dist
+models
+__pycache__
+**/__pycache__
+.pytest_cache
+data/chroma
+data/chroma_memory
+data/traces
+data/source_cache
+tmp
+data/runtime
+data/eval/results

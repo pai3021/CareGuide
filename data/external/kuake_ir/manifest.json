@@ -1,0 +1,52 @@
+{
+  "version": "careguide-kuake-ir-manifest-v1",
+  "dataset": "CBLUE KUAKE-IR",
+  "license": "Apache-2.0",
+  "license_file": "../LICENSE-APACHE-2.0.txt",
+  "official_source": "https://github.com/CBLUEbenchmark/CBLUE",
+  "official_download_page": "https://tianchi.aliyun.com/dataset/95414",
+  "transport_mirror": {
+    "repository": "githuBlijingai/KUAKE-LR-Rerank",
+    "revision": "e477490616e981b1a6dfcd99ddca814577eab1be"
+  },
+  "raw_storage": "data/source_cache/kuake_ir (gitignored)",
+  "usage": {
+    "train": "retrieval_development",
+    "dev": "external_retrieval_evaluation",
+    "test": "unlabeled_upstream_test_not_scored_locally"
+  },
+  "files": {
+    "corpus.tsv": {
+      "line_count": 960363,
+      "sha256": "2921f0ba0854b40e8f607c75d232cf9dfd6afad11fc759fc46f93560961933bf"
+    },
+    "KUAKE-IR_train_query.txt": {
+      "line_count": 99999,
+      "sha256": "20478c6832bb26fb84b89da7ba9f9d511ad843f6d4148641b95e90da65d3de1b"
+    },
+    "KUAKE-IR_train.tsv": {
+      "line_count": 99999,
+      "sha256": "cc62ddc16430f960ec48a273ed719b3a41718ce1ae32abde179b864ffdbedc1b"
+    },
+    "KUAKE-IR_dev_query.txt": {
+      "line_count": 1000,
+      "sha256": "c8d9bfb6779d2e29939a6e8d7dee675a8be5a18876d9a478645279261411fd28"
+    },
+    "KUAKE-IR_dev.tsv": {
+      "line_count": 1000,
+      "sha256": "47cfded0ba119f720f5d04c2a30abd3f48fce9a51928dfd5f7207e261974fce7"
+    },
+    "KUAKE-IR_test.query.txt": {
+      "line_count": 3000,
+      "sha256": "ec43c991f78e6ed18ab7c4608561319272106bfbc4fd251e0cc034ad129a8788"
+    },
+    "KUAKE-IR_test.tsv": {
+      "line_count": 3000,
+      "sha256": "2e6f85a17ec7c1769253447ae2b84f6ef3f00a43cad1a9f5904dce638ea53d56"
+    },
+    "README.txt": {
+      "line_count": 10,
+      "sha256": "20978fb011519e2c055595d33e95a0db570e4c8b8fa7eee9ed4fed5d4d5afd50"
+    }
+  }
+}

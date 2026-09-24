@@ -1,0 +1,43 @@
+{
+  "version": "careguide-cblue-snapshot-v2",
+  "license": "Apache-2.0",
+  "license_file": "../LICENSE-APACHE-2.0.txt",
+  "official_source": "https://github.com/CBLUEbenchmark/CBLUE",
+  "official_download_page": "https://tianchi.aliyun.com/dataset/95414",
+  "transport_mirrors": {
+    "kuake_qic_train": {
+      "repository": "Sherlock-coder/CBLUE",
+      "revision": "8f879e3624b06a184288a8770113da5fddcb61ff",
+      "raw_sha256": "090b296e71e6ca5144a193e2fc32b0297ab662cb689539ced1272198f19bc372"
+    },
+    "kuake_qic_dev": {
+      "repository": "wyp/CBlue-KUAKE-QIC",
+      "revision": "cd6be11a66b731bfe11f90cbe73a672beeaa905c",
+      "raw_sha256": "a572e0576afe8510bc9d6b25424f835e6d30e760109ac9fb48c8a77696aa2602"
+    },
+    "kuake_qtr_train": {
+      "repository": "dirtycomputer/CBLUE-KUAKE-QTR",
+      "revision": "330c7af04ff80dedd78b3eaa4fc4ba7525bedabd",
+      "raw_sha256": "e6e7a9f0bd9d01a75eb90904c99ceb4bfed4dec1199632494f26e03ad96225fd"
+    }
+  },
+  "usage": {
+    "kuake_qic_train": "intent_development_only",
+    "kuake_qic_dev": "external_intent_evaluation_only",
+    "kuake_qtr_train": "retrieval_relevance_development"
+  },
+  "files": {
+    "kuake_qic_train.jsonl": {
+      "count": 6931,
+      "sha256": "731992f09a34fd6f51180f52b97d4891f56a64e1fe5646d89ba3b0d9856f8752"
+    },
+    "kuake_qic_dev.jsonl": {
+      "count": 1955,
+      "sha256": "b5696b812bed0721f8d36b1c2fd94a4a8cb07bfb2a7906e3e903ba045e0ccc3f"
+    },
+    "kuake_qtr_train.jsonl": {
+      "count": 24174,
+      "sha256": "c824537646d6e72ca18ba006523645c33de27538c5cc0c3e72cf491c60ebcaf0"
+    }
+  }
+}

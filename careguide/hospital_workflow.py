@@ -210,9 +210,45 @@ class FHIRHospitalBackend:
         # not return these R4 resources, even when the actor is a Patient.
         resources = self._resources(await self._get(
             "Appointment", {"actor": f"Patient/{patient_id}"}))
-        return [{"id": item.get("id"), "status": item.get("status"), "start": item.get("start"),
-                 "slot_ids": [slot.get("reference", "").split("/")[-1] for slot in item.get("slot", [])],
-                 "simulation": True} for item in resources]
+
+        async def expand(item):
+            slot_ids = [slot.get("reference", "").split("/")[-1]
+                        for slot in item.get("slot", []) if slot.get("reference")]
+            value = {"id": item.get("id"), "status": item.get("status"),
+                     "start": item.get("start"), "end": item.get("end"),
+                     "slot_ids": slot_ids, "simulation": True}
+            if not slot_ids:
+                return value
+            try:
+                slot = await self._resource("Slot", slot_ids[0])
+                value.update({
+                    "start": value["start"] or slot.get("start"),
+                    "end": value["end"] or slot.get("end"),
+                    "department": next((
+                        coding.get("display")
+                        for service in slot.get("serviceType", [])
+                        for coding in service.get("coding", [])
+                        if coding.get("display")), None),
+                })
+                schedule_id = slot.get("schedule", {}).get("reference", "").split("/")[-1]
+                if schedule_id:
+                    schedule = await self._resource("Schedule", schedule_id)
+                    practitioner_id = next((
+                        actor.get("reference", "").split("/")[-1]
+                        for actor in schedule.get("actor", [])
+                        if actor.get("reference", "").startswith("Practitioner/")), None)
+                    if practitioner_id:
+                        practitioner = await self._resource("Practitioner", practitioner_id)
+                        value["practitioner_id"] = practitioner_id
+                        value["practitioner_name"] = next((
+                            name.get("text") for name in practitioner.get("name", [])
+                            if name.get("text")), practitioner_id)
+            except Exception:
+                # A stale FHIR reference must not hide the appointment itself.
+                pass
+            return value
+
+        return list(await asyncio.gather(*(expand(item) for item in resources)))
 
     async def _resource(self, kind: str, identity: str) -> dict:
         return await self._get(f"{kind}/{identity}")

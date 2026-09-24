@@ -203,6 +203,53 @@ def test_fhir_appointment_query_uses_participant_actor_parameter():
     assert seen == {"resource": "Appointment", "params": {"actor": "Patient/u001"}}
 
 
+def test_fhir_appointment_query_expands_slot_and_practitioner_details():
+    from careguide.hospital_workflow import FHIRHospitalBackend
+
+    async def run():
+        backend = FHIRHospitalBackend("https://fhir.test")
+        resources = {
+            "Slot/SLOT-1": {
+                "resourceType": "Slot", "id": "SLOT-1",
+                "start": "2030-01-02T10:00:00+08:00",
+                "end": "2030-01-02T10:15:00+08:00",
+                "schedule": {"reference": "Schedule/SCH-1"},
+                "serviceType": [{"coding": [{"display": "消化内科"}]}],
+            },
+            "Schedule/SCH-1": {
+                "resourceType": "Schedule", "id": "SCH-1",
+                "actor": [{"reference": "Practitioner/PRA-1"}],
+            },
+            "Practitioner/PRA-1": {
+                "resourceType": "Practitioner", "id": "PRA-1",
+                "name": [{"text": "合成医生乙"}],
+            },
+        }
+
+        async def fake_get(resource, params=None):
+            if resource == "Appointment":
+                return {"resourceType": "Bundle", "entry": [{"resource": {
+                    "resourceType": "Appointment", "id": "APT-1", "status": "booked",
+                    "slot": [{"reference": "Slot/SLOT-1"}],
+                }}]}
+            return resources[resource]
+
+        backend._get = fake_get
+        try:
+            return await backend.list_appointments("u001")
+        finally:
+            await backend.close()
+
+    assert asyncio.run(run()) == [{
+        "id": "APT-1", "status": "booked",
+        "start": "2030-01-02T10:00:00+08:00",
+        "end": "2030-01-02T10:15:00+08:00",
+        "slot_ids": ["SLOT-1"], "simulation": True,
+        "department": "消化内科", "practitioner_id": "PRA-1",
+        "practitioner_name": "合成医生乙",
+    }]
+
+
 def test_fhir_client_disables_reused_search_results():
     from careguide.hospital_workflow import FHIRHospitalBackend
     backend = FHIRHospitalBackend("https://fhir.test")

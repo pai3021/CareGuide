@@ -266,8 +266,18 @@ a { color: inherit; }
 .evidence-list a { color: #bfc4ff; font-size: 12px; }
 .evidence-source { display: grid; gap: 3px; }
 .evidence-source small { color: var(--muted); font-size: 11px; }
-.appointment-item { padding: 14px 0; border-bottom: 1px solid var(--line); }
-.appointment-item span { margin-left: 10px; color: var(--green); }
+.appointment-item { padding: 16px 0; border-bottom: 1px solid var(--line); }
+.appointment-title { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.appointment-title span {
+  padding: 3px 8px;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--green) 12%, transparent);
+  color: var(--green);
+  font-size: 12px;
+  font-weight: 700;
+}
+.appointment-item p { margin: 8px 0 4px; color: var(--text-soft); }
+.appointment-item small { color: var(--muted); }
 
 .theme-toggle {
   display: inline-flex;

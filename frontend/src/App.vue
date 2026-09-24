@@ -343,8 +343,12 @@
       <div class="simulation-banner">所有医生、号源和预约均为模拟数据，不可用于真实就诊。</div>
       <section class="workspace-card">
         <article v-for="item in appointments" :key="item.id" class="appointment-item">
-          <strong>{{ item.id }}</strong><span>{{ item.status }}</span>
-          <p>{{ item.department || '模拟科室' }} · {{ item.start || '-' }}</p>
+          <div class="appointment-title">
+            <strong>{{ item.department || '科室待确认' }}</strong>
+            <span>{{ formatAppointmentStatus(item.status) }}</span>
+          </div>
+          <p>{{ item.practitioner_name || '医生待确认' }} · {{ formatAppointmentTime(item.start) }}</p>
+          <small>预约编号 {{ item.id }}<template v-if="appointmentSlotId(item)"> · 号源 {{ appointmentSlotId(item) }}</template></small>
         </article>
         <p v-if="!appointments.length">当前没有模拟预约。</p>
       </section>
@@ -432,6 +436,21 @@ async function rejectPendingAction(action) {
 function actionLabel(type) {
   return ({ appointment_create: '创建模拟预约', appointment_reschedule: '改期模拟预约',
     appointment_cancel: '取消模拟预约' })[type] || type
+}
+function formatAppointmentStatus(status) {
+  return ({ booked: '已预约', cancelled: '已取消', pending: '待处理', proposed: '待确认' })[status] || status || '未知状态'
+}
+function formatAppointmentTime(value) {
+  if (!value) return '时间待确认'
+  const date = new Date(value)
+  if (Number.isNaN(date.getTime())) return value
+  return new Intl.DateTimeFormat('zh-CN', {
+    year: 'numeric', month: '2-digit', day: '2-digit',
+    hour: '2-digit', minute: '2-digit', hour12: false
+  }).format(date)
+}
+function appointmentSlotId(item) {
+  return item.slot_id || item.slot_ids?.[0] || ''
 }
 async function updateHandoff(item, status) {
   try {

@@ -1,0 +1,59 @@
+%%{init: {"theme":"base","themeVariables":{"fontSize":"16px"},"flowchart":{"nodeSpacing":40,"rankSpacing":52}}}%%
+flowchart TB
+    UI["Vue 3<br/>Web UI"] --> API["FastAPI<br/>/chat"]
+    API --> MEMORY["会话记忆<br/>Session / Redis + Chroma"]
+    MEMORY --> INTENT["意图识别与边界<br/>CareGuide-13"]
+    INTENT --> ROUTER["Router + Agent Orchestrator"]
+
+    subgraph AGENTS["按任务选择角色"]
+        direction LR
+        TRIAGE["分诊 Agent"]
+        MEDICATION["用药 Agent"]
+        APPOINTMENT["预约 Agent"]
+        ESCALATION["急症提示 Agent"]
+    end
+    ROUTER --> TRIAGE
+    ROUTER --> MEDICATION
+    ROUTER --> APPOINTMENT
+    ROUTER --> ESCALATION
+
+    subgraph KNOWLEDGE["来源检索"]
+        direction LR
+        CORPUS["版本化资料<br/>KUAKE-IR + 来源资料"] --> RETRIEVAL["BM25<br/>可选 Dense + RRF + Reranker"] --> EVIDENCE["来源证据"]
+    end
+    TRIAGE --> RETRIEVAL
+    MEDICATION --> RETRIEVAL
+
+    subgraph BOOKING["合成预约"]
+        direction LR
+        APPOINTMENT --> HOSPITAL["合成医院<br/>Memory / HAPI FHIR"] --> CONFIRM["确认后执行<br/>模拟预约写入"]
+    end
+    ESCALATION --> URGENT["急症提示"]
+
+    subgraph OUTPUT["回复与记录"]
+        direction LR
+        EVIDENCE --> RESPONSE["组织回答与工具结果"]
+        CONFIRM --> RESPONSE
+        URGENT --> RESPONSE
+        RESPONSE --> API_RESPONSE["API 响应"]
+        RESPONSE --> TRACE["Trace / Metrics"]
+    end
+
+    classDef client fill:#EFF6FF,stroke:#3B82F6,color:#172554,stroke-width:1.2px
+    classDef orchestration fill:#F1F5F9,stroke:#64748B,color:#0F172A,stroke-width:1.2px
+    classDef agent fill:#F8FAFC,stroke:#94A3B8,color:#0F172A,stroke-width:1.1px
+    classDef evidence fill:#ECFDF5,stroke:#22A06B,color:#064E3B,stroke-width:1.2px
+    classDef synthetic fill:#FFF7ED,stroke:#F97316,color:#7C2D12,stroke-width:1.2px
+    classDef output fill:#F5F3FF,stroke:#8B5CF6,color:#3B0764,stroke-width:1.2px
+
+    class UI,API client
+    class MEMORY,INTENT,ROUTER orchestration
+    class TRIAGE,MEDICATION,APPOINTMENT,ESCALATION agent
+    class CORPUS,RETRIEVAL,EVIDENCE evidence
+    class HOSPITAL,CONFIRM synthetic
+    class RESPONSE,API_RESPONSE,URGENT,TRACE output
+    style AGENTS fill:#F8FAFC,stroke:#CBD5E1,stroke-width:1px
+    style KNOWLEDGE fill:#F0FDF4,stroke:#86EFAC,stroke-width:1px
+    style BOOKING fill:#FFF7ED,stroke:#FDBA74,stroke-width:1px
+    style OUTPUT fill:#FAF5FF,stroke:#C4B5FD,stroke-width:1px
+    linkStyle default stroke:#64748B,stroke-width:1.15px

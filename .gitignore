@@ -17,3 +17,4 @@ tmp/
 data/runtime/
 data/eval/results/
 .aris/
+.study/

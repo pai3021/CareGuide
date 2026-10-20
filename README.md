@@ -12,6 +12,8 @@ CareGuide 是一个用于医疗资料查询和预约流程演示的 Agent 项目
 
 可编辑的请求流程图：[查看 Mermaid 源文件](figures/careguide-runtime.mmd)。
 
+后续改造：[多任务编排与运行可靠性 TODO](docs/orchestration/careguide-orchestration-todo.md)；[实施与核查记录](docs/orchestration/implementation.md)。当前实施暂停，清单中的待办不代表已实现能力。
+
 ## 仓库结构
 
 | 路径 | 内容 |

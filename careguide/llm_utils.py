@@ -14,6 +14,8 @@ from typing import Any, Dict, Iterable, Iterator, List, Optional, Sequence
 
 from openai import AsyncOpenAI
 
+from careguide.orchestration.budget import budgeted_call
+
 
 @dataclass
 class TokenUsageRecorder:
@@ -84,7 +86,8 @@ def _record_token_usage(response: Any, model: str) -> None:
 
 def create_llm_client(api_key: str, base_url: Optional[str] = None) -> AsyncOpenAI:
     """Build one async OpenAI client for an official or compatible endpoint."""
-    kwargs: Dict[str, Any] = {"api_key": api_key}
+    # Retries belong to the workflow budget, not an invisible SDK retry loop.
+    kwargs: Dict[str, Any] = {"api_key": api_key, "max_retries": 0}
     if base_url:
         kwargs["base_url"] = base_url
     return AsyncOpenAI(**kwargs)
@@ -117,6 +120,10 @@ async def create_chat_completion(
     doubles that still implement the former Anthropic-shaped ``messages.create``
     method.
     """
+    # Server-owned memory provenance is available to the planner, but is not
+    # an OpenAI/legacy message field. Its readable content remains in context.
+    messages = [{key: value for key, value in message.items() if key != 'durable_preferences'}
+                for message in messages]
     if is_openai_chat_client(client):
         # MiMo enables thinking by default. Restore the source recognizer's
         # disabled setting for bounded JSON/tool calls throughout the runtime.
@@ -147,7 +154,10 @@ async def create_chat_completion(
             kwargs["response_format"] = response_format
         if extra_body is not None:
             kwargs["extra_body"] = extra_body
-        response = await client.chat.completions.create(**kwargs)
+        async with budgeted_call('model') as ticket:
+            response = await client.chat.completions.create(**kwargs)
+            if ticket is not None:
+                ticket.record_response(response)
         _record_token_usage(response, model)
         return response
 
@@ -170,7 +180,10 @@ async def create_chat_completion(
         kwargs["system"] = system
     if tools:
         kwargs["tools"] = [_to_legacy_tool(tool) for tool in tools]
-    response = await create(**kwargs)
+    async with budgeted_call('model') as ticket:
+        response = await create(**kwargs)
+        if ticket is not None:
+            ticket.record_response(response)
     _record_token_usage(response, model)
     return response
 
@@ -196,20 +209,18 @@ def extract_tool_calls(value: Any) -> List[Dict[str, Any]]:
         normalized: List[Dict[str, Any]] = []
         for call in calls:
             function = _field(call, "function")
-            arguments = _field(function, "arguments", "{}")
-            if isinstance(arguments, str):
-                try:
-                    arguments = json.loads(arguments)
-                except json.JSONDecodeError:
-                    arguments = {}
-            if not isinstance(arguments, dict):
-                arguments = {}
-            normalized.append({
+            raw_arguments = _field(function, "arguments")
+            arguments, parse_error = _parse_arguments(raw_arguments)
+            item = {
                 "type": "tool_use",
                 "id": str(_field(call, "id", "")),
                 "name": str(_field(function, "name", "")),
                 "input": arguments,
-            })
+            }
+            if parse_error:
+                item['parse_error'] = parse_error
+                item['_raw_arguments'] = raw_arguments if isinstance(raw_arguments, str) else ''
+            normalized.append(item)
         return normalized
 
     content = _field(value, "content", value)
@@ -217,13 +228,28 @@ def extract_tool_calls(value: Any) -> List[Dict[str, Any]]:
     for block in content or []:
         if _field(block, "type") != "tool_use":
             continue
-        normalized.append({
+        arguments, parse_error = _parse_arguments(_field(block, 'input'))
+        item = {
             "type": "tool_use",
             "id": _field(block, "id", ""),
             "name": _field(block, "name", ""),
-            "input": _field(block, "input", {}) or {},
-        })
+            "input": arguments,
+        }
+        if parse_error:
+            item['parse_error'] = parse_error
+        normalized.append(item)
     return normalized
+
+
+def _parse_arguments(value):
+    if isinstance(value, str):
+        try:
+            value = json.loads(value)
+        except (json.JSONDecodeError, ValueError):
+            return {}, 'invalid_json'
+    if not isinstance(value, dict):
+        return {}, 'expected_object'
+    return value, None
 
 
 def build_openai_tool_followup(
@@ -242,7 +268,7 @@ def build_openai_tool_followup(
             "type": "function",
             "function": {
                 "name": call["name"],
-                "arguments": json.dumps(call["input"], ensure_ascii=False),
+                "arguments": call.get('_raw_arguments', json.dumps(call["input"], ensure_ascii=False)),
             },
         })
 

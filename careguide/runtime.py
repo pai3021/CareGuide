@@ -175,11 +175,25 @@ def get_chat_runtime():
             chroma_path=str(PROJECT_ROOT/'data'/'chroma_memory'), api_key=key,
             base_url=os.environ.get('CAREGUIDE_LLM_BASE_URL') or None, model=model, client=client,
             embedding_function=semantic_embedding() if os.environ.get('CAREGUIDE_MEMORY_EMBEDDING_MODE') == 'remote' else None,
-            collection_prefix='careguide_semantic' if os.environ.get('CAREGUIDE_MEMORY_EMBEDDING_MODE') == 'remote' else 'careguide')
+            collection_prefix='careguide_semantic' if os.environ.get('CAREGUIDE_MEMORY_EMBEDDING_MODE') == 'remote' else 'careguide',
+            profile_path=business_path)
         memory = PersistentMemory(manager)
     elif memory_mode == 'session':
         memory = SessionMemory()
     else:
         raise ValueError('Unknown memory mode')
+    orchestration = os.environ.get('CAREGUIDE_ORCHESTRATION_MODE', 'langgraph').strip().casefold()
+    if orchestration not in {'langgraph', 'direct'}:
+        raise ValueError('Unknown orchestration mode')
+    if orchestration == 'langgraph':
+        from careguide.orchestration.runtime import OrchestrationRuntime
+        from careguide.orchestration.budget import BudgetLimits
+        engine = OrchestrationRuntime(engine, business_path, limits=BudgetLimits(
+            model=int(os.environ.get('CAREGUIDE_WORKFLOW_MODEL_CALLS', '20')),
+            tool=int(os.environ.get('CAREGUIDE_WORKFLOW_TOOL_CALLS', '30')),
+            retry=int(os.environ.get('CAREGUIDE_WORKFLOW_RETRIES', '3')),
+            replan=int(os.environ.get('CAREGUIDE_WORKFLOW_REPLANS', '3')),
+            execution_seconds=float(os.environ.get('CAREGUIDE_WORKFLOW_EXECUTION_SECONDS', '120')),
+            request_seconds=float(os.environ.get('CAREGUIDE_WORKFLOW_REQUEST_SECONDS', '45'))))
     monitor = PerformanceMonitor(engine, engine.tool_manager, webhook_url=None)
     return engine, memory, monitor

@@ -13,6 +13,8 @@ class WorkflowStatus(str, Enum):
     COMPOSING = 'composing'
     ESCALATED = 'escalated'
     COMPLETED = 'completed'
+    PARTIAL_COMPLETED = 'partial_completed'
+    RECONCILING = 'reconciling'
     NEEDS_CLARIFICATION = 'needs_clarification'
     OUT_OF_SCOPE = 'out_of_scope'
     URGENT_HANDOFF = 'urgent_handoff'
@@ -30,6 +32,9 @@ class TaskContext:
     missing_fields: list = field(default_factory=list)
     workflow_status: WorkflowStatus = WorkflowStatus.UNDERSTOOD
     request_id: str = ''
+    task_id: str = ''
+    planned_action: str | None = None
+    workflow_binding: dict = field(default_factory=dict)
     actor_user_id: str = ''
     conversation_id: str = ''
     primary_agent: str | None = None
@@ -115,14 +120,15 @@ class PersistentMemory:
         if context.relevant_history or context.user_profile:
             import json
             history.insert(0, {'role': 'assistant', 'content': '[历史背景，不是当前症状或医疗证据] '+json.dumps(
-                {'relevant_history': context.relevant_history, 'user_profile': context.user_profile}, ensure_ascii=False)})
+                {'relevant_history': context.relevant_history, 'user_profile': context.user_profile}, ensure_ascii=False),
+                'durable_preferences': context.user_profile})
         return history
 
     async def add(self, user_id, conv_id, role, content):
         from careguide.conversation_memory import MsgRole
         await self.manager.add_message(user_id, conv_id, MsgRole(role), content)
         if role == 'assistant':
-            await self.manager.update_profile(user_id, conv_id)
+            return await self.manager.update_profile(user_id, conv_id)
 
     async def close(self):
         await self.manager.close()

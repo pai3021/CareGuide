@@ -2,6 +2,10 @@
 .env.*
 !.env.example
 .git
+.study
+.codex
+.agents
+.aws
 frontend/node_modules
 frontend/dist
 models

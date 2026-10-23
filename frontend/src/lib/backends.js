@@ -58,9 +58,10 @@ export async function requestSearch(type, settings, query, topK = 5, rewrite = f
   return normalizeSearchResponse(raw)
 }
 
-export async function requestChat(type, settings, message, signal) {
+export async function requestChat(type, settings, message, signal, workflowEvent) {
   const meta = backendMeta(type, settings)
   const payload = buildChatPayload(type, settings, message)
+  if (workflowEvent) payload.workflow_event = workflowEvent
   const raw = await requestJson(meta.baseUrl, '/chat', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
@@ -146,6 +147,8 @@ function normalizeChatResponse(type, raw) {
     retrievalBackend: payload.retrieval_backend || payload.retrievalBackend || '',
     simulation: toBoolean(payload.simulation),
     actionRequests: asArray(payload.action_requests ?? payload.actionRequests),
+    workflow: payload.workflow || null,
+    budget: payload.budget || null,
     appointment: asArray(payload.appointment),
     evidence: asArray(payload.evidence),
     verified: payload.verified,

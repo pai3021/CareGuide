@@ -1,0 +1,8 @@
+# Explicit local configuration after restoring main: its corpus fingerprint
+# differs from the index in this machine's retained retrieval volume.
+# Keep that index intact; never silently attach it to a different corpus.
+# Remove this layer only after explicitly building a matching real-vector index.
+services:
+  careguide:
+    environment:
+      CAREGUIDE_RETRIEVAL_MODE: bm25

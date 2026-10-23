@@ -17,6 +17,7 @@ logger = logging.getLogger(__name__)
 TRACE_VERSION = "1.0"
 DEFAULT_TRACE_PATH = Path(__file__).resolve().parents[1] / "data" / "traces" / "requests.jsonl"
 _SENSITIVE_KEY_PARTS = ("password", "token", "api_key", "authorization", "secret")
+_USAGE_COUNTERS = frozenset({'prompt_tokens', 'completion_tokens', 'total_tokens', 'calls_without_usage'})
 
 
 def redact_sensitive(value: Any) -> Any:
@@ -30,9 +31,13 @@ def redact_sensitive(value: Any) -> Any:
         for raw_key, item in value.items():
             key = str(raw_key)
             normalized = key.casefold().replace("-", "_")
+            usage_counter = normalized in _USAGE_COUNTERS and type(item) is int and item >= 0
+            usage_mapping = (normalized in {'tokens', 'token_usage'} and isinstance(item, Mapping)
+                             and set(item).issubset(_USAGE_COUNTERS)
+                             and all(type(count) is int and count >= 0 for count in item.values()))
             redacted[key] = (
                 "***REDACTED***"
-                if any(part in normalized for part in _SENSITIVE_KEY_PARTS)
+                if any(part in normalized for part in _SENSITIVE_KEY_PARTS) and not (usage_counter or usage_mapping)
                 else redact_sensitive(item)
             )
         return redacted

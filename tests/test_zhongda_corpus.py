@@ -1,6 +1,7 @@
 """The Zhongda pilot must not leak frozen Beijing hospital material."""
 import asyncio
 import json
+from datetime import date
 from pathlib import Path
 
 from careguide.corpus import Corpus, DEFAULT_CORPUS
@@ -32,7 +33,8 @@ def test_zhongda_version_selection_preserves_frozen_default(monkeypatch):
 def test_zhongda_hospital_and_campus_scope():
     tools = MedicalToolRegistry(MedicalKnowledgeBase(Corpus(ZHONGDA)))
     query = lambda hospital, campus: tools.query(AgentType.APPOINTMENT, 'lookup_hospital_guide',
-        {'hospital_id': hospital, 'campus': campus, 'section': 'materials'})
+        {'hospital_id': hospital, 'campus': campus, 'section': 'materials'},
+        today=date(2026, 9, 21))
     assert query('zhongda', '本部')['status'] == 'found'
     assert query('zhongda', '江北院区')['status'] == 'not_covered'
     assert query('pkuih', '本部')['status'] == 'not_covered'

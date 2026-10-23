@@ -231,7 +231,11 @@ class IntentRecognizer:
                 campuses = {r.campus for r in records if r.campus and r.campus in message}
                 if len(campuses) == 1:
                     entities['campus'] = next(iter(campuses))
-        specification = re.search(r'\d+(?:\.\d+)?\s*(?:mg|g|毫克|克)(?![a-zA-Z])', message)
+        # A compound label specification is one product identifier. Taking
+        # only its mass component would silently query a different scope.
+        specification = (re.search(
+            r'\d+(?:\.\d+)?\s*(?:ml|毫升)\s*[:：/]\s*\d+(?:\.\d+)?\s*(?:mg|g|毫克|克)(?![a-zA-Z])',
+            message, re.I) or re.search(r'\d+(?:\.\d+)?\s*(?:mg|g|毫克|克)(?![a-zA-Z])', message))
         if specification:
             entities['specification'] = specification.group()
         # Bind interaction scope to an explicitly named second substance. A

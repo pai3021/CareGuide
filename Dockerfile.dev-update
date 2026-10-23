@@ -1,0 +1,16 @@
+# Optional local development update. Build from the already configured runtime
+# to preserve its Python, CPU Transformer and every installed package version.
+# The ordinary Dockerfile remains the independent clean-build entrypoint.
+ARG CAREGUIDE_DEV_BASE=careguide-careguide:dev-base
+FROM ${CAREGUIDE_DEV_BASE}
+USER root
+WORKDIR /app
+
+COPY requirements.txt /tmp/careguide-update-requirements.txt
+RUN python -c "import importlib.metadata as m,json; packages={d.metadata['Name']:m.version(d.metadata['Name']) for d in m.distributions()}; open('/tmp/careguide-before-packages.json','w').write(json.dumps(packages)); open('/tmp/careguide-existing-constraints.txt','w').write(''.join(name+'=='+version+'\n' for name,version in sorted(packages.items())))" && \
+    python -m pip install --constraint /tmp/careguide-existing-constraints.txt -r /tmp/careguide-update-requirements.txt && \
+    python -m pip check && \
+    python -c "import importlib.metadata as m,json; before=json.load(open('/tmp/careguide-before-packages.json')); changes={name:[version,m.version(name)] for name,version in before.items() if m.version(name)!=version}; assert not changes,changes; print('Verified unchanged existing packages:',len(before))"
+
+COPY --chown=careguide:careguide . /app
+USER careguide

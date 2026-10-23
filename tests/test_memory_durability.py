@@ -5,6 +5,13 @@ from unittest.mock import AsyncMock
 from careguide.conversation_memory import MemoryManager, Message, MsgRole
 
 
+def test_redis_identity_components_cannot_collide_through_delimiters():
+    for key in (MemoryManager._wm_key, MemoryManager._summary_key):
+        assert key('alice:family', 'conversation') != key('alice', 'family:conversation')
+        assert key('alice%3Afamily', 'conversation') != key('alice:family', 'conversation')
+    assert MemoryManager._wm_key('alice', 'conversation') == 'careguide:wm:alice:conversation'
+
+
 def test_episode_failure_preserves_working_messages(monkeypatch):
     manager = MemoryManager.__new__(MemoryManager)
     manager._redis = SimpleNamespace(get=AsyncMock(return_value='previous summary'),

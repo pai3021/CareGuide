@@ -9,10 +9,45 @@ import asyncio
 import copy
 import uuid
 from dataclasses import dataclass
-from datetime import datetime, timezone
+from datetime import datetime, timedelta, timezone
 from typing import Any, Protocol
 
 import httpx
+
+
+def available_slot(slot):
+    if not slot or slot.get('status') != 'free':
+        return False
+    try:
+        start = datetime.fromisoformat(slot['start'].replace('Z', '+00:00'))
+        return start.tzinfo is not None and start > datetime.now(timezone.utc)
+    except (KeyError, TypeError, ValueError):
+        return False
+
+
+def matches_time_period(slot, time_period):
+    if time_period is None:
+        return True
+    try:
+        start = datetime.fromisoformat(slot['start'].replace('Z', '+00:00'))
+        if start.tzinfo is None:
+            return False
+        hour = start.astimezone(timezone(timedelta(hours=8))).hour
+    except (KeyError, TypeError, ValueError):
+        return False
+    return {'morning': 6 <= hour < 12, 'afternoon': 12 <= hour < 18,
+            'evening': 18 <= hour < 24}.get(time_period, False)
+
+
+def matches_local_date(slot, date):
+    if date is None:
+        return True
+    try:
+        start = datetime.fromisoformat(slot['start'].replace('Z', '+00:00'))
+        return start.tzinfo is not None and start.astimezone(
+            timezone(timedelta(hours=8))).date().isoformat() == date
+    except (KeyError, TypeError, ValueError):
+        return False
 
 
 class HospitalWorkflowBackend(Protocol):
@@ -22,10 +57,12 @@ class HospitalWorkflowBackend(Protocol):
     async def search_doctors(self, *, department: str | None = None) -> list[dict]: ...
     async def list_available_slots(self, *, practitioner_id: str | None = None,
                                    department: str | None = None,
-                                   date: str | None = None) -> list[dict]: ...
+                                   date: str | None = None, time_period: str | None = None) -> list[dict]: ...
     async def list_appointments(self, patient_id: str) -> list[dict]: ...
     async def execute(self, action_type: str, arguments: dict,
                       idempotency_key: str) -> dict[str, Any]: ...
+    async def reconcile(self, action_type: str, arguments: dict,
+                        idempotency_key: str) -> dict[str, Any]: ...
     async def close(self) -> None: ...
 
 
@@ -47,6 +84,9 @@ class DisabledHospitalBackend:
     async def execute(self, action_type, arguments, idempotency_key):
         return {"status": "source_unavailable", "message": "模拟医院服务未启用。",
                 "simulation": True}
+
+    async def reconcile(self, *args):
+        return {'status': 'unknown', 'simulation': True}
 
     async def close(self):
         return None
@@ -80,12 +120,12 @@ class InMemoryHospitalBackend:
                   if not department or item["department"] == department]
         return [{**item, "simulation": True} for item in values]
 
-    async def list_available_slots(self, *, practitioner_id=None, department=None, date=None):
+    async def list_available_slots(self, *, practitioner_id=None, department=None, date=None, time_period=None):
         values = [copy.deepcopy(item) for item in self.slots.values()
                   if item["status"] == "free"
                   and (not practitioner_id or item["practitioner_id"] == practitioner_id)
                   and (not department or item["department"] == department)
-                  and (not date or item["start"].startswith(date))]
+                  and matches_local_date(item, date) and matches_time_period(item, time_period)]
         return [{**item, "simulation": True} for item in values]
 
     async def list_appointments(self, patient_id):
@@ -99,7 +139,7 @@ class InMemoryHospitalBackend:
             before, after = {}, {}
             if action_type == "appointment_create":
                 slot = self.slots.get(arguments.get("slot_id"))
-                if not slot or slot["status"] != "free":
+                if not available_slot(slot):
                     return {"status": "conflict", "message": "号源已不可用。", "simulation": True}
                 before["slot"] = copy.deepcopy(slot); slot["status"] = "busy"
                 identity = "APT-" + uuid.uuid4().hex[:12].upper()
@@ -111,7 +151,8 @@ class InMemoryHospitalBackend:
             elif action_type == "appointment_reschedule":
                 appointment = self.appointments.get(arguments.get("appointment_id"))
                 new_slot = self.slots.get(arguments.get("slot_id"))
-                if not appointment or appointment["status"] != "booked" or not new_slot or new_slot["status"] != "free":
+                if (not appointment or appointment.get('patient_id') != arguments['patient_id']
+                        or appointment["status"] != "booked" or not available_slot(new_slot)):
                     return {"status": "conflict", "message": "预约或新号源不可用。", "simulation": True}
                 old_slot = self.slots[appointment["slot_id"]]
                 before = {"appointment": copy.deepcopy(appointment), "old_slot": copy.deepcopy(old_slot),
@@ -122,7 +163,8 @@ class InMemoryHospitalBackend:
                          "new_slot": copy.deepcopy(new_slot)}
             elif action_type == "appointment_cancel":
                 appointment = self.appointments.get(arguments.get("appointment_id"))
-                if not appointment or appointment["status"] != "booked":
+                if (not appointment or appointment.get('patient_id') != arguments['patient_id']
+                        or appointment["status"] != "booked"):
                     return {"status": "conflict", "message": "预约不存在或无法取消。", "simulation": True}
                 slot = self.slots[appointment["slot_id"]]
                 before = {"appointment": copy.deepcopy(appointment), "slot": copy.deepcopy(slot)}
@@ -134,6 +176,12 @@ class InMemoryHospitalBackend:
                       "before": before, "after": after, "executed_at": datetime.now(timezone.utc).isoformat()}
             self.results[idempotency_key] = result
             return copy.deepcopy(result)
+
+    async def reconcile(self, action_type, arguments, idempotency_key):
+        result = self.results.get(idempotency_key)
+        if result is not None and result.get('after', {}).get('appointment', {}).get('patient_id') == arguments['patient_id']:
+            return {**copy.deepcopy(result), 'reconciled': True}
+        return {'status': 'unknown', 'simulation': True}
 
     async def close(self):
         return None
@@ -150,6 +198,7 @@ class FHIRHospitalBackend:
     def __post_init__(self):
         self.base_url = self.base_url.rstrip("/")
         self.client = httpx.AsyncClient(timeout=self.timeout_s,
+                                        trust_env=False,
                                         headers={"Accept": "application/fhir+json",
                                                  "Cache-Control": "no-store"})
         self._slot_locks: dict[str, asyncio.Lock] = {}
@@ -186,18 +235,18 @@ class FHIRHospitalBackend:
                  "role_id": role.get("id"), "simulation": True}
         return list(await asyncio.gather(*(expand(role) for role in roles)))
 
-    async def list_available_slots(self, *, practitioner_id=None, department=None, date=None):
+    async def list_available_slots(self, *, practitioner_id=None, department=None, date=None, time_period=None):
         params = {"status": "free"}
         if practitioner_id: params["schedule.actor"] = f"Practitioner/{practitioner_id}"
-        if date: params["start"] = f"ge{date}"
+        if date: params["start"] = f"ge{date}T00:00:00+08:00"
         slots = self._resources(await self._get("Slot", params))
         values = []
         for slot in slots:
             slot_department = next((coding.get("display") for service in slot.get("serviceType", [])
                                     for coding in service.get("coding", []) if coding.get("display")), None)
             if (slot.get("status") != "free" or
-                    (date and not slot.get("start", "").startswith(date)) or
-                    (department and slot_department != department)):
+                    not matches_local_date(slot, date) or
+                    (department and slot_department != department) or not matches_time_period(slot, time_period)):
                 continue
             values.append({"id": slot.get("id"), "status": slot.get("status"), "start": slot.get("start"),
                            "end": slot.get("end"), "schedule": slot.get("schedule", {}).get("reference"),
@@ -269,10 +318,11 @@ class FHIRHospitalBackend:
             entries, before = [], {}
             if action_type == "appointment_create":
                 slot = await self._resource("Slot", arguments["slot_id"])
-                if slot.get("status") != "free": return {"status": "conflict", "simulation": True}
+                if not available_slot(slot): return {"status": "conflict", "simulation": True}
                 before["slot"] = copy.deepcopy(slot); slot["status"] = "busy"
                 appointment = {"resourceType": "Appointment", "id": "APT-" + uuid.uuid4().hex[:12].upper(),
                     "status": "booked",
+                    "start": slot['start'], "end": slot['end'],
                     "slot": [{"reference": f"Slot/{slot['id']}"}],
                     "participant": [{"actor": {"reference": f"Patient/{arguments['patient_id']}"},
                                      "status": "accepted"}],
@@ -280,6 +330,8 @@ class FHIRHospitalBackend:
                 entries = [self._put_entry(slot), self._put_entry(appointment)]
             else:
                 appointment = await self._resource("Appointment", arguments["appointment_id"])
+                if appointment.get('status') != 'booked':
+                    return {'status': 'conflict', 'simulation': True}
                 patient_reference = f"Patient/{arguments['patient_id']}"
                 if not any(item.get("actor", {}).get("reference") == patient_reference
                            for item in appointment.get("participant", [])):
@@ -293,19 +345,30 @@ class FHIRHospitalBackend:
                     entries = [self._put_entry(old_slot), self._put_entry(appointment)]
                 elif action_type == "appointment_reschedule":
                     new_slot = await self._resource("Slot", arguments["slot_id"])
-                    if new_slot.get("status") != "free": return {"status": "conflict", "simulation": True}
+                    if not available_slot(new_slot): return {"status": "conflict", "simulation": True}
                     before["new_slot"] = copy.deepcopy(new_slot)
                     old_slot["status"] = "free"; new_slot["status"] = "busy"
                     appointment["slot"] = [{"reference": f"Slot/{new_slot['id']}"}]
+                    appointment.update(start=new_slot['start'], end=new_slot['end'])
                     entries = [self._put_entry(old_slot), self._put_entry(new_slot), self._put_entry(appointment)]
                 else: return {"status": "invalid", "simulation": True}
+            identifiers = appointment.setdefault('identifier', [])
+            operation = {'system': 'urn:careguide:operation', 'value': idempotency_key}
+            if operation not in identifiers:
+                identifiers.append(operation)
             bundle = {"resourceType": "Bundle", "type": "transaction", "entry": entries}
             response = await self.client.post(self.base_url, json=bundle,
                                               headers={"Content-Type": "application/fhir+json"})
+            if response.status_code >= 500:
+                return {'status': 'unknown', 'simulation': True}
             if response.status_code >= 400:
                 return {"status": "failed", "simulation": True, "http_status": response.status_code}
             transaction = response.json()
             response_entries = transaction.get("entry", [])
+            if (transaction.get('type') != 'transaction-response' or len(response_entries) != len(entries)
+                    or any(not str(entry.get('response', {}).get('status', '')).startswith('2')
+                           for entry in response_entries)):
+                return {'status': 'unknown', 'simulation': True}
             versions = [{key: entry.get("response", {}).get(key) for key in ("location", "etag", "lastModified")}
                         for entry in response_entries]
             after = {}
@@ -321,11 +384,41 @@ class FHIRHospitalBackend:
                 after["old_slot"] = await self._resource("Slot", old_slot_id)
                 if action_type == "appointment_reschedule":
                     after["new_slot"] = await self._resource("Slot", arguments["slot_id"])
+            if not after.get('appointment'):
+                return {'status': 'unknown', 'simulation': True}
+            stored = after['appointment']
+            actor_matches = any(item.get('actor', {}).get('reference') == f"Patient/{arguments['patient_id']}"
+                                for item in stored.get('participant', []))
+            operation_matches = operation in stored.get('identifier', [])
+            expected_status = 'cancelled' if action_type == 'appointment_cancel' else 'booked'
+            if not actor_matches or not operation_matches or stored.get('status') != expected_status:
+                return {'status': 'unknown', 'simulation': True}
             result = {"status": "completed", "action_type": action_type, "simulation": True,
                       "before": before, "after": after, "resource_versions": versions,
                       "transaction_response": transaction}
             self._results[idempotency_key] = result
             return result
+
+    async def reconcile(self, action_type, arguments, idempotency_key):
+        if idempotency_key in self._results:
+            return {**self._results[idempotency_key], 'reconciled': True}
+        systems = ['urn:careguide:operation']
+        if action_type == 'appointment_create':
+            systems.append('urn:careguide:idempotency')
+        for system in systems:
+            bundle = await self._get('Appointment', {'identifier': system+'|'+idempotency_key,
+                'actor': 'Patient/'+arguments['patient_id']})
+            for appointment in self._resources(bundle):
+                owner = any(part.get('actor', {}).get('reference') == 'Patient/'+arguments['patient_id']
+                            for part in appointment.get('participant', []))
+                matched = any(identifier.get('system') == system and identifier.get('value') == idempotency_key
+                              for identifier in appointment.get('identifier', []))
+                if owner and matched:
+                    return {'status': 'completed', 'simulation': True, 'action_type': action_type,
+                            'reconciled': True, 'current_state_only': True,
+                            'after': {'appointment': appointment},
+                            'operation_identifier': {'system': system, 'value': idempotency_key}}
+        return {'status': 'unknown', 'simulation': True}
 
     async def close(self):
         await self.client.aclose()

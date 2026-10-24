@@ -44,6 +44,7 @@ class ToolResult:
     cached:         bool = False
     latency_ms:     float = 0.0
     reranked:       bool = False   # 是否经过重排
+    error_code:     Optional[str] = None
 
 
 @dataclass
@@ -170,7 +171,8 @@ class MCPToolManager:
         """
         tool = self._tools.get(name)
         if not tool:
-            return ToolResult(success=False, data=None, tool_name=name, error=f"工具不存在: {name}")
+            return ToolResult(success=False, data=None, tool_name=name, error='工具不存在',
+                              error_code='permission_denied')
 
         cache_rerank_top_k = rerank_top_k if rerank_top_k > 0 and tool.supports_rerank else 0
 
@@ -226,14 +228,14 @@ class MCPToolManager:
             tool.stats.consecutive_fails += 1
             tool.breaker.record_failure()
             logger.error(f"工具超时: {name} ({tool.timeout_s}s)")
-            return await self._fallback_result(tool, params, context, "执行超时")
+            return await self._fallback_result(tool, params, context, "执行超时", 'tool_timeout')
 
         except Exception as ex:
             tool.stats.failed += 1
             tool.stats.consecutive_fails += 1
             tool.breaker.record_failure()
-            logger.error(f"工具异常: {name} — {ex}")
-            return await self._fallback_result(tool, params, context, str(ex))
+            logger.error('工具异常: %s (%s)', name, type(ex).__name__)
+            return await self._fallback_result(tool, params, context, '工具执行失败')
 
     async def _fallback_result(
         self,
@@ -241,10 +243,12 @@ class MCPToolManager:
         params: Dict[str, Any],
         context: Optional[Dict[str, Any]],
         error: str,
+        error_code: str = 'tool_unavailable',
     ) -> ToolResult:
         """工具不可用时返回降级结果，而不是把空错误直接暴露给调用方。"""
         if tool.fallback is None:
-            return ToolResult(success=False, data=None, tool_name=tool.name, error=error)
+            return ToolResult(success=False, data=None, tool_name=tool.name, error=error,
+                              error_code=error_code)
         try:
             data = tool.fallback(params, context, error)
             if asyncio.iscoroutine(data):

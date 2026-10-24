@@ -13,6 +13,8 @@ from pydantic import ConfigDict, ValidationError
 from careguide.domain import AgentType, IntentCategory, capabilities, plan
 from careguide.runtime import get_registry, get_chat_runtime
 from careguide.tools import MedicalToolRegistry
+from careguide.orchestration.store import VersionConflict, WorkflowExpired
+from careguide.orchestration.budget import BudgetExhausted
 
 @asynccontextmanager
 async def lifespan(app):
@@ -35,6 +37,26 @@ app.add_middleware(CORSMiddleware,
     allow_origins=os.environ.get('CAREGUIDE_CORS_ORIGINS', 'http://127.0.0.1:5175,http://localhost:5175').split(','),
     allow_methods=['GET', 'POST'], allow_headers=['Content-Type'])
 _conversation_locks = {}
+_MEMORY_READ_TIMEOUT_S = 2
+_MEMORY_WRITE_TIMEOUT_S = 8
+
+
+@asynccontextmanager
+async def _versioned_change():
+    # Structured changes use the workflow's atomic version checks, allowing
+    # them to invalidate a read while an earlier HTTP request is still active.
+    yield
+
+
+class WorkflowEvent(BaseModel):
+    model_config = ConfigDict(extra='forbid')
+    kind: str = Field(pattern='^(answer|change|run|cancel)$')
+    workflow_id: str = Field(min_length=1, max_length=64)
+    plan_version: int = Field(ge=1)
+    task_id: str | None = Field(default=None, min_length=1, max_length=64)
+    task_revision: int | None = Field(default=None, ge=1)
+    values: dict = Field(default_factory=dict, max_length=12)
+    event_id: str | None = Field(default=None, min_length=1, max_length=100)
 
 
 class ChatRequest(BaseModel):
@@ -42,6 +64,7 @@ class ChatRequest(BaseModel):
     message: str = Field(min_length=1, max_length=4000)
     user_id: str = Field(default='demo-user', min_length=1, max_length=100)
     conv_id: str | None = Field(default=None, min_length=1, max_length=100)
+    workflow_event: WorkflowEvent | None = None
 
 
 @app.post('/chat')
@@ -56,21 +79,47 @@ async def chat(request: ChatRequest, runtime=Depends(get_chat_runtime)):
                 raise HTTPException(503, '会话服务繁忙')
             del _conversation_locks[available]
         _conversation_locks[key] = asyncio.Lock()
-    async with _conversation_locks[key]:
+    guard = (_versioned_change() if request.workflow_event and request.workflow_event.kind in {'change', 'cancel'}
+             else _conversation_locks[key])
+    async with guard:
         try:
             memory_status = 'available'
             try:
-                history = await memory.history(request.user_id, conv_id, query=request.message)
+                async with asyncio.timeout(_MEMORY_READ_TIMEOUT_S):
+                    history = await memory.history(request.user_id, conv_id, query=request.message)
             except Exception:
                 history, memory_status = [], 'unavailable'
-            result = await engine.process(request.message, request.user_id, conv_id, history)
+            if request.workflow_event:
+                event = request.workflow_event
+                if not request.conv_id or (event.kind in {'answer', 'cancel'} and (
+                        not event.task_id or event.task_revision is None)) or (event.kind == 'answer' and not event.values):
+                    raise HTTPException(422, '恢复需要会话、任务版本和本次回答')
+                if not hasattr(engine, 'store'):
+                    raise HTTPException(409, '当前运行模式不支持任务恢复')
+                result = await engine.process(request.message, request.user_id, conv_id, history,
+                    workflow_event=event.model_dump())
+            else:
+                result = await engine.process(request.message, request.user_id, conv_id, history)
             try:
-                await memory.add(request.user_id, conv_id, 'user', request.message)
-                await memory.add(request.user_id, conv_id, 'assistant', result['response'])
+                async with asyncio.timeout(_MEMORY_WRITE_TIMEOUT_S):
+                    await memory.add(request.user_id, conv_id, 'user', request.message)
+                    memory_update = await memory.add(request.user_id, conv_id, 'assistant', result['response'])
+                if memory_update is not None:
+                    result['memory_update'] = memory_update
             except Exception:
                 memory_status = 'unavailable'
             result['memory_status'] = memory_status
             return result
+        except HTTPException:
+            raise
+        except LookupError as exc:
+            raise HTTPException(404, '未找到当前用户和会话的任务') from exc
+        except WorkflowExpired as exc:
+            raise HTTPException(410, '任务或候选项已过期，请重新查询') from exc
+        except VersionConflict as exc:
+            raise HTTPException(409, '任务已更新，请刷新后使用当前问题或确认入口') from exc
+        except (ValueError, PermissionError) as exc:
+            raise HTTPException(422, '回答不符合当前任务或候选项约束') from exc
         except Exception as exc:
             raise HTTPException(503, '对话服务暂不可用') from exc
 
@@ -78,6 +127,34 @@ async def chat(request: ChatRequest, runtime=Depends(get_chat_runtime)):
 @app.get('/skills')
 def skills(runtime=Depends(get_chat_runtime)):
     return runtime[0].skills.summary()
+
+
+@app.get('/workflows/latest')
+def latest_workflow(user_id: str, conv_id: str, runtime=Depends(get_chat_runtime)):
+    engine = runtime[0]
+    if not hasattr(engine, 'store'):
+        return {'workflow': None}
+    state = engine.store.latest(user_id, conv_id)
+    if state is None:
+        return {'workflow': None}
+    state = engine.store.expire_waits(state.id, user_id, conv_id)
+    state = engine.store.sync_actions(state.id, user_id, conv_id)
+    from careguide.orchestration.replies import compose_workflow
+    return compose_workflow(state, engine.ledger(state))
+
+
+@app.get('/workflows/{identity}')
+def get_workflow(identity: str, user_id: str, conv_id: str, runtime=Depends(get_chat_runtime)):
+    engine = runtime[0]
+    if not hasattr(engine, 'store'):
+        raise HTTPException(404, '任务编排未启用')
+    try:
+        state = engine.store.expire_waits(identity, user_id, conv_id)
+        state = engine.store.sync_actions(identity, user_id, conv_id)
+    except LookupError as exc:
+        raise HTTPException(404, '未找到当前用户和会话的任务') from exc
+    from careguide.orchestration.replies import compose_workflow
+    return compose_workflow(state, engine.ledger(state))
 
 
 @app.post('/skills/reload')
@@ -396,18 +473,24 @@ def action_trace(identity: str, user_id: str, runtime=Depends(get_chat_runtime))
 async def confirm_action(identity: str, request: ActionIdentityRequest,
                          runtime=Depends(get_chat_runtime)):
     try:
-        return await runtime[0].appointment_service.confirm(identity, request.user_id, request.conv_id)
+        handler = getattr(runtime[0], 'confirm_action', runtime[0].appointment_service.confirm)
+        return await handler(identity, request.user_id, request.conv_id)
     except LookupError as exc:
         raise HTTPException(404, 'Action not found') from exc
     except ValueError as exc:
         raise HTTPException(409, str(exc)) from exc
+    except BudgetExhausted as exc:
+        raise HTTPException(409, '累计预算已耗尽，已保存现有结果和操作状态') from exc
+    except PermissionError as exc:
+        raise HTTPException(409, '操作权限或累计预算记录无法核验') from exc
 
 
 @app.post('/actions/{identity}/reject')
 def reject_action(identity: str, request: ActionIdentityRequest,
                   runtime=Depends(get_chat_runtime)):
     try:
-        return runtime[0].appointment_service.reject(identity, request.user_id, request.conv_id)
+        handler = getattr(runtime[0], 'reject_action', runtime[0].appointment_service.reject)
+        return handler(identity, request.user_id, request.conv_id)
     except LookupError as exc:
         raise HTTPException(404, 'Action not found') from exc
     except ValueError as exc:

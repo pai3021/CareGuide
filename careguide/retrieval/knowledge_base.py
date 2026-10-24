@@ -51,6 +51,8 @@ class MedicalKnowledgeBase:
 
     def _validate_collection(self):
         metadata = self.collection.metadata or {}
+        if metadata.get('reuse_complete') is False:
+            raise ValueError('Medical index reuse has not completed verification')
         expected = {'corpus_fingerprint': self.corpus.fingerprint,
                     'embedding_model': self.embedding.model,
                     'embedding_dimensions': self.embedding.dimensions,

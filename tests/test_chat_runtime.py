@@ -1,5 +1,6 @@
 import asyncio
 import json
+from datetime import datetime
 from pathlib import Path
 from types import SimpleNamespace
 
@@ -249,6 +250,14 @@ def test_exact_medical_entity_extraction_does_not_replace_unknown_new_product():
 
 
 def test_offline_hospital_clarification_followup_keeps_task_and_scope(monkeypatch):
+    class VerifiedSourceClock:
+        @staticmethod
+        def now(zone):
+            return datetime(2026, 9, 21, tzinfo=zone)
+
+    # This case tests scope recovery while its frozen source is valid.
+    # Expiry rejection is covered separately with an explicit expired clock.
+    monkeypatch.setattr('careguide.tools.datetime', VerifiedSourceClock)
     legacy = Path(__file__).resolve().parents[1] / 'data' / 'medical_v1'
     monkeypatch.setenv('CAREGUIDE_CORPUS_DIR', str(legacy))
     get_registry.cache_clear()

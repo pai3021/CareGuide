@@ -78,13 +78,42 @@
               </div>
               <div v-for="action in item.actionRequests" :key="action.id" class="action-card">
                 <strong>{{ actionLabel(action.type) }}</strong>
-                <span>{{ action.status }}</span>
+                <span>{{ action.status === 'pending_confirmation' && !currentAction(activeWorkflow, action) ? '已失效，请查看当前操作' : action.status }}</span>
                 <pre>{{ formatJson(action.arguments) }}</pre>
                 <p>{{ action.message }}</p>
                 <div v-if="action.status === 'pending_confirmation'" class="action-buttons">
-                  <button @click="confirmPendingAction(action)">确认执行模拟操作</button>
-                  <button class="quiet-button" @click="rejectPendingAction(action)">拒绝</button>
+                  <button :disabled="busy || !currentAction(activeWorkflow, action)" @click="confirmPendingAction(action)">确认执行模拟操作</button>
+                  <button :disabled="busy || !currentAction(activeWorkflow, action)" class="quiet-button" @click="rejectPendingAction(action)">拒绝</button>
                 </div>
+                <button v-if="['reconciling', 'executing'].includes(action.status)" :disabled="busy" @click="confirmPendingAction(action)">核对操作结果</button>
+              </div>
+              <div v-for="task in item.workflow?.tasks || []" :key="`${task.id}-${task.revision}`" class="action-card">
+                <strong>{{ task.label }}</strong><span>{{ currentTask(activeWorkflow, item.workflow, task) ? task.status : '已有更新，请查看最新任务' }}</span>
+                <small v-for="scope in task.current_scope || []" :key="scope.label">{{ scope.label }}：{{ scope.value }}</small>
+                <form v-if="task.status === 'waiting_input'" @submit.prevent="answerTask(item.workflow, task)">
+                  <label v-for="field in task.missing_fields" :key="field">
+                    {{ workflowFieldLabel(field) }}
+                    <select v-if="task.options.some(option => option.field === field)"
+                      v-model="workflowAnswers[`${item.workflow.id}:${task.id}:${task.revision}:${field}`]"
+                      :disabled="busy || !currentTask(activeWorkflow, item.workflow, task)">
+                      <option disabled value="">请选择</option>
+                      <option v-for="option in task.options.find(option => option.field === field).values" :key="option.id" :value="option.id">
+                        {{ option.name || option.start || option.id }} · {{ option.department || option.id }}
+                      </option>
+                    </select>
+                    <select v-else-if="field === 'time_period'"
+                      v-model="workflowAnswers[`${item.workflow.id}:${task.id}:${task.revision}:${field}`]"
+                      :disabled="busy || !currentTask(activeWorkflow, item.workflow, task)">
+                      <option disabled value="">请选择时段</option>
+                      <option value="morning">上午</option><option value="afternoon">下午</option><option value="evening">晚上</option>
+                    </select>
+                    <input v-else v-model="workflowAnswers[`${item.workflow.id}:${task.id}:${task.revision}:${field}`]"
+                      :disabled="busy || !currentTask(activeWorkflow, item.workflow, task)" />
+                  </label>
+                  <button :disabled="busy || !currentTask(activeWorkflow, item.workflow, task)">提交并继续</button>
+                </form>
+                <button v-if="['waiting_input', 'waiting_confirmation', 'waiting_dependencies', 'running', 'ready', 'blocked'].includes(task.status)"
+                  :disabled="busy || !currentTask(activeWorkflow, item.workflow, task)" @click="cancelTask(item.workflow, task)">取消该任务</button>
               </div>
               <div v-if="item.trace" class="message-trace">
                 <div class="trace-head">
@@ -132,6 +161,7 @@
               <span>{{ busy ? '正在请求模型服务；可随时取消。' : '⌘ / Ctrl + Enter 发送' }}</span>
               <button v-if="busy" class="quiet-button" type="button" @click="cancelRequest">取消请求</button>
               <button v-else type="submit" :disabled="!draft.trim()">发送</button>
+              <button class="quiet-button" type="button" :disabled="!settings.conversationId" @click="restoreWorkflow">恢复会话任务</button>
             </div>
           </form>
         </section>
@@ -374,12 +404,49 @@ import {
   saveSettings
 } from './lib/backends'
 import { requestOperations, uploadKnowledge } from './lib/backends'
+import { acceptWorkflow, currentTask, currentAction, answerEvent } from './lib/workflow'
 
 const settings = reactive(createInitialSettings())
 const activeView = ref('chat')
 const messages = ref([])
 const draft = ref('')
 const busy = ref(false)
+const activeWorkflow = ref(null)
+const workflowAnswers = reactive({})
+
+function workflowFieldLabel(field) {
+  return ({ specification: '药品规格', drug_name: '药品全名', dosage_form: '剂型',
+    time_period: '时段',
+    practitioner_id: '医生', slot_id: '号源', date: '日期', department: '科室',
+    appointment_id: '预约编号', hospital_id: '医院', campus: '院区' })[field] || field
+}
+
+async function answerTask(workflow, task) {
+  if (!currentTask(activeWorkflow.value, workflow, task)) return
+  try {
+    const values = Object.fromEntries(task.missing_fields.map(field => [field,
+      workflowAnswers[`${workflow.id}:${task.id}:${task.revision}:${field}`]]).filter(([, value]) => value?.trim()))
+    await sendMessage(answerEvent(workflow, task, values, createMessageId()))
+  } catch (error) { toast.value = error.message }
+}
+
+async function cancelTask(workflow, task) {
+  if (!currentTask(activeWorkflow.value, workflow, task)) return
+  await sendMessage({ kind: 'cancel', workflow_id: workflow.id, plan_version: workflow.version,
+    task_id: task.id, task_revision: task.revision })
+}
+
+async function restoreWorkflow() {
+  if (!settings.conversationId) return
+  try {
+    const query = new URLSearchParams({ user_id: settings.userId, conv_id: settings.conversationId })
+    const result = await requestOperations(settings.backend, settings, `/workflows/latest?${query}`)
+    if (!result.workflow) { showToast('当前会话没有已保存任务'); return }
+    activeWorkflow.value = acceptWorkflow(activeWorkflow.value, result.workflow)
+    messages.value.push({ id: createMessageId(), role: 'assistant', content: result.response,
+      workflow: result.workflow, actionRequests: result.action_requests, evidence: result.evidence })
+  } catch (error) { toast.value = error.message }
+}
 const healthOk = ref(false)
 const healthLabel = ref('未检查')
 const statusText = ref('')
@@ -420,6 +487,7 @@ async function confirmPendingAction(action) {
     const result = await requestAction(settings.backend, settings, action.id, 'confirm')
     action.status = result.status
     action.result = result.result
+    if (result.workflow) activeWorkflow.value = acceptWorkflow(activeWorkflow.value, result.workflow)
     showToast(result.status === 'completed' ? '模拟操作已完成' : `操作状态：${result.status}`)
     await loadAppointments()
   } catch (error) { toast.value = error.message }
@@ -429,6 +497,7 @@ async function rejectPendingAction(action) {
   try {
     const result = await requestAction(settings.backend, settings, action.id, 'reject')
     action.status = result.status
+    if (result.workflow) activeWorkflow.value = acceptWorkflow(activeWorkflow.value, result.workflow)
     showToast('已拒绝模拟操作')
   } catch (error) { toast.value = error.message }
 }
@@ -609,25 +678,32 @@ async function reloadSkillSet() {
   } finally { busy.value = false }
 }
 
-async function sendMessage() {
-  const content = draft.value.trim()
+async function sendMessage(workflowEvent) {
+  if (!['answer', 'run', 'change', 'cancel'].includes(workflowEvent?.kind)) workflowEvent = undefined
+  const content = workflowEvent?.kind === 'cancel' ? '取消当前任务' : workflowEvent ? Object.entries(workflowEvent.values || {}).map(([field, value]) =>
+    `${workflowFieldLabel(field)}：${value}`).join('，') || '继续任务' : draft.value.trim()
   if (!content || busy.value) return
+  if (!workflowEvent && activeWorkflow.value && /改成|改为|改查|换成|换号源|更换|取消|不用|另外|增加|再加|不查/.test(content)) {
+    workflowEvent = { kind: 'change', workflow_id: activeWorkflow.value.id,
+      plan_version: activeWorkflow.value.version }
+  }
   messages.value.push({ id: createMessageId(), role: 'user', content })
   draft.value = ''
   busy.value = true
   chatAbortController = new AbortController()
   try {
-    const response = await requestChat(settings.backend, settings, content, chatAbortController.signal)
+    const response = await requestChat(settings.backend, settings, content, chatAbortController.signal, workflowEvent)
     if (response.conversationId && !settings.conversationId) {
       settings.conversationId = response.conversationId
       persist()
     }
     lastResponse.value = response
+    activeWorkflow.value = acceptWorkflow(activeWorkflow.value, response.workflow)
     lastTrace.value = await loadToolTrace(response.requestId)
     const meta = [response.intent, response.primaryAgent || response.agentType, response.knowledgeUsed ? 'RAG' : '', response.escalated ? '转人工' : ''].filter(Boolean).join(' · ')
     messages.value.push({ id: createMessageId(), role: 'assistant', content: response.response, meta,
       trace: lastTrace.value?.trace || null, simulation: response.simulation,
-      actionRequests: response.actionRequests, evidence: response.evidence })
+      actionRequests: response.actionRequests, evidence: response.evidence, workflow: response.workflow })
     await loadMonitor()
   } catch (error) {
     messages.value.push({ id: createMessageId(), role: 'assistant', content: error.message, meta: '请求失败' })
@@ -646,6 +722,7 @@ function cancelRequest() {
 function usePrompt(prompt) { draft.value = prompt }
 
 function clearConversation() {
+  activeWorkflow.value = null
   messages.value = []
   lastResponse.value = null
   lastTrace.value = null

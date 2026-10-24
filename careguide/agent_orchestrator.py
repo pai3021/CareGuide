@@ -12,11 +12,16 @@ import re
 from dataclasses import dataclass, replace
 from datetime import datetime, timezone
 
+from pydantic import ValidationError
+
 from careguide.domain import AGENTS, ROUTES, AgentType, IntentCategory
+from careguide.errors import (ErrorCode, Failure, ModelFormatError,
+                              aggregate_status, output_failure)
 from careguide.llm_utils import (build_openai_tool_followup, create_chat_completion,
                                 extract_tool_calls, is_openai_chat_client)
 from careguide.task_context import TaskContext, WorkflowStatus
-from careguide.tool_manager import MCPToolManager, Tool
+from careguide.tool_manager import MCPToolManager, Tool, ToolResult
+from careguide.orchestration.budget import BudgetExhausted, budgeted_call
 from careguide.tools import ARGUMENT_TYPES, MedicalToolRegistry
 from careguide.trace_store import TRACE_VERSION, TraceStore, validate_trace_completeness
 
@@ -43,11 +48,14 @@ class AgentOrchestrator:
     def __init__(self, recognizer, registry: MedicalToolRegistry, *, client=None,
                  model='gpt-4o-mini', skills=None, traces=None, tool_manager=None,
                  max_tool_rounds=5, model_timeout_s=25, business_store=None,
-                 knowledge_backend=None, appointment_service=None):
+                 knowledge_backend=None, appointment_service=None, max_format_repairs=1):
         self.recognizer, self.registry = recognizer, registry
         self.client, self.model, self.skills = client, model, skills
         self.traces = traces or TraceStore(path=None)
         self.max_tool_rounds, self.model_timeout_s = max_tool_rounds, model_timeout_s
+        if not isinstance(max_format_repairs, int) or not 0 <= max_format_repairs <= 2:
+            raise ValueError('Format repair limit must be between zero and two')
+        self.max_format_repairs = max_format_repairs
         self.business_store = business_store
         self.knowledge_backend = knowledge_backend
         self.appointment_service = appointment_service
@@ -138,11 +146,20 @@ class AgentOrchestrator:
         allowed = {d['function']['name'] for d in self.registry.definitions(agent)}
         success, error = False, ''
         cached = False
+        failure, diagnostic = None, None
+        task_id = getattr(task, 'task_id', '') or getattr(task, 'request_id', '')
+        call_id = call.get('id', '')
         try:
             if name not in allowed:
                 raise PermissionError('工具不在当前角色白名单中')
+            if task is not None and task.planned_action and name != task.planned_action:
+                raise PermissionError('工具不属于当前子任务')
+            if call.get('parse_error'):
+                raise ModelFormatError(call['parse_error'])
             if task is not None:
                 fields = ARGUMENT_TYPES[name].model_fields
+                if task.planned_action == name and 'section' in fields and 'section' in task.entities:
+                    args['section'] = task.entities['section']
                 for key in {'drug_name', 'other_drug', 'dosage_form', 'specification',
                             'hospital_id', 'campus', 'department'} & fields.keys():
                     if task.entities.get(key):
@@ -156,34 +173,60 @@ class AgentOrchestrator:
                 args['top_k'] = 1
             # Strict full Pydantic validation before the generic manager/cache.
             ARGUMENT_TYPES[name].model_validate(args)
-            if self.knowledge_backend is not None and self.knowledge_backend.name != 'embedded':
-                # Keep the existing exact hospital/product scope gate, then use
-                # the selected external backend.  An outage is never hidden by
-                # silently returning the embedded result.
-                preflight = await asyncio.to_thread(self.registry.query, agent, name, args)
-                if preflight.get('status') != 'found':
-                    output, success = preflight, True
-                else:
-                    query = ' '.join(str(value) for value in [name, *args.values()]
-                                     if value not in {None, ''})
-                    filters = {key: args[key] for key in ('hospital_id', 'campus', 'department')
-                               if args.get(key)}
-                    output = await self.knowledge_backend.search(query, top_k=args.get('top_k', 5),
-                                                                 filters=filters)
-                    success = output.get('status') != 'source_unavailable'
-                cached = False
-                error = '知识服务暂不可用' if not success else ''
-            else:
-                outcome = await self.tool_manager.call(f'{agent.value}:{name}', args, use_cache=False)
-                success, cached = outcome.success, outcome.cached
-                error = '工具暂不可用' if not success else ''
-                output = outcome.data if success else {'status': 'source_unavailable', 'message': error, 'evidence': []}
+            outcome = await self._invoke_tool(agent, name, args)
+            success, cached = outcome.success, outcome.cached
+            error = '工具暂不可用' if not success else ''
+            output = outcome.data if success else {'status': 'source_unavailable', 'message': error, 'evidence': []}
+            if not success:
+                code = ErrorCode(getattr(outcome, 'error_code', None) or 'tool_unavailable')
+                failure = Failure(code, 'tool_execution', task_id, call_id,
+                    retryable=code in {ErrorCode.TOOL_TIMEOUT, ErrorCode.TOOL_UNAVAILABLE}).payload()
+        except BudgetExhausted:
+            failure = Failure(ErrorCode.BUDGET_EXHAUSTED, 'tool_execution', task_id, call_id).payload()
+            output = {'status': 'budget_exhausted', 'evidence': []}
+        except ModelFormatError:
+            failure = Failure(ErrorCode.MODEL_FORMAT, 'tool_arguments', task_id, call_id,
+                              retryable=True).payload()
+            output = {'status': 'model_format_error', 'evidence': []}
+        except PermissionError:
+            failure = Failure(ErrorCode.PERMISSION_DENIED, 'authorization', task_id, call_id).payload()
+            output = {'status': 'permission_denied', 'evidence': []}
+        except ValidationError as exc:
+            missing = tuple(str(item['loc'][0]) for item in exc.errors(include_input=False)
+                            if item['type'] == 'missing' and item['loc'])
+            code = ErrorCode.MISSING_INPUT if missing else ErrorCode.INVALID_PARAMETERS
+            failure = Failure(code, 'parameter_validation', task_id, call_id,
+                              retryable=not missing, missing_fields=missing).payload()
+            output = {'status': 'needs_clarification' if missing else 'invalid_parameters',
+                      'missing_fields': list(missing), 'evidence': []}
         except Exception as exc:
-            error = '参数不完整或不合法' if not isinstance(exc, PermissionError) else str(exc)
-            output = {'status': 'needs_clarification', 'message': error, 'evidence': []}
+            diagnostic = type(exc).__name__
+            code = ErrorCode.TOOL_TIMEOUT if isinstance(exc, TimeoutError) else ErrorCode.TOOL_UNAVAILABLE
+            failure = Failure(code, 'tool_execution', task_id, call_id, retryable=True).payload()
+            output = {'status': 'source_unavailable', 'evidence': []}
+        failure = failure or output_failure(output, task_id=task_id, call_id=call_id)
+        if failure:
+            output = {**output, 'failure': failure}
+            if not success:
+                error = failure['message']
+                output['message'] = error
         return {'agent_type': agent.value, 'tool_name': name, 'tool_use_id': call.get('id', ''),
                 'input': args, 'success': success, 'output': output, 'error': error,
-                'cached': cached, 'latency_ms': (time.monotonic()-start)*1000}
+                'cached': cached, 'failure': failure, 'diagnostic_type': diagnostic,
+                'latency_ms': (time.monotonic()-start)*1000}
+
+    async def _invoke_tool(self, agent, name, args):
+        async with budgeted_call('tool', 10):
+            if self.knowledge_backend is not None and self.knowledge_backend.name != 'embedded':
+                preflight = await asyncio.to_thread(self.registry.query, agent, name, args)
+                if preflight.get('status') != 'found':
+                    return ToolResult(True, preflight, name)
+                query = ' '.join(str(value) for value in [name, *args.values()] if value not in {None, ''})
+                filters = {key: args[key] for key in ('hospital_id', 'campus', 'department') if args.get(key)}
+                output = await self.knowledge_backend.search(query, top_k=args.get('top_k', 5), filters=filters)
+                return ToolResult(output.get('status') != 'source_unavailable', output, name,
+                                  error_code='tool_unavailable' if output.get('status') == 'source_unavailable' else None)
+            return await self.tool_manager.call(f'{agent.value}:{name}', args, use_cache=False)
 
     async def _run_hospital_workflow(self, fine_intent, task):
         """Run deterministic synthetic-hospital tools outside the LLM loop."""
@@ -205,7 +248,8 @@ class AgentOrchestrator:
             elif fine_intent == 'slot_search':
                 tool_name = 'list_available_slots'
                 items = await backend.list_available_slots(practitioner_id=entities.get('practitioner_id'),
-                    department=entities.get('department'), date=entities.get('date'))
+                    department=entities.get('department'), date=entities.get('date'),
+                    time_period=entities.get('time_period'))
                 details = '；'.join(
                     f"{item.get('id', '无ID')}，{item.get('department', '科室未知')}，"
                     f"{item.get('start', '时间未知')}，医生 {item.get('practitioner_id', '未知')}"
@@ -233,7 +277,7 @@ class AgentOrchestrator:
                            'appointment_cancel': ('prepare_cancellation', 'appointment_cancel')}
                 tool_name, action_type = mapping[fine_intent]
                 output = self.appointment_service.prepare(action_type, task.actor_user_id,
-                                                          task.conversation_id, entities)
+                    task.conversation_id, entities, workflow_binding=task.workflow_binding or None)
                 output.setdefault('evidence', [])
             success = output.get('status') not in {'source_unavailable', 'failed'}
             error = '' if success else output.get('message', '模拟医院服务暂不可用。')
@@ -241,20 +285,31 @@ class AgentOrchestrator:
             success, error = False, '模拟医院服务暂不可用。'
             output = {'status': 'source_unavailable', 'message': error, 'evidence': [],
                       'simulation': True, 'error_type': type(exc).__name__}
+        failure = output_failure(output, task_id=task.task_id or task.request_id,
+                                 call_id=task.request_id+'-hospital')
+        if not success:
+            code = {'TimeoutError': ErrorCode.TOOL_TIMEOUT, 'PermissionError': ErrorCode.PERMISSION_DENIED,
+                    'ValueError': ErrorCode.INVALID_PARAMETERS}.get(output.get('error_type'), ErrorCode.TOOL_UNAVAILABLE)
+            failure = Failure(code, 'hospital_execution', task.task_id or task.request_id,
+                task.request_id+'-hospital', retryable=code in {ErrorCode.TOOL_TIMEOUT, ErrorCode.TOOL_UNAVAILABLE}).payload()
         call = {'agent_type': 'appointment', 'tool_name': tool_name,
                 'tool_use_id': task.request_id+'-hospital', 'input': entities,
-                'success': success, 'output': output, 'error': error, 'cached': False,
+                'success': success, 'output': output, 'error': error, 'cached': False, 'failure': failure,
                 'latency_ms': (time.monotonic()-start)*1000}
         return {'agent_type': 'appointment', 'role': 'AppointmentAgent', 'started_at': started,
                 'finished_at': now(), 'latency_ms': call['latency_ms'], 'success': success,
-                'tools_used': [tool_name] if success else [], 'error': error,
+                'tools_used': [tool_name] if success else [], 'error': error, 'failure': failure,
                 'tool_calls': [call], 'selected_skill': None}
 
     @staticmethod
     def _call_signature(call, task):
         name, arguments = call['name'], dict(call.get('input', {}))
+        if name == 'search_care_guidance':
+            arguments['top_k'] = 1
         if name in ARGUMENT_TYPES:
             fields = ARGUMENT_TYPES[name].model_fields
+            if task.planned_action == name and 'section' in fields and 'section' in task.entities:
+                arguments['section'] = task.entities['section']
             for key in {'drug_name', 'other_drug', 'dosage_form', 'specification',
                         'hospital_id', 'campus', 'department'} & fields.keys():
                 if task.entities.get(key):
@@ -268,6 +323,9 @@ class AgentOrchestrator:
         return json.dumps([name, arguments], ensure_ascii=False, sort_keys=True)
 
     def _fallback_call(self, agent, message, task):
+        if task.planned_action:
+            return {'id': 'offline-'+uuid.uuid4().hex[:8], 'name': task.planned_action,
+                    'input': dict(task.entities)}
         # Explicitly labeled deterministic operation when no chat provider exists.
         entities = task.entities
         if agent == AgentType.TRIAGE:
@@ -292,7 +350,8 @@ class AgentOrchestrator:
         stats.total += 1
         start, started = time.monotonic(), now()
         calls, error, completed_signatures = [], '', {}
-        completed_read_tools = {}
+        execution_failure = None
+        repair_attempts = 0
         selection = self.skills.select_for_agent(agent.value, task) if self.skills else None
         if agent == AgentType.ESCALATION:
             elapsed = (time.monotonic()-start)*1000
@@ -317,7 +376,7 @@ class AgentOrchestrator:
                 # Detecting the intent does not authorize forbidden execution.
                 error = '请由专业人员决定个人用药；本服务只提供资料和就医流程。' if task.requested_action == 'individualized_medication' else '本服务提供挂号流程引导，不能提交预约或查询实时号源。'
             elif self.client is None:
-                calls.append(await self._dispatch(agent, self._fallback_call(agent, message, task)))
+                calls.append(await self._dispatch(agent, self._fallback_call(agent, message, task), task))
             elif agent == AgentType.TRIAGE and task.fine_intent == 'department_query' and task.entities.get('department'):
                 # An explicitly named department has one exact, scope-bound
                 # lookup. Broad semantic searches can add unrelated services.
@@ -326,7 +385,9 @@ class AgentOrchestrator:
                 for _ in range(self.max_tool_rounds):
                     response = await asyncio.wait_for(create_chat_completion(
                         self.client, model=self.model, system=prompt, messages=messages,
-                        tools=self.registry.definitions(agent), max_tokens=1024, temperature=0.1),
+                        tools=[definition for definition in self.registry.definitions(agent)
+                               if not task.planned_action or definition['function']['name'] == task.planned_action],
+                        max_tokens=1024, temperature=0.1),
                         self.model_timeout_s)
                     uses = extract_tool_calls(response)
                     if not uses:
@@ -339,23 +400,22 @@ class AgentOrchestrator:
                             # silently change the evidence target.
                             call['input'] = dict(call.get('input', {}))
                             call['input']['query'] = message
-                        if call['name'] in completed_read_tools:
-                            # Model providers may paraphrase the query and call
-                            # the same read-only tool repeatedly. One successful
-                            # lookup per tool is sufficient for this request.
-                            results.append((call['id'], completed_read_tools[call['name']]))
-                            continue
                         signature = self._call_signature(call, task)
-                        if signature in completed_signatures:
+                        if signature in completed_signatures and not call.get('parse_error'):
                             results.append((call['id'], completed_signatures[signature]))
                             continue
                         trace = await self._dispatch(agent, call, task)
+                        if not trace.get('failure') or trace['failure']['code'] not in {
+                                'model_format_error', 'invalid_parameters'}:
+                            for previous in calls:
+                                if (previous['tool_name'] == call['name'] and previous.get('failure')
+                                        and previous['failure']['code'] in {'model_format_error', 'invalid_parameters'}):
+                                    previous['resolved'] = True
                         calls.append(trace)
                         results.append((call['id'], trace['output']))
                         new_calls += 1
                         if trace['success']:
                             completed_signatures[signature] = trace['output']
-                            completed_read_tools[call['name']] = trace['output']
                     if not new_calls:
                         # Read-only source results are already available. Do not
                         # spend the remaining rounds repeating the same query.
@@ -370,12 +430,28 @@ class AgentOrchestrator:
                         messages.append({'role': 'user', 'content': [
                             {'type': 'tool_result', 'tool_use_id': identity, 'content': json.dumps(output, ensure_ascii=False)}
                             for identity, output in results]})
-                    if any(c['output'].get('status') in {'needs_clarification', 'not_covered', 'source_unavailable'} for c in calls[-new_calls:]):
+                    recent = calls[-new_calls:]
+                    if any(c['output'].get('status') in {'model_format_error', 'invalid_parameters'} for c in recent):
+                        if repair_attempts < self.max_format_repairs:
+                            async with budgeted_call('retry', 0):
+                                pass
+                            repair_attempts += 1
+                            continue
+                        error = '工具参数修正未通过校验，已停止该查询；不会猜测关键参数。'
+                        break
+                    if any(c['output'].get('status') in {'needs_clarification', 'not_covered',
+                           'source_unavailable', 'permission_denied'} for c in recent):
                         break
                 else:
                     error = '工具调用预算已用完，保留已返回的资料。'
+        except BudgetExhausted:
+            execution_failure = Failure(ErrorCode.BUDGET_EXHAUSTED, 'model_execution',
+                task.task_id or task.request_id).payload()
+            error = execution_failure['message']
         except Exception:
             error = '模型服务暂不可用，保留已完成的工具查询。'
+            execution_failure = Failure(ErrorCode.MODEL_UNAVAILABLE, 'model_execution',
+                task.task_id or task.request_id, retryable=True).payload()
         elapsed = (time.monotonic()-start)*1000
         success = bool(calls) and all(c['success'] for c in calls) and not error
         stats.total_ms += elapsed
@@ -383,13 +459,13 @@ class AgentOrchestrator:
         return {'agent_type': agent.value, 'role': AGENTS[agent].name, 'started_at': started,
                 'finished_at': now(), 'latency_ms': elapsed, 'success': success,
                 'tools_used': [c['tool_name'] for c in calls if c['success']],
-                'error': error, 'tool_calls': calls,
+                'error': error, 'failure': execution_failure, 'tool_calls': calls,
                 'selected_skill': selection.to_trace() if selection else None}
 
-    async def process(self, message, user_id, conv_id, history=None):
+    async def process(self, message, user_id, conv_id, history=None, *, understood=None):
         start, started, identity = time.monotonic(), now(), uuid.uuid4().hex
         history = history or []
-        understood = await self.recognizer.recognize(message, history)
+        understood = understood or await self.recognizer.recognize(message, history)
         task = TaskContext.from_intent_result(understood)
         task.request_id, task.actor_user_id, task.conversation_id = identity, user_id, conv_id
         agents = self.route_decision(understood)
@@ -408,7 +484,16 @@ class AgentOrchestrator:
             replace(task, task_type=next((i.value for i in understood.intents if ROUTES.get(i) == a), task.task_type)))
             for a in ordinary_agents)))
         if business_action in hospital_intents and self.appointment_service is not None:
-            executions.append(await self._run_hospital_workflow(business_action, task))
+            try:
+                async with budgeted_call('tool', 10):
+                    executions.append(await self._run_hospital_workflow(business_action, task))
+            except (BudgetExhausted, TimeoutError) as exc:
+                code = ErrorCode.BUDGET_EXHAUSTED if isinstance(exc, BudgetExhausted) else ErrorCode.TOOL_TIMEOUT
+                failure = Failure(code, 'hospital_dispatch', identity).payload()
+                executions.append({'agent_type': 'appointment', 'role': 'AppointmentAgent',
+                    'started_at': started, 'finished_at': now(), 'latency_ms': 0,
+                    'success': False, 'tools_used': [], 'error': failure['message'],
+                    'failure': failure, 'tool_calls': [], 'selected_skill': None})
         calls = [call for execution in executions for call in execution['tool_calls']]
         evidence, seen = [], set()
         for call in calls:
@@ -481,7 +566,7 @@ class AgentOrchestrator:
             text, status = '请说明你要咨询的症状、药品，或医院挂号问题。', 'needs_clarification'
         else:
             parts = [execution['error'] for execution in executions if execution['error']]
-            parts.extend(call['output'].get('message', '') for call in calls)
+            parts.extend(call['output'].get('message', '') for call in calls if not call.get('resolved'))
             for item in evidence:
                 # Render retrieved source text only; source tier remains visible.
                 content = item.get('content') or item.get('text') or item.get('summary') or ''
@@ -494,9 +579,8 @@ class AgentOrchestrator:
                     parts.append(content+tier+(f'\n来源：{url}' if url else ''))
             text = '\n\n'.join(dict.fromkeys(part for part in parts if part)) or '没有取得可核实资料，请补充查询对象。'
             statuses = [call['output'].get('status') for call in calls]
-            status = ('pending_confirmation' if 'pending_confirmation' in statuses else
-                      'completed' if evidence or 'found' in statuses else
-                      'needs_clarification' if 'needs_clarification' in statuses else 'not_covered')
+            status = aggregate_status(calls, evidence=bool(evidence),
+                                      execution_errors=any(e['error'] for e in executions))
             if any(execution['error'] for execution in executions) and not evidence:
                 status = 'failed' if calls else 'restricted_guidance'
         if handoff_id and understood.disposition != 'urgent_handoff':
@@ -548,6 +632,9 @@ class AgentOrchestrator:
                 'retrieval_backend': getattr(self.knowledge_backend, 'name', 'embedded'),
                 'simulation': bool(action_requests or appointments or business_action in hospital_intents),
                 'action_requests': action_requests, 'appointment': appointments,
+                'errors': ([call['failure'] for call in calls
+                           if call.get('failure') and not call.get('resolved')]
+                           + [execution['failure'] for execution in executions if execution.get('failure')]),
                 'integrations': integrations,
                 'tools_used': [c['tool_name'] for c in calls if c['success']],
                 'medical_answering_enabled': False,

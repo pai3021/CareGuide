@@ -12,6 +12,8 @@ CareGuide 是一个用于医疗资料查询和预约流程演示的 Agent 项目
 
 可编辑的请求流程图：[查看 Mermaid 源文件](figures/careguide-runtime.mmd)。
 
+复合请求由模型 Planner 读取完整原文并提出任务 DAG，程序校验权限、参数和输入绑定后，由 LangGraph 外层流程调度。支持局部变更、等待补参或选择、跨进程恢复和累计预算；预约继续使用原有确认入口。简单查询保留直接路由。配置与验收证据见 [编排架构与运行说明](docs/orchestration/implementation.md) 和 [验收矩阵](docs/orchestration/acceptance.md)。
+
 ## 仓库结构
 
 | 路径 | 内容 |
@@ -25,6 +27,18 @@ CareGuide 是一个用于医疗资料查询和预约流程演示的 Agent 项目
 ## 快速开始
 
 需要 Python 3.12。默认配置使用 BM25、进程内会话记忆和内存合成医院；基础模式不需要模型 API 密钥。
+
+多任务动态规划需要配置兼容 Chat Completions 的模型。运行与恢复说明见上述编排文档；离线验证可以运行下列脚本，不需要密钥：
+
+```bash
+python scripts/reproduce_orchestration.py --scenario dependency
+python scripts/reproduce_orchestration.py --scenario replan
+python scripts/reproduce_orchestration.py --scenario wait
+python scripts/reproduce_orchestration.py --scenario partial
+python scripts/reproduce_orchestration.py --scenario memory
+```
+
+脚本使用可控 Planner 响应与真实调度／业务代码，不能据此推断真实模型的规划准确率或线上费用。
 
 ```bash
 python -m venv .venv

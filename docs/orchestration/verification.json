@@ -1,0 +1,512 @@
+{
+  "schema_version": 1,
+  "evidence_scope": "Controlled model responses, fault injection and synthetic hospital services; not real-provider planning accuracy.",
+  "historical_regression": {
+    "date": "2026-10-23",
+    "kind": "offline_scripted_or_fault_injection",
+    "tests": 332,
+    "passed": 332,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "console_reported_seconds": 56.09,
+    "external_model_calls": false,
+    "frontend_unit_tests": 3,
+    "frontend_failed": 0
+  },
+  "offline_routing_comparison": {
+    "baseline": {
+      "kind": "offline_controlled_single_label_routing_comparison",
+      "mode": "baseline",
+      "samples_each": 10,
+      "clock": "time.perf_counter",
+      "startup_excluded": true,
+      "model_responses": "oracle fixture JSON through the actual Planner API",
+      "classifier": "fixed single label; not a classifier accuracy measurement",
+      "role_workers": "deterministic existing fallback in both versions",
+      "paid_calls": 0,
+      "cases": [
+        {
+          "id": "single_doctor",
+          "text": "查消化内科医生",
+          "returned_tasks": [
+            "doctors"
+          ],
+          "expected_tasks": [
+            "doctors"
+          ],
+          "complete": true,
+          "evidence_scope_correct": true,
+          "tool_calls": 1,
+          "planner_calls": 0,
+          "workflow_status": "completed",
+          "latency_ms": {
+            "samples": [
+              0.676,
+              0.629,
+              0.689,
+              0.658,
+              0.644,
+              0.61,
+              0.605,
+              0.655,
+              0.615,
+              0.66
+            ],
+            "median": 0.649,
+            "p95_nearest_rank": 0.689
+          }
+        },
+        {
+          "id": "single_drug",
+          "text": "查询精氨酸布洛芬片0.2g说明书",
+          "returned_tasks": [
+            "drug"
+          ],
+          "expected_tasks": [
+            "drug"
+          ],
+          "complete": true,
+          "evidence_scope_correct": true,
+          "tool_calls": 1,
+          "planner_calls": 0,
+          "workflow_status": "completed",
+          "latency_ms": {
+            "samples": [
+              3.376,
+              3.662,
+              3.544,
+              3.434,
+              3.161,
+              3.475,
+              3.274,
+              3.232,
+              3.279,
+              3.177
+            ],
+            "median": 3.327,
+            "p95_nearest_rank": 3.662
+          }
+        },
+        {
+          "id": "doctor_and_drug",
+          "text": "查消化内科医生，同时查询精氨酸布洛芬片0.2g说明书",
+          "returned_tasks": [
+            "doctors"
+          ],
+          "expected_tasks": [
+            "doctors",
+            "drug"
+          ],
+          "complete": false,
+          "evidence_scope_correct": true,
+          "tool_calls": 1,
+          "planner_calls": 0,
+          "workflow_status": "completed",
+          "latency_ms": {
+            "samples": [
+              0.628,
+              0.619,
+              0.678,
+              0.636,
+              0.63,
+              1.336,
+              0.609,
+              0.632,
+              0.627,
+              0.637
+            ],
+            "median": 0.631,
+            "p95_nearest_rank": 1.336
+          }
+        },
+        {
+          "id": "two_drugs",
+          "text": "查询精氨酸布洛芬片0.2g说明书和查询富马酸酮替芬鼻喷雾剂15ml:16.7mg说明书",
+          "returned_tasks": [
+            "drug"
+          ],
+          "expected_tasks": [
+            "drug",
+            "second"
+          ],
+          "complete": false,
+          "evidence_scope_correct": true,
+          "tool_calls": 1,
+          "planner_calls": 0,
+          "workflow_status": "completed",
+          "latency_ms": {
+            "samples": [
+              3.264,
+              3.367,
+              3.303,
+              3.126,
+              3.433,
+              3.157,
+              3.347,
+              3.232,
+              3.315,
+              3.307
+            ],
+            "median": 3.305,
+            "p95_nearest_rank": 3.433
+          }
+        },
+        {
+          "id": "doctor_then_slots",
+          "text": "查消化内科所有医生的号源",
+          "returned_tasks": [
+            "doctors"
+          ],
+          "expected_tasks": [
+            "doctors",
+            "slots"
+          ],
+          "complete": false,
+          "evidence_scope_correct": true,
+          "tool_calls": 1,
+          "planner_calls": 0,
+          "workflow_status": "completed",
+          "latency_ms": {
+            "samples": [
+              0.627,
+              0.653,
+              0.637,
+              0.617,
+              0.61,
+              0.671,
+              0.619,
+              0.604,
+              0.603,
+              0.665
+            ],
+            "median": 0.623,
+            "p95_nearest_rank": 0.671
+          }
+        }
+      ],
+      "summary": {
+        "returned_tasks": 5,
+        "expected_tasks": 8,
+        "complete_cases": 2,
+        "cases": 5
+      }
+    },
+    "current": {
+      "kind": "offline_controlled_single_label_routing_comparison",
+      "mode": "current",
+      "samples_each": 10,
+      "clock": "time.perf_counter",
+      "startup_excluded": true,
+      "model_responses": "oracle fixture JSON through the actual Planner API",
+      "classifier": "fixed single label; not a classifier accuracy measurement",
+      "role_workers": "deterministic existing fallback in both versions",
+      "paid_calls": 0,
+      "cases": [
+        {
+          "id": "single_doctor",
+          "text": "查消化内科医生",
+          "returned_tasks": [
+            "doctors"
+          ],
+          "expected_tasks": [
+            "doctors"
+          ],
+          "complete": true,
+          "evidence_scope_correct": true,
+          "tool_calls": 1,
+          "planner_calls": 0,
+          "workflow_status": "completed",
+          "latency_ms": {
+            "samples": [
+              17.692,
+              17.983,
+              17.359,
+              17.556,
+              16.719,
+              17.453,
+              17.295,
+              17.589,
+              17.406,
+              18.284
+            ],
+            "median": 17.505,
+            "p95_nearest_rank": 18.284
+          }
+        },
+        {
+          "id": "single_drug",
+          "text": "查询精氨酸布洛芬片0.2g说明书",
+          "returned_tasks": [
+            "drug"
+          ],
+          "expected_tasks": [
+            "drug"
+          ],
+          "complete": true,
+          "evidence_scope_correct": true,
+          "tool_calls": 1,
+          "planner_calls": 0,
+          "workflow_status": "completed",
+          "latency_ms": {
+            "samples": [
+              20.509,
+              19.931,
+              21.066,
+              20.138,
+              20.837,
+              21.187,
+              20.795,
+              21.768,
+              21.793,
+              22.979
+            ],
+            "median": 20.952,
+            "p95_nearest_rank": 22.979
+          }
+        },
+        {
+          "id": "doctor_and_drug",
+          "text": "查消化内科医生，同时查询精氨酸布洛芬片0.2g说明书",
+          "returned_tasks": [
+            "doctors",
+            "drug"
+          ],
+          "expected_tasks": [
+            "doctors",
+            "drug"
+          ],
+          "complete": true,
+          "evidence_scope_correct": true,
+          "tool_calls": 2,
+          "planner_calls": 1,
+          "workflow_status": "completed",
+          "latency_ms": {
+            "samples": [
+              140.344,
+              137.625,
+              142.508,
+              137.794,
+              173.18,
+              150.069,
+              165.959,
+              146.41,
+              185.477,
+              140.183
+            ],
+            "median": 144.459,
+            "p95_nearest_rank": 185.477
+          }
+        },
+        {
+          "id": "two_drugs",
+          "text": "查询精氨酸布洛芬片0.2g说明书和查询富马酸酮替芬鼻喷雾剂15ml:16.7mg说明书",
+          "returned_tasks": [
+            "drug",
+            "second"
+          ],
+          "expected_tasks": [
+            "drug",
+            "second"
+          ],
+          "complete": true,
+          "evidence_scope_correct": true,
+          "tool_calls": 2,
+          "planner_calls": 1,
+          "workflow_status": "completed",
+          "latency_ms": {
+            "samples": [
+              166.387,
+              153.874,
+              195.42,
+              139.189,
+              138.056,
+              136.983,
+              153.912,
+              147.216,
+              142.685,
+              140.83
+            ],
+            "median": 144.95,
+            "p95_nearest_rank": 195.42
+          }
+        },
+        {
+          "id": "doctor_then_slots",
+          "text": "查消化内科所有医生的号源",
+          "returned_tasks": [
+            "doctors",
+            "slots"
+          ],
+          "expected_tasks": [
+            "doctors",
+            "slots"
+          ],
+          "complete": true,
+          "evidence_scope_correct": true,
+          "tool_calls": 2,
+          "planner_calls": 1,
+          "workflow_status": "completed",
+          "latency_ms": {
+            "samples": [
+              128.796,
+              129.826,
+              127.26,
+              130.193,
+              130.691,
+              128.924,
+              129.765,
+              129.965,
+              131.272,
+              130.301
+            ],
+            "median": 129.896,
+            "p95_nearest_rank": 131.272
+          }
+        }
+      ],
+      "summary": {
+        "returned_tasks": 8,
+        "expected_tasks": 8,
+        "complete_cases": 5,
+        "cases": 5
+      },
+      "gate_cases": [
+        {
+          "text": "查消化内科医生",
+          "expected_planning": false,
+          "actual_planning": false
+        },
+        {
+          "text": "查询精氨酸布洛芬片0.2g禁忌和注意事项",
+          "expected_planning": false,
+          "actual_planning": false
+        },
+        {
+          "text": "查消化内科医生并查药品说明书",
+          "expected_planning": true,
+          "actual_planning": true
+        },
+        {
+          "text": "精氨酸布洛芬片和富马酸酮替芬滴鼻液有什么禁忌",
+          "expected_planning": true,
+          "actual_planning": true
+        },
+        {
+          "text": "查消化内科所有医生的号源",
+          "expected_planning": true,
+          "actual_planning": true
+        },
+        {
+          "text": "查消化内科医生 查询精氨酸布洛芬片0.2g说明书",
+          "expected_planning": true,
+          "actual_planning": true
+        }
+      ]
+    },
+    "interpretation": "Bounded oracle fixture comparison only; additional persistent budget/state overhead measured, not real-model accuracy or clinical benefit."
+  },
+  "historical_browser_verification": {
+    "kind": "real_chrome_built_vue_scripted_api",
+    "checks": [
+      "task_missing_field_submission",
+      "doctor_selection",
+      "slot_selection",
+      "versioned_change",
+      "old_confirmation_disabled",
+      "one_current_confirmation",
+      "reload_and_restore"
+    ],
+    "browser": "Chrome/155.0.8059.85",
+    "confirmation_requests": 1,
+    "paid_calls": 0
+  },
+  "historical_service_integration": {
+    "date": "2026-10-21",
+    "kind": "existing_docker_services_integration",
+    "checks": {
+      "backend": {
+        "http_status": 200,
+        "elapsed_ms": 63.0
+      },
+      "frontend": {
+        "http_status": 200,
+        "elapsed_ms": 0.0
+      },
+      "fhir": {
+        "http_status": 200,
+        "elapsed_ms": 62.0
+      },
+      "chroma": {
+        "http_status": 200,
+        "elapsed_ms": 0.0
+      },
+      "prometheus": {
+        "http_status": 200,
+        "elapsed_ms": 0.0
+      },
+      "redis": {
+        "ping": true
+      },
+      "fhir_write_recovery": {
+        "created_fixture_resources": 5,
+        "appointment_id": "APT-13DFE7F30D3B",
+        "actor": "cg-qa-patient-1d28e47d8f0e",
+        "lost_response_recovered": true,
+        "recovery_methods": [
+          "GET"
+        ],
+        "repeat_confirm_network_requests": 0,
+        "reschedule": "completed",
+        "cancel": "completed",
+        "final_appointments": 1,
+        "existing_resources_overwritten": 0
+      },
+      "persistent_memory": {
+        "redis_ttl_seconds": 120,
+        "chroma_collections": [
+          "careguide_qa_1d28e47d8f0e_episodic",
+          "careguide_qa_1d28e47d8f0e_user_profile"
+        ],
+        "model_calls_scripted": 2,
+        "projection_documents": 1,
+        "temporary_not_persisted": true,
+        "explicit_correction": "afternoon",
+        "user_isolation": true
+      }
+    },
+    "paid_calls": 0
+  },
+  "real_model_evaluation": {
+    "status": "not_run",
+    "paid_calls": 0
+  },
+  "current_limitations": [
+    "Real-provider planning quality, token prices and paid evaluations not run; all provider-facing tests are scripted or MockTransport.",
+    "Current deployment uses single-machine SQLite and demo user_id, not distributed persistence or production authentication.",
+    "Expired workflow history and stale projections are logically excluded, not automatically physically purged; old unproven profile fields are not trusted.",
+    "Hybrid index attachment and known-document cached-vector query verified; arbitrary new query embedding/reranker and real-provider planning quality not evaluated to avoid unapproved paid calls."
+  ],
+  "release_regression": {
+    "date": "2026-10-24",
+    "kind": "offline_scripted_or_fault_injection",
+    "command": "python -m pytest -q -p no:cacheprovider",
+    "tests": 335,
+    "passed": 335,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "junit_seconds": 57.951,
+    "console_reported_seconds": 58.03,
+    "external_model_calls": false,
+    "frontend_unit_tests": 3,
+    "frontend_failed": 0,
+    "frontend_production_build": "passed",
+    "new_request_coverage": [
+      "new query during waiting input",
+      "new query during pending confirmation",
+      "old workflow remains unchanged and resumable",
+      "ambiguous message clarifies without spending task budget"
+    ]
+  }
+}

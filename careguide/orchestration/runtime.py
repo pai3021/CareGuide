@@ -56,6 +56,16 @@ def changes_goal(text):
     return bool(re.search(r'改成|改为|改查|换成|换号源|更换|取消|不用|另外|增加|再加|不查', text))
 
 
+def standalone_request(text):
+    """Recognize explicit new requests without guessing what a short reply means."""
+    if re.search(r'这个|那个|上述|刚才|这家|那家|该药|该医生', text):
+        return False
+    if re.fullmatch(r'(?:请问)?医院(?:地址|介绍)[？?。]?', text):
+        return True
+    return bool(re.search(r'查询|查一下|查查|帮我查|请查|看看|^查', text)
+                and re.search(r'医生|医师|号源|预约|挂号|药|说明书|禁忌|科室|就诊|医院', text))
+
+
 def verified_simple_request(text):
     """Only recognized single-query forms bypass planning; uncertainty plans."""
     cleaned = re.sub(r'(?:禁忌|注意事项|用法|用量|剂量)(?:和|及|、)(?:禁忌|注意事项|用法|用量|剂量)', '', text)
@@ -200,6 +210,12 @@ class OrchestrationRuntime:
                 'waiting_user', 'pending_confirmation', 'reconciling', 'executing', 'ready', 'planning'}:
             if (not changes_goal(message) and message != state.goal) or state.status in {'expired', 'urgent_handoff'}:
                 state = None
+        if (state and not workflow_event and message != state.goal
+                and not changes_goal(message) and standalone_request(message)):
+            # A pending question does not own every later message in the chat.
+            # Keep its durable state and confirmation intact; explicit events
+            # can still resume it after this independent request is handled.
+            state = None
         fresh = state is None
         preferences = preference_snapshot(history) if fresh else {}
         understood = None
@@ -306,10 +322,17 @@ class OrchestrationRuntime:
                     state = self.store.answer(state.id, user_id, conv_id, task.spec.id, {field: value},
                         plan_version=state.version, task_revision=task.revision)
                 else:
-                    return self._reply(state, budget, message, started)
+                    return self._reply(state, budget, message, started,
+                        note='\n\n尚未识别这条消息与当前任务的关系。请在对应任务中补充信息；'
+                             '若要发起新查询，请写明查询对象，例如“查询医院地址”。')
             elif waiting:
                 return self._reply(state, budget, message, started,
                     note='\n\n请在对应任务中补充信息，明确本次回答属于哪项任务。')
+            elif message != state.goal and message.strip() not in {
+                    '继续', '继续任务', '恢复任务', '查看进度', '查询进度'}:
+                return self._reply(state, budget, message, started,
+                    note='\n\n尚未识别这条消息与当前任务的关系。请使用对应任务的确认或恢复入口；'
+                         '若要发起新查询，请写明查询对象。')
         try:
             if understood is None:
                 with use_budget(budget, deadline=started+budget.limits.request_seconds):

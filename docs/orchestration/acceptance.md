@@ -1,11 +1,13 @@
 # 编排与可靠性验收矩阵
 
-2026-10-21，基于 main `22a91b84bea5838f973c83d680a5b189eb6575dc` 重新实施。以下“通过”为可控模型／故障注入的自动化验证，真实提供方规划质量评测未运行。完整测试 ID、次数、用时和原始证据路径见 [verification.json](verification.json)。运行、配置和边界见 [implementation.md](implementation.md)。
+2026-10-21 验收场景。以下结果来自可控模型和故障注入；真实提供方规划质量尚未评测。最终结果与离线对比样本见 [verification.json](verification.json)，运行说明见 [implementation.md](implementation.md)。
 
-## TODO 4.2
+## 任务执行与恢复
 
 | 场景 | 实际结果 | 主要证据 |
 | --- | --- | --- |
+| 等待补参或确认时发起新查询 | 执行新查询，旧任务及确认状态不变；仍可恢复旧任务 | test_orchestration_api.py::test_new_query_during_pending_workflow_preserves_old_task_and_can_resume_it |
+| 等待中收到含糊输入 | 明确澄清归属，不改旧任务、不消耗旧任务预算 | test_orchestration_api.py::test_ambiguous_pending_reply_explicitly_clarifies_without_changing_task_or_budget |
 | 无号源后改后天 | 模型擅改日期被拒；用户明确同意后只更新号源，药品证据保留 | test_orchestration_acceptance.py::test_no_slots_cannot_silently_change_date_but_explicit_user_change_preserves_drug_result |
 | 药品缺规格、号源可执行 | 号源完成；补规格后只执行药品任务 | 同文件::test_missing_drug_spec_does_not_block_ready_slots_or_repeat_them_on_resume |
 | 两个药品的禁忌 | 实际 Planner 接口生成两项，同一工具分对象执行，证据章节互不混用 | 同文件::test_two_drug_contraindication_tasks_execute_real_planner_and_keep_sections_isolated |
@@ -19,7 +21,7 @@
 | 后续出现急症 | 普通未执行分支停止，进入升级，不再派发工具／规划 | 同文件::test_emergency_followup_preempts_waiting_workflow_before_any_ordinary_call；原直接急症回归 |
 | 进程重启后补充或确认 | 独立 OS 进程从 SQLite 恢复，成功分支不重查、预算不清零；新服务实例对账未知写结果 | test_orchestration_examples.py；test_langgraph_checkpoint.py；test_confirmation_reliability.py::test_unknown_outcome_is_persisted_across_service_restart_and_never_reexecuted；Docker wait start/resume 与 FHIR GET 对账 |
 
-## TODO 4.3
+## 异常与预算
 
 | 场景 | 实际结果 | 主要证据 |
 | --- | --- | --- |
@@ -49,10 +51,10 @@
 
 LangGraph 提供外层条件循环、interrupt 和持久 checkpoint；任意 DAG 的就绪判断、输入绑定和局部失效仍由项目代码显式实现。相比只用自研调度器，增加 checkpoint 依赖、独立 SQLite 文件和图恢复维护；收益是无需另造中断／恢复协议。没有测量开发工时或宣称维护成本百分比下降，直接模式保留作业务回退。
 
-重规划与未知写结果记录真实次数；相同计划停止、不支持隐式扩大日期或医生范围。五类示例为依赖、局部重规划、跨进程等待恢复、部分失败、记忆更新，均可通过脚本重现。历史失败日志保留；最终全量结果及 Docker 发布快照另行汇总，不用阶段结果冒充最终结果。
+重规划与未知写结果记录真实次数；相同计划停止、不支持隐式扩大日期或医生范围。五类示例为依赖、局部重规划、跨进程等待恢复、部分失败、记忆更新，均可通过脚本重现。验证区分离线示例、浏览器脚本 API 与真实服务集成。
 
 离线异常统计按固定案例单独记录：相同计划案例消耗 1 次无效重规划、总工具 2 次且无额外派发；partial 示例为号源 2 次尝试、1 次重试、1 次无进展重规划，药品只执行 1 次；跨进程 wait 的累计工具从 1 到 2、累计模型始终 1，恢复进程新增模型调用 0；预算耗尽恢复案例工具累计始终 1。以上是各夹具实际计数，不是生产发生率。
 
 本机发布检查发现 main 与旧索引 manifest 指纹不同，但 10,015 条真实检索输入哈希一致。经过严格来源和向量校验，禁网复用真实缓存到新名称并恢复原 Hybrid。原索引和未发布半成品均保留，未修改冻结资料。新增 test_index_reuse.py 7 项覆盖禁止覆盖、内容／模型／维度不匹配、非有限数、半成品拒绝。真实 Chroma 全量回读与已知文档 Hybrid 烟测另外记录；不冒充新问题的真实 embedding 质量评测。
 
-2026-10-23 Git 交付前复验：同一套 332 项 pytest 全通过（56.09 秒），Node 3 项通过；源码哈希与 2026-10-21 验收镜像一致。交付使用已有 codex/orchestration-reliability 分支，main 保持原提交；复验记录见 verification.json 的 pre_push_regression。
+2026-10-24 回归：pytest **335 项全部通过**，58.03 秒；前端 Node **3 项通过**，Vite 生产构建通过。新增场景覆盖旧流程等待时的新查询与旧任务恢复。真实模型质量／费用评测未运行，历史服务集成和浏览器结果不作为本次重新执行的结果。详细计数见 verification.json 的 release_regression。

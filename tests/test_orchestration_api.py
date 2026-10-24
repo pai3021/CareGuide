@@ -245,6 +245,73 @@ def test_simple_missing_parameter_promotes_direct_route_without_planner_and_surv
         runtime.get_registry.cache_clear()
 
 
+@pytest.mark.parametrize('pending_confirmation', [False, True])
+def test_new_query_during_pending_workflow_preserves_old_task_and_can_resume_it(
+        monkeypatch, tmp_path, pending_confirmation):
+    engine, _, _ = configured(monkeypatch, tmp_path, ScriptedClient([]))
+    engine.engine.client = None
+    engine.engine.recognizer = IntentRecognizer(embedding_mode='disabled')
+    if pending_confirmation:
+        engine.engine.recognizer = FixedRecognizer(IntentResult(IntentCategory.APPOINTMENT, .99,
+            [IntentCategory.APPOINTMENT], 'route', entities={'slot_id': 'SLOT-GASTRO-001'},
+            fine_intent='appointment_create', business_action='appointment_create'))
+    try:
+        with TestClient(app) as http:
+            body = {'user_id': 'alice', 'conv_id': 'new-query'}
+            first = http.post('/chat', json={**body, 'message': (
+                '帮我预约模拟号源SLOT-GASTRO-001' if pending_confirmation else
+                '查询精氨酸布洛芬片说明书')}).json()
+            identity = first['workflow']['id']
+            before = engine.store.get(identity, 'alice', body['conv_id']).model_dump(mode='json')
+            engine.engine.recognizer = FixedRecognizer(IntentResult(IntentCategory.APPOINTMENT, .99,
+                [IntentCategory.APPOINTMENT], 'route', entities={'department': '心血管内科'},
+                fine_intent='doctor_search', business_action='doctor_search'))
+            query = http.post('/chat', json={**body, 'message': '查心血管内科医生'})
+            assert query.status_code == 200, query.text
+            assert '心血管内科' in query.json()['response']
+            assert query.json()['workflow_status'] == 'completed'
+            assert query.json()['response'] != first['response']
+            assert engine.store.get(identity, 'alice', body['conv_id']).model_dump(mode='json') == before
+            if pending_confirmation:
+                action_id = first['action_requests'][0]['id']
+                assert engine.appointment_service.actions.get(action_id)['status'] == 'pending_confirmation'
+                assert engine.appointment_service.backend.appointments == {}
+                resumed = http.post('/actions/'+action_id+'/confirm', json=body)
+                assert resumed.status_code == 200, resumed.text
+                assert resumed.json()['status'] == 'completed'
+                assert len(engine.appointment_service.backend.appointments) == 1
+            else:
+                resumed = http.post('/chat', json={**body, 'message': '0.2g', 'workflow_event': {
+                    'kind': 'answer', 'workflow_id': identity, 'plan_version': 1,
+                    'task_id': 'direct', 'task_revision': 1, 'values': {'specification': '0.2g'}}})
+                assert resumed.status_code == 200, resumed.text
+                assert resumed.json()['workflow']['id'] == identity
+                assert resumed.json()['workflow_status'] == 'completed'
+                assert resumed.json()['budget']['used']['tool'] == 1
+    finally:
+        runtime.get_chat_runtime.cache_clear()
+        runtime.get_registry.cache_clear()
+
+
+def test_ambiguous_pending_reply_explicitly_clarifies_without_changing_task_or_budget(monkeypatch, tmp_path):
+    engine, _, _ = configured(monkeypatch, tmp_path, ScriptedClient([]))
+    engine.engine.client = None
+    engine.engine.recognizer = IntentRecognizer(embedding_mode='disabled')
+    async def run():
+        first = await engine.process('查询精氨酸布洛芬片说明书', 'alice', 'ambiguous')
+        for message in ['好的', '这个呢', '这个药查一下说明书']:
+            reply = await engine.process(message, 'alice', 'ambiguous')
+            assert '尚未识别这条消息与当前任务的关系' in reply['response']
+            assert reply['workflow']['id'] == first['workflow']['id']
+            assert reply['workflow']['tasks'] == first['workflow']['tasks']
+            assert reply['budget'] == first['budget']
+    try:
+        asyncio.run(run())
+    finally:
+        runtime.get_chat_runtime.cache_clear()
+        runtime.get_registry.cache_clear()
+
+
 def test_direct_booking_confirmation_keeps_budget_even_without_outer_runtime_wrapper(monkeypatch, tmp_path):
     client = ScriptedClient([])
     engine, _, _ = configured(monkeypatch, tmp_path, client)

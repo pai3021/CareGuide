@@ -8,7 +8,7 @@ from careguide.external_data import CAREGUIDE_INTENT_LABELS
 
 
 class TransformerIntentClassifier:
-    """Load one fine-tuned checkpoint and return calibrated softmax scores."""
+    """Load the fine-tuned checkpoint and return uncalibrated softmax scores."""
 
     version = "careguide-13-chinese-roberta-wwm-ext-v1"
 
@@ -50,6 +50,7 @@ class TransformerIntentClassifier:
         if not messages or any(not message.strip() for message in messages):
             raise ValueError("Intent messages must not be empty")
         with self._lock, self._torch.inference_mode():
+            lengths = [len(self._tokenizer.encode(message, add_special_tokens=True)) for message in messages]
             batch = self._tokenizer(
                 messages, truncation=True, max_length=self.max_length,
                 padding=True, return_tensors="pt",
@@ -58,7 +59,7 @@ class TransformerIntentClassifier:
             probabilities = self._torch.softmax(
                 self._model(**batch).logits.float(), dim=-1).cpu().tolist()
         results = []
-        for row in probabilities:
+        for row, length in zip(probabilities, lengths):
             scores = {
                 label: float(row[index])
                 for index, label in enumerate(CAREGUIDE_INTENT_LABELS)
@@ -72,6 +73,8 @@ class TransformerIntentClassifier:
                 "scores": scores,
                 "model": self.version,
                 "device": self.device,
+                "input_tokens": length,
+                "truncated": length > self.max_length,
             })
         return results
 

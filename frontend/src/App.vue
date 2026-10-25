@@ -65,6 +65,12 @@
                 <small v-if="item.meta">{{ item.meta }}</small>
               </div>
               <p>{{ item.content }}</p>
+              <div v-if="item.progress" class="action-card" aria-live="polite" data-testid="stream-progress">
+                <strong>{{ item.progress.message }}</strong>
+                <div v-for="task in item.progress.workflow?.tasks || []" :key="`${task.id}-${task.revision}`">
+                  {{ task.label }} · {{ taskProgressLabel(task.status) }}
+                </div>
+              </div>
               <div v-if="item.simulation" class="simulation-banner">CareGuide 合成医院 · 模拟数据 · 不可用于真实就诊</div>
               <div v-if="item.evidence?.length" class="evidence-list">
                 <div v-for="source in item.evidence" :key="source.record_id" class="evidence-source">
@@ -158,8 +164,8 @@
               @keydown.ctrl.enter.prevent="sendMessage"
             ></textarea>
             <div class="composer-bottom">
-              <span>{{ busy ? '正在请求模型服务；可随时取消。' : '⌘ / Ctrl + Enter 发送' }}</span>
-              <button v-if="busy" class="quiet-button" type="button" @click="cancelRequest">取消请求</button>
+              <span>{{ busy ? '正在接收实时进度，可停止接收。' : '⌘ / Ctrl + Enter 发送' }}</span>
+              <button v-if="busy" class="quiet-button" type="button" @click="cancelRequest">停止接收</button>
               <button v-else type="submit" :disabled="!draft.trim()">发送</button>
               <button class="quiet-button" type="button" :disabled="!settings.conversationId" @click="restoreWorkflow">恢复会话任务</button>
             </div>
@@ -419,6 +425,13 @@ function workflowFieldLabel(field) {
     time_period: '时段',
     practitioner_id: '医生', slot_id: '号源', date: '日期', department: '科室',
     appointment_id: '预约编号', hospital_id: '医院', campus: '院区' })[field] || field
+}
+
+function taskProgressLabel(status) {
+  return ({ waiting_dependencies: '等待前序任务', ready: '待执行', running: '执行中',
+    succeeded: '已完成', failed: '未完成', waiting_input: '待补充或选择',
+    waiting_confirmation: '待确认', cancelled: '已取消', expired: '已过期',
+    blocked: '依赖受阻', invalidated: '已失效', reconciling: '结果待核对' })[status] || status
 }
 
 async function answerTask(workflow, task) {
@@ -691,22 +704,53 @@ async function sendMessage(workflowEvent) {
   draft.value = ''
   busy.value = true
   chatAbortController = new AbortController()
+  const assistantId = createMessageId()
+  messages.value.push({ id: assistantId, role: 'assistant', content: '',
+    meta: '实时处理', progress: { message: '正在连接…' } })
+  const assistant = () => messages.value.find(item => item.id === assistantId)
+  const requestSettings = { ...settings }
+  let streamConversation = settings.conversationId
+  const stillCurrent = () => settings.userId === requestSettings.userId &&
+    settings.endpoint === requestSettings.endpoint && settings.backend === requestSettings.backend &&
+    settings.conversationId === streamConversation
   try {
-    const response = await requestChat(settings.backend, settings, content, chatAbortController.signal, workflowEvent)
+    const response = await requestChat(settings.backend, settings, content, chatAbortController.signal, workflowEvent, ({ event, data }) => {
+      if (!stillCurrent() || !assistant()) return
+      if (event === 'session' && !settings.conversationId) {
+        settings.conversationId = data.conversation_id
+        streamConversation = data.conversation_id
+        persist()
+      }
+      if (event === 'stage') assistant().progress = { ...assistant().progress, message: data.message }
+      if (event === 'workflow') {
+        const previous = assistant().progress?.workflow
+        const incoming = acceptWorkflow(previous, data.workflow)
+        if (incoming === data.workflow) assistant().progress = {
+          message: data.stage === 'plan_ready' ? '计划已校验，准备执行' : '任务进度', workflow: incoming }
+      }
+    })
+    if (!stillCurrent() || !assistant()) return
     if (response.conversationId && !settings.conversationId) {
       settings.conversationId = response.conversationId
       persist()
     }
     lastResponse.value = response
     activeWorkflow.value = acceptWorkflow(activeWorkflow.value, response.workflow)
-    lastTrace.value = await loadToolTrace(response.requestId)
+    lastTrace.value = null
     const meta = [response.intent, response.primaryAgent || response.agentType, response.knowledgeUsed ? 'RAG' : '', response.escalated ? '转人工' : ''].filter(Boolean).join(' · ')
-    messages.value.push({ id: createMessageId(), role: 'assistant', content: response.response, meta,
-      trace: lastTrace.value?.trace || null, simulation: response.simulation,
+    Object.assign(assistant(), { content: response.response, meta, progress: null,
+      trace: null, simulation: response.simulation,
       actionRequests: response.actionRequests, evidence: response.evidence, workflow: response.workflow })
-    await loadMonitor()
+    // Diagnostics must not delay displaying the terminal result or unlocking
+    // its answer/confirmation controls.
+    void loadToolTrace(response.requestId).then(trace => {
+      if (!stillCurrent() || !assistant()) return
+      assistant().trace = trace?.trace || null
+      if (lastResponse.value?.requestId === response.requestId) lastTrace.value = trace
+    })
+    void loadMonitor()
   } catch (error) {
-    messages.value.push({ id: createMessageId(), role: 'assistant', content: error.message, meta: '请求失败' })
+    if (stillCurrent() && assistant()) Object.assign(assistant(), { content: error.message, meta: '接收已结束' })
   } finally {
     chatAbortController = null
     busy.value = false
@@ -722,6 +766,7 @@ function cancelRequest() {
 function usePrompt(prompt) { draft.value = prompt }
 
 function clearConversation() {
+  if (busy.value) { showToast('请先停止接收，再清空会话'); return }
   activeWorkflow.value = null
   messages.value = []
   lastResponse.value = null

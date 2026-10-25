@@ -126,12 +126,14 @@ class OrchestrationRuntime:
         return getattr(self.engine, name)
 
     def ledger(self, state, *, create=False):
-        return BudgetLedger(self.store.path, state.id, state.actor, state.conversation, self.limits,
+        return BudgetLedger(self.store.path, state.budget_id or state.id, state.actor, state.conversation, self.limits,
                             require_existing=not create)
 
-    def _reply(self, state, budget, message, started, *, signals=None, failures=(), run_ids=(), note=''):
+    def _reply(self, state, budget, message, started, *, signals=None, failures=(), run_ids=(), note='', synthesis=None):
         result = compose_workflow(state, budget, extra_failures=failures, intent_signals=signals)
         result['response'] += note
+        if synthesis is not None:
+            result['synthesis'] = synthesis
         result['latency_ms'] = (time.monotonic()-started)*1000
         result['integrations'] = {
             'knowledge': {'backend': getattr(self.knowledge_backend, 'name', 'embedded'),
@@ -156,7 +158,8 @@ class OrchestrationRuntime:
             'routing': {'primary_agent': result['primary_agent'], 'supporting_agents': result['supporting_agents'],
                 'routing_reason': 'Full-text model plan validated by code', 'routing_confidence': None},
             'execution': {'execution_waves': [], 'tool_calls': calls,
-                'workflow': state.model_dump(mode='json'), 'budget': budget.summary()},
+                'workflow': state.model_dump(mode='json'), 'budget': budget.summary(),
+                'synthesis': synthesis},
             'evidence': result['evidence'], 'side_effects': [
                 {'type': 'synthetic_action_prepared', 'id': call['output']['id']}
                 for call in calls if call['output'].get('status') == 'pending_confirmation'],
@@ -344,6 +347,16 @@ class OrchestrationRuntime:
         if understood.disposition == 'urgent_handoff':
             self._preempt(state)
             return await self.engine.process(message, user_id, conv_id, history, understood=understood)
+        return await self._execute_workflow(state, budget, message, user_id, conv_id, history,
+                                            started, received_at, signals, operation)
+
+    async def _respond(self, *args, **kwargs):
+        return self._reply(*args, **kwargs)
+
+    async def _execute_workflow(self, state, budget, message, user_id, conv_id, history,
+                                started, received_at, signals, operation):
+        from careguide.streaming import emit, workflow_progress
+        workflow_progress(state, stage='plan_ready')
         if operation != 'change':
             state = self.store.begin_run(state.id, user_id, conv_id, expected_version=state.version,
                                          lease_seconds=budget.limits.request_seconds+2)
@@ -357,6 +370,7 @@ class OrchestrationRuntime:
         def current():
             return self.store.get(identity, user_id, conv_id)
         async def plan_node(flow):
+            emit('stage', stage='planning', message='正在生成任务计划')
             existing = current()
             if existing.tasks:
                 return {}
@@ -373,6 +387,7 @@ class OrchestrationRuntime:
             return {}
         async def replan(flow):
             nonlocal run_id
+            emit('stage', stage='replanning', message='正在调整任务计划')
             existing = current()
             try:
                 event = {'kind': 'user_change' if flow['operation'] == 'change' else 'execution_result',
@@ -464,7 +479,7 @@ class OrchestrationRuntime:
             latest = current()
             status = workflow_status(latest, extra_failures=flow.get('failures', []))
             state = self.store.end_run(identity, user_id, conv_id, run_id, status=status)
-        return self._reply(state, budget, message, started, failures=flow.get('failures', []),
+        return await self._respond(state, budget, message, started, failures=flow.get('failures', []),
                            signals=signals, run_ids=request_runs)
 
     async def confirm_action(self, identity, actor, conversation):

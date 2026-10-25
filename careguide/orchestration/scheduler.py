@@ -22,8 +22,11 @@ class DAGScheduler:
         self.pending = set()
 
     def _mutate(self, state, operation, *, invalidate_actions=False):
-        return self.store.mutate(state.id, state.actor, state.conversation, operation,
+        from careguide.streaming import workflow_progress
+        updated = self.store.mutate(state.id, state.actor, state.conversation, operation,
             plan_version=state.version, run_id=state.active_run, invalidate_actions=invalidate_actions)
+        workflow_progress(updated)
+        return updated
 
     def _advance(self, state):
         if not any(task.status in {TaskStatus.WAITING_DEPENDENCIES, TaskStatus.READY}
@@ -131,13 +134,18 @@ class DAGScheduler:
         return self._mutate(state, operation)
 
     def _commit(self, state, task, outcome):
-        return self.store.commit_result(state.id, state.actor, state.conversation,
+        from careguide.streaming import workflow_progress
+        accepted = self.store.commit_result(state.id, state.actor, state.conversation,
             task.spec.id, outcome.data, outcome.status, plan_version=state.version,
             task_revision=task.revision, run_id=state.active_run, failure=outcome.failure,
             missing_fields=outcome.missing_fields, options=outcome.options,
             action_id=outcome.action_id, arguments=task.arguments, origins=task.origins,
             observed_at=outcome.observed_at, valid_until=outcome.valid_until,
-            traces=outcome.traces, wait_seconds=self.wait_seconds)
+            traces=outcome.traces, wait_seconds=self.wait_seconds,
+            worker_result=getattr(outcome, 'worker_result', None))
+        if accepted:
+            workflow_progress(self.store.get(state.id, state.actor, state.conversation))
+        return accepted
 
     def _cancel_pending(self, state, running):
         for future, task in list(running.items()):

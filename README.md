@@ -4,7 +4,7 @@
 
 CareGuide 是一个用于医疗资料查询和预约流程演示的 Agent 项目。用户可以在网页中提问并查看回答所依据的资料，也可以查询合成医院里的科室、医生和号源，在确认后模拟创建、改期或取消预约。
 
-系统用 CareGuide-13 判断请求类型，再进入分诊、用药、预约或急症提示流程。知识检索默认使用 BM25，也可启用 Dense 检索、加权 RRF 和 Qwen Reranker。项目不连接真实医院，也不使用真实患者数据；检索资料未经临床审核，不用于诊断、处方或个体化剂量建议。
+系统采用 Orchestrator–Workers 架构：独立轻量理解层结合规则、CareGuide-13 本地 RoBERTa 候选和业务示例语义检索，提取目标及参数；主编排器管理计划，分诊、用药、预约及急症提示角色各自处理职责内任务。知识检索默认使用 BM25，也可启用 Dense 检索、加权 RRF 和 Qwen Reranker。项目不连接真实医院，也不使用真实患者数据；检索资料未经临床审核，不用于诊断、处方或个体化剂量建议。
 
 ## 系统架构
 
@@ -12,7 +12,9 @@ CareGuide 是一个用于医疗资料查询和预约流程演示的 Agent 项目
 
 可编辑的请求流程图：[查看 Mermaid 源文件](figures/careguide-runtime.mmd)。
 
-复合请求由模型 Planner 读取完整原文并提出任务 DAG，程序校验权限、参数和输入绑定后，由 LangGraph 外层流程调度。支持局部变更、等待补参或选择、跨进程恢复和累计预算；预约继续使用原有确认入口。简单查询保留直接路由。配置与验收证据见 [编排架构与运行说明](docs/orchestration/implementation.md) 和 [验收矩阵](docs/orchestration/acceptance.md)。
+默认 `unified` 模式中，明确单任务、已知独立组合及医生→号源流程由程序生成计划；未知目标、关系、指代或修改由主 Agent 一次理解并提出计划。所有计划统一校验权限、参数和 DAG，再由 LangGraph 流程与调度器执行。子 Agent 接收独立 TaskBrief，返回结构化结果，通过编排器传递依赖。支持等待补参、局部变更、跨进程恢复、累计预算及原有预约确认。配置与验收证据见 [编排架构与运行说明](docs/orchestration/implementation.md) 和 [验收矩阵](docs/orchestration/acceptance.md)。上图展示角色与后端概览，详细入口以编排说明为准。
+
+网页聊天使用 `POST /chat/stream` SSE，实时展示阶段和任务进度，最终回答经校验后推送；保留 `/chat` JSON 接口。当前流式范围为进度与最终结果，尚未提供模型 token 逐字输出。停止接收后可恢复会话查看任务状态，系统不会因断线自动重发业务请求。
 
 ## 仓库结构
 
@@ -28,9 +30,14 @@ CareGuide 是一个用于医疗资料查询和预约流程演示的 Agent 项目
 
 需要 Python 3.12。默认配置使用 BM25、进程内会话记忆和内存合成医院；基础模式不需要模型 API 密钥。
 
-多任务动态规划需要配置兼容 Chat Completions 的模型。运行与恢复说明见上述编排文档；离线验证可以运行下列脚本，不需要密钥：
+未知请求的动态规划需要配置兼容 Chat Completions 的模型。已知医生＋药品组合及医生→号源→确认模板支持无模型运行；原分类模型路径沿用 `CAREGUIDE_QIC_MODEL_PATH`。分类或语义分数只作线索，未启用未经校准的直接接受。以下示例不需要密钥：
+
+业务意图检索复用原 `CAREGUIDE_EMBEDDING_*` 硅基流动配置，默认 `CAREGUIDE_INTENT_SEMANTIC_MODE=auto`：有 embedding 密钥且配置了主模型时，未知请求按需检索；缺少配置、超时或预算不足则保留本地候选并降级。设置 `local_ngram` 可保持意图候选离线。业务示例索引与医疗 RAG 索引、CareGuide-13 类别中心分别管理，不会重建原索引。设置和评测命令见编排说明。
 
 ```bash
+python scripts/reproduce_unified.py --scenario compose
+python scripts/reproduce_unified.py --scenario template
+python scripts/reproduce_unified.py --scenario wait
 python scripts/reproduce_orchestration.py --scenario dependency
 python scripts/reproduce_orchestration.py --scenario replan
 python scripts/reproduce_orchestration.py --scenario wait
@@ -38,7 +45,7 @@ python scripts/reproduce_orchestration.py --scenario partial
 python scripts/reproduce_orchestration.py --scenario memory
 ```
 
-脚本使用可控 Planner 响应与真实调度／业务代码，不能据此推断真实模型的规划准确率或线上费用。
+`reproduce_unified.py` 使用本地组合／模板和真实 worker，无模型调用；`reproduce_orchestration.py` 验证兼容模式，使用可控 Planner 响应和真实调度／业务代码。这些示例不衡量真实模型的规划准确率或线上费用。
 
 ```bash
 python -m venv .venv

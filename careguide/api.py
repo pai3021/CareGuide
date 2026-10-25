@@ -7,6 +7,7 @@ from contextlib import asynccontextmanager
 
 from fastapi import Depends, FastAPI, HTTPException, Response, Request
 from fastapi.middleware.cors import CORSMiddleware
+from starlette.responses import StreamingResponse
 from pydantic import BaseModel, Field
 from pydantic import ConfigDict, ValidationError
 
@@ -15,13 +16,23 @@ from careguide.runtime import get_registry, get_chat_runtime
 from careguide.tools import MedicalToolRegistry
 from careguide.orchestration.store import VersionConflict, WorkflowExpired
 from careguide.orchestration.budget import BudgetExhausted
+from careguide.streaming import emit, progress_events, encode_event
 
 @asynccontextmanager
 async def lifespan(app):
     engine, memory, monitor = get_chat_runtime()
     await monitor.start()
     yield
+    if _stream_tasks:
+        done, pending = await asyncio.wait(tuple(_stream_tasks), timeout=55)
+        for task in pending:
+            task.cancel()
+        if pending:
+            await asyncio.gather(*pending, return_exceptions=True)
     await monitor.stop()
+    understanding = getattr(engine, 'understanding', None)
+    if understanding is not None:
+        await understanding.close()
     await memory.close()
     if getattr(engine, 'knowledge_backend', None) is not None:
         await engine.knowledge_backend.close()
@@ -39,6 +50,8 @@ app.add_middleware(CORSMiddleware,
 _conversation_locks = {}
 _MEMORY_READ_TIMEOUT_S = 2
 _MEMORY_WRITE_TIMEOUT_S = 8
+_stream_tasks = set()
+_STREAM_HEARTBEAT_SECONDS = 10
 
 
 @asynccontextmanager
@@ -69,7 +82,23 @@ class ChatRequest(BaseModel):
 
 @app.post('/chat')
 async def chat(request: ChatRequest, runtime=Depends(get_chat_runtime)):
+    return await _chat_result(request, runtime)
+
+
+def _validate_chat_event(request, engine):
+    event = request.workflow_event
+    if event is None:
+        return
+    if not request.conv_id or (event.kind in {'answer', 'cancel'} and (
+            not event.task_id or event.task_revision is None)) or (event.kind == 'answer' and not event.values):
+        raise HTTPException(422, '恢复需要会话、任务版本和本次回答')
+    if not hasattr(engine, 'store'):
+        raise HTTPException(409, '当前运行模式不支持任务恢复')
+
+
+async def _chat_result(request, runtime):
     engine, memory, monitor = runtime
+    _validate_chat_event(request, engine)
     conv_id = request.conv_id or uuid.uuid4().hex
     key = (request.user_id, conv_id)
     if key not in _conversation_locks:
@@ -83,6 +112,7 @@ async def chat(request: ChatRequest, runtime=Depends(get_chat_runtime)):
              else _conversation_locks[key])
     async with guard:
         try:
+            emit('stage', stage='understanding', message='正在理解请求')
             memory_status = 'available'
             try:
                 async with asyncio.timeout(_MEMORY_READ_TIMEOUT_S):
@@ -91,15 +121,11 @@ async def chat(request: ChatRequest, runtime=Depends(get_chat_runtime)):
                 history, memory_status = [], 'unavailable'
             if request.workflow_event:
                 event = request.workflow_event
-                if not request.conv_id or (event.kind in {'answer', 'cancel'} and (
-                        not event.task_id or event.task_revision is None)) or (event.kind == 'answer' and not event.values):
-                    raise HTTPException(422, '恢复需要会话、任务版本和本次回答')
-                if not hasattr(engine, 'store'):
-                    raise HTTPException(409, '当前运行模式不支持任务恢复')
                 result = await engine.process(request.message, request.user_id, conv_id, history,
                     workflow_event=event.model_dump())
             else:
                 result = await engine.process(request.message, request.user_id, conv_id, history)
+            emit('stage', stage='saving', message='结果已生成，正在保存会话')
             try:
                 async with asyncio.timeout(_MEMORY_WRITE_TIMEOUT_S):
                     await memory.add(request.user_id, conv_id, 'user', request.message)
@@ -109,6 +135,7 @@ async def chat(request: ChatRequest, runtime=Depends(get_chat_runtime)):
             except Exception:
                 memory_status = 'unavailable'
             result['memory_status'] = memory_status
+            result.setdefault('conversation_id', conv_id)
             return result
         except HTTPException:
             raise
@@ -122,6 +149,69 @@ async def chat(request: ChatRequest, runtime=Depends(get_chat_runtime)):
             raise HTTPException(422, '回答不符合当前任务或候选项约束') from exc
         except Exception as exc:
             raise HTTPException(503, '对话服务暂不可用') from exc
+
+
+@app.post('/chat/stream')
+async def chat_stream(request: ChatRequest, runtime=Depends(get_chat_runtime)):
+    _validate_chat_event(request, runtime[0])
+    request = request.model_copy(update={'conv_id': request.conv_id or uuid.uuid4().hex})
+    stream_id = uuid.uuid4().hex
+
+    async def events():
+        queue = asyncio.Queue(maxsize=64)
+        connected = True
+        sequence = 0
+
+        def offer(event, data):
+            if connected:
+                # Intermediate snapshots may be dropped under backpressure;
+                # final result/error uses await put and is never dropped.
+                try:
+                    queue.put_nowait((event, data))
+                except asyncio.QueueFull:
+                    pass
+
+        async def produce():
+            with progress_events(offer):
+                try:
+                    result = await _chat_result(request, runtime)
+                    terminal = ('result', result)
+                except HTTPException as exc:
+                    terminal = ('error', {'status': exc.status_code, 'message': exc.detail})
+                except Exception:
+                    terminal = ('error', {'status': 503, 'message': '对话服务暂不可用'})
+            if connected:
+                await queue.put(terminal)
+
+        producer = None
+        try:
+            yield encode_event('session', {'stream_id': stream_id, 'conversation_id': request.conv_id}, 0)
+            producer = asyncio.create_task(produce())
+            _stream_tasks.add(producer)
+            def finished(task):
+                _stream_tasks.discard(task)
+                if not task.cancelled():
+                    task.exception()
+            producer.add_done_callback(finished)
+            while True:
+                try:
+                    event, data = await asyncio.wait_for(queue.get(), _STREAM_HEARTBEAT_SECONDS)
+                except TimeoutError:
+                    yield ': heartbeat\n\n'
+                    continue
+                sequence += 1
+                yield encode_event(event, data, sequence)
+                if event in {'result', 'error'}:
+                    break
+        finally:
+            connected = False
+            # Release a terminal put blocked behind a full queue. The bounded
+            # workflow continues to persist; disconnect is not a business cancel.
+            while not queue.empty():
+                queue.get_nowait()
+
+    return StreamingResponse(events(), media_type='text/event-stream', headers={
+        'Cache-Control': 'no-cache, no-transform', 'X-Accel-Buffering': 'no'})
 
 
 @app.get('/skills')

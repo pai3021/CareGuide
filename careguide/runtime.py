@@ -24,6 +24,31 @@ def semantic_embedding():
         encoding_format=os.environ.get('CAREGUIDE_EMBEDDING_FORMAT', 'float'))
 
 
+def intent_semantic_retriever(mode=None):
+    """Separate business index and instruction, reusing the existing provider configuration."""
+    from careguide.orchestration.semantic_intent import SemanticIntentRetriever, INSTRUCTION, record_response
+    from careguide.retrieval.embedding_provider import OpenAICompatibleEmbeddingFunction
+    mode = (mode or os.environ.get('CAREGUIDE_INTENT_SEMANTIC_MODE', 'auto')).strip().casefold()
+    if mode not in {'auto', 'remote', 'local_ngram'}:
+        raise ValueError('Unknown intent semantic mode')
+    key = os.environ.get('CAREGUIDE_EMBEDDING_API_KEY', '')
+    configured = bool(key.strip()) and not key.startswith('YOUR_')
+    if mode == 'local_ngram' or mode == 'auto' and not configured:
+        return None, 'local_ngram' if mode == 'local_ngram' else 'provider_unconfigured'
+    if not configured:
+        raise ValueError('Remote intent retrieval requires CAREGUIDE_EMBEDDING_API_KEY')
+    timeout = float(os.environ.get('CAREGUIDE_INTENT_SEMANTIC_TIMEOUT', '3'))
+    if not 0 < timeout <= 10:
+        raise ValueError('Intent semantic timeout must be between 0 and 10 seconds')
+    provider = OpenAICompatibleEmbeddingFunction(api_key=key,
+        base_url=os.environ.get('CAREGUIDE_EMBEDDING_BASE_URL', 'https://api.siliconflow.cn/v1'),
+        model=os.environ.get('CAREGUIDE_EMBEDDING_MODEL', 'Qwen/Qwen3-Embedding-0.6B'),
+        dimensions=int(os.environ.get('CAREGUIDE_EMBEDDING_DIMENSIONS', '1024')),
+        query_instruction=INSTRUCTION, timeout=timeout, max_retries=0, response_observer=record_response)
+    return SemanticIntentRetriever(provider, timeout=timeout,
+        index_path=os.environ.get('CAREGUIDE_INTENT_SEMANTIC_INDEX') or None), 'remote'
+
+
 def semantic_reranker():
     from careguide.retrieval.reranker import OpenAICompatibleReranker
     key = os.environ.get('CAREGUIDE_RERANK_API_KEY') or os.environ.get(
@@ -98,39 +123,47 @@ def get_chat_runtime():
     key = os.environ.get('CAREGUIDE_LLM_API_KEY', '')
     client = create_llm_client(key, os.environ.get('CAREGUIDE_LLM_BASE_URL') or None) if key and not key.startswith('YOUR_') else None
     model = os.environ.get('CAREGUIDE_LLM_MODEL', 'gpt-4o-mini')
-    embedding_mode = os.environ.get('CAREGUIDE_INTENT_EMBEDDING_MODE', 'local_ngram')
-    embedding = semantic_embedding() if embedding_mode == 'remote' else None
-    taxonomy = os.environ.get('CAREGUIDE_INTENT_TAXONOMY', 'v1').strip().casefold()
-    if taxonomy not in {'v1', 'v2', 'v3', 'qic'}:
-        raise ValueError('Unknown intent taxonomy')
-    if taxonomy == 'qic':
-        from careguide.qic_intent_recognizer import QICIntentRecognizer
-        recognizer_class = QICIntentRecognizer
-    elif taxonomy == 'v3':
-        from careguide.intent_v3_recognizer import V3IntentRecognizer
-        recognizer_class = V3IntentRecognizer
+    orchestration = os.environ.get('CAREGUIDE_ORCHESTRATION_MODE', 'unified').strip().casefold()
+    if orchestration not in {'unified', 'langgraph', 'direct'}:
+        raise ValueError('Unknown orchestration mode')
+    if orchestration == 'unified':
+        # Keep legacy recognition offline. UnifiedRuntime owns the explicit,
+        # budgeted semantic-candidate phase before its single planner decision.
+        recognizer = IntentRecognizer(embedding_mode='disabled')
     else:
-        recognizer_class = V2IntentRecognizer if taxonomy == 'v2' else IntentRecognizer
-    recognizer_kwargs = {'embedding': embedding, 'embedding_mode': embedding_mode}
-    if taxonomy == 'qic':
-        recognizer_kwargs.update({
-            'llm_gate_margin': float(os.environ.get('CAREGUIDE_QIC_LLM_GATE_MARGIN', '0.40')),
-            'llm_override_confidence': float(os.environ.get(
-                'CAREGUIDE_QIC_LLM_OVERRIDE_CONFIDENCE', '0.95')),
-        })
-        qic_backend = os.environ.get('CAREGUIDE_QIC_CLASSIFIER_BACKEND', 'fusion').strip().casefold()
-        if qic_backend not in {'fusion', 'transformer'}:
-            raise ValueError('Unknown CareGuide QIC classifier backend')
-        if qic_backend == 'transformer':
-            from careguide.transformer_intent_classifier import TransformerIntentClassifier
-            model_path = os.environ.get('CAREGUIDE_QIC_MODEL_PATH', '').strip()
-            if not model_path:
-                raise ValueError('Transformer QIC backend requires CAREGUIDE_QIC_MODEL_PATH')
-            recognizer_kwargs['semantic_classifier'] = TransformerIntentClassifier(
-                model_path,
-                device=os.environ.get('CAREGUIDE_QIC_MODEL_DEVICE', 'auto').strip(),
-            )
-    recognizer = recognizer_class(client, model, **recognizer_kwargs)
+        embedding_mode = os.environ.get('CAREGUIDE_INTENT_EMBEDDING_MODE', 'local_ngram')
+        embedding = semantic_embedding() if embedding_mode == 'remote' else None
+        taxonomy = os.environ.get('CAREGUIDE_INTENT_TAXONOMY', 'v1').strip().casefold()
+        if taxonomy not in {'v1', 'v2', 'v3', 'qic'}:
+            raise ValueError('Unknown intent taxonomy')
+        if taxonomy == 'qic':
+            from careguide.qic_intent_recognizer import QICIntentRecognizer
+            recognizer_class = QICIntentRecognizer
+        elif taxonomy == 'v3':
+            from careguide.intent_v3_recognizer import V3IntentRecognizer
+            recognizer_class = V3IntentRecognizer
+        else:
+            recognizer_class = V2IntentRecognizer if taxonomy == 'v2' else IntentRecognizer
+        recognizer_kwargs = {'embedding': embedding, 'embedding_mode': embedding_mode}
+        if taxonomy == 'qic':
+            recognizer_kwargs.update({
+                'llm_gate_margin': float(os.environ.get('CAREGUIDE_QIC_LLM_GATE_MARGIN', '0.40')),
+                'llm_override_confidence': float(os.environ.get(
+                    'CAREGUIDE_QIC_LLM_OVERRIDE_CONFIDENCE', '0.95')),
+            })
+            qic_backend = os.environ.get('CAREGUIDE_QIC_CLASSIFIER_BACKEND', 'fusion').strip().casefold()
+            if qic_backend not in {'fusion', 'transformer'}:
+                raise ValueError('Unknown CareGuide QIC classifier backend')
+            if qic_backend == 'transformer':
+                from careguide.transformer_intent_classifier import TransformerIntentClassifier
+                model_path = os.environ.get('CAREGUIDE_QIC_MODEL_PATH', '').strip()
+                if not model_path:
+                    raise ValueError('Transformer QIC backend requires CAREGUIDE_QIC_MODEL_PATH')
+                recognizer_kwargs['semantic_classifier'] = TransformerIntentClassifier(
+                    model_path,
+                    device=os.environ.get('CAREGUIDE_QIC_MODEL_DEVICE', 'auto').strip(),
+                )
+        recognizer = recognizer_class(client, model, **recognizer_kwargs)
     skills = SkillRegistry(root_dir=PROJECT_ROOT/'data'/'skills',
                            tool_scopes={agent.value: set(spec.tools) for agent, spec in AGENTS.items()})
     skills.load()
@@ -182,13 +215,21 @@ def get_chat_runtime():
         memory = SessionMemory()
     else:
         raise ValueError('Unknown memory mode')
-    orchestration = os.environ.get('CAREGUIDE_ORCHESTRATION_MODE', 'langgraph').strip().casefold()
-    if orchestration not in {'langgraph', 'direct'}:
-        raise ValueError('Unknown orchestration mode')
-    if orchestration == 'langgraph':
+    if orchestration in {'unified', 'langgraph'}:
         from careguide.orchestration.runtime import OrchestrationRuntime
         from careguide.orchestration.budget import BudgetLimits
-        engine = OrchestrationRuntime(engine, business_path, limits=BudgetLimits(
+        runtime_class, runtime_options = OrchestrationRuntime, {}
+        if orchestration == 'unified':
+            from careguide.orchestration.unified import UnifiedRuntime
+            from careguide.orchestration.understanding import LocalUnderstanding, LocalClassifier
+            local_path = os.environ.get('CAREGUIDE_QIC_MODEL_PATH') or str(
+                PROJECT_ROOT.parent/'models'/'CareGuide'/'careguide-intent-roberta-v1')
+            classifier = LocalClassifier(local_path, os.environ.get('CAREGUIDE_QIC_MODEL_DEVICE', 'auto'))
+            runtime_class = UnifiedRuntime
+            semantic, semantic_mode = intent_semantic_retriever()
+            runtime_options['understanding'] = LocalUnderstanding(registry.corpus, classifier,
+                semantic=semantic, semantic_mode=semantic_mode)
+        engine = runtime_class(engine, business_path, **runtime_options, limits=BudgetLimits(
             model=int(os.environ.get('CAREGUIDE_WORKFLOW_MODEL_CALLS', '20')),
             tool=int(os.environ.get('CAREGUIDE_WORKFLOW_TOOL_CALLS', '30')),
             retry=int(os.environ.get('CAREGUIDE_WORKFLOW_RETRIES', '3')),

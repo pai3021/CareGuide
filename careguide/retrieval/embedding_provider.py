@@ -33,6 +33,7 @@ class OpenAICompatibleEmbeddingFunction:
         timeout: float = 30.0,
         max_retries: int = 2,
         client: Any = None,
+        response_observer: Any = None,
     ):
         if not str(api_key).strip():
             raise ValueError("embedding api_key cannot be empty")
@@ -58,6 +59,7 @@ class OpenAICompatibleEmbeddingFunction:
             )
 
         self._client = client
+        self.response_observer = response_observer
         self.base_url = str(base_url).rstrip("/")
         self.model = str(model).strip()
         self.dimensions = int(dimensions)
@@ -73,13 +75,13 @@ class OpenAICompatibleEmbeddingFunction:
         import numpy as np
         return [np.asarray(vector, dtype=np.float32) for vector in self.embed_documents(input)]
 
-    def embed_documents(self, texts: Sequence[str]) -> List[List[float]]:
-        return self._embed([str(text) for text in texts])
+    def embed_documents(self, texts: Sequence[str], *, timeout: float | None = None) -> List[List[float]]:
+        return self._embed([str(text) for text in texts], timeout=timeout)
 
-    def embed_query(self, query: str) -> List[float]:
-        return self.embed_queries([query])[0]
+    def embed_query(self, query: str, *, timeout: float | None = None) -> List[float]:
+        return self.embed_queries([query], timeout=timeout)[0]
 
-    def embed_queries(self, queries: Sequence[str]) -> List[List[float]]:
+    def embed_queries(self, queries: Sequence[str], *, timeout: float | None = None) -> List[List[float]]:
         """Batch query embeddings while preserving the query-side instruction."""
         query_texts: List[str] = []
         for query in queries:
@@ -89,9 +91,9 @@ class OpenAICompatibleEmbeddingFunction:
             if self.query_instruction:
                 query_text = f"Instruct: {self.query_instruction}\nQuery: {query_text}"
             query_texts.append(query_text)
-        return self._embed(query_texts)
+        return self._embed(query_texts, timeout=timeout)
 
-    def _embed(self, texts: List[str]) -> List[List[float]]:
+    def _embed(self, texts: List[str], *, timeout: float | None = None) -> List[List[float]]:
         if not texts:
             return []
 
@@ -103,7 +105,10 @@ class OpenAICompatibleEmbeddingFunction:
                 input=batch,
                 dimensions=self.dimensions,
                 encoding_format=self.encoding_format,
+                **({'timeout': timeout} if timeout is not None else {}),
             )
+            if self.response_observer is not None:
+                self.response_observer(response)
             data = list(getattr(response, "data", None) or [])
             if len(data) != len(batch):
                 raise RuntimeError(
@@ -134,6 +139,9 @@ class OpenAICompatibleEmbeddingFunction:
     def name(self) -> str:
         normalized_model = self.model.casefold().replace("/", "-")
         return f"careguide-{self.provider_name.casefold()}-{normalized_model}"
+
+    def close(self):
+        self._client.close()
 
     def metadata(self) -> Dict[str, Any]:
         return {

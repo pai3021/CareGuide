@@ -51,7 +51,9 @@ class AppointmentService:
         if binding and item['status'] != 'completed' and current_budget() is None:
             # Enforce persisted limits even when the outer graph is switched
             # off for rollback. A missing ledger must never create fresh quota.
-            budget = BudgetLedger(self.actions.path, binding['workflow_id'], actor,
+            from careguide.orchestration.store import WorkflowStore
+            state = WorkflowStore(self.actions.path).get(binding['workflow_id'], actor, conversation)
+            budget = BudgetLedger(self.actions.path, state.budget_id or state.id, actor,
                                   conversation, require_existing=True)
             with use_budget(budget):
                 return await self._confirm(identity, actor, conversation)

@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 from contextlib import contextmanager
+from contextvars import ContextVar
 from datetime import datetime, timedelta, timezone
 import json
 from pathlib import Path
@@ -50,12 +51,14 @@ class WorkflowState(Contract):
     archived_results: list[dict] = Field(default_factory=list)
     active_run: str | None = None
     lease_expires_at: str | None = None
+    budget_id: str | None = None
 
 
 class WorkflowStore:
     def __init__(self, path: str | Path):
         self.path = Path(path)
         self.path.parent.mkdir(parents=True, exist_ok=True)
+        self._active_connection = ContextVar('workflow_transaction', default=None)
         with self.connect() as db:
             db.execute('''CREATE TABLE IF NOT EXISTS orchestration_workflows (
                 id TEXT PRIMARY KEY, actor TEXT NOT NULL, conversation TEXT NOT NULL,
@@ -66,6 +69,10 @@ class WorkflowStore:
 
     @contextmanager
     def connect(self):
+        active = self._active_connection.get()
+        if active is not None:
+            yield active
+            return
         db = sqlite3.connect(self.path, timeout=5)
         db.row_factory = sqlite3.Row
         try:
@@ -73,6 +80,11 @@ class WorkflowStore:
                 yield db
         finally:
             db.close()
+
+    @staticmethod
+    def _begin(db):
+        if not db.in_transaction:
+            db.execute('BEGIN IMMEDIATE')
 
     @staticmethod
     def _load(db, identity, actor, conversation):
@@ -106,12 +118,14 @@ class WorkflowStore:
         with self.connect() as db:
             return self._load(db, identity, actor, conversation)
 
-    def create_pending(self, actor, conversation, source_text, *, ttl_seconds=1800, source_at=None, identity=None):
+    def create_pending(self, actor, conversation, source_text, *, ttl_seconds=1800, source_at=None,
+                       identity=None, source_message_id=None):
         """Allocate identity before classification/planning so their costs persist."""
         now = utc_now()
         state = WorkflowState(id=identity or uuid.uuid4().hex, actor=actor, conversation=conversation,
             goal=source_text, tasks={}, status='planning',
-            source_messages=[{'id': uuid.uuid4().hex, 'content': source_text, 'at': source_at or now.isoformat()}],
+            source_messages=[{'id': source_message_id or uuid.uuid4().hex, 'content': source_text,
+                              'at': source_at or now.isoformat()}],
             created_at=now.isoformat(), expires_at=(now+timedelta(seconds=ttl_seconds)).isoformat())
         with self.connect() as db:
             db.execute('INSERT INTO orchestration_workflows VALUES (?,?,?,?,?,?,?)',
@@ -120,7 +134,8 @@ class WorkflowStore:
         return state
 
     def initialize(self, state, proposal, events):
-        proposal = validate_plan(proposal, state.source_messages[0]['content'])
+        proposal = validate_plan(proposal, '\n'.join(s['content'] for s in state.source_messages),
+                                 source_messages=state.source_messages)
         def operation(current):
             if current.tasks:
                 raise VersionConflict('Plan already initialized')
@@ -133,8 +148,9 @@ class WorkflowStore:
 
     def expire_waits(self, identity, actor, conversation):
         with self.connect() as db:
-            db.execute('BEGIN IMMEDIATE')
+            self._begin(db)
             state = self._load(db, identity, actor, conversation)
+            before = state.model_dump_json()
             now = utc_now().isoformat()
             if state.expires_at <= now:
                 state.status = 'expired'
@@ -142,7 +158,8 @@ class WorkflowStore:
                 if task.status in {TaskStatus.WAITING_INPUT, TaskStatus.WAITING_CONFIRMATION} and (
                         state.status == 'expired' or task.expires_at and task.expires_at <= now):
                     task.transition(TaskStatus.EXPIRED, at=now, reason='wait_expired')
-            self._write(db, state)
+            if state.model_dump_json() != before:
+                self._write(db, state)
             self._expire_invalid_actions(db, state)
             return state
 
@@ -184,7 +201,7 @@ class WorkflowStore:
 
     def sync_actions(self, identity, actor, conversation):
         with self.connect() as db:
-            db.execute('BEGIN IMMEDIATE')
+            self._begin(db)
             state = self._load(db, identity, actor, conversation)
             self._sync_actions_in(db, state)
             from careguide.orchestration.replies import workflow_status
@@ -222,7 +239,7 @@ class WorkflowStore:
 
     def save(self, state: WorkflowState, *, expected_revision):
         with self.connect() as db:
-            db.execute('BEGIN IMMEDIATE')
+            self._begin(db)
             current = self._load(db, state.id, state.actor, state.conversation)
             if current.revision != expected_revision or current.version != state.version:
                 raise VersionConflict('Workflow changed while executing')
@@ -232,7 +249,7 @@ class WorkflowStore:
     def mutate(self, identity, actor, conversation, operation, *, plan_version, run_id, invalidate_actions=False):
         """Run a short, server-owned mutation while holding the write lock."""
         with self.connect() as db:
-            db.execute('BEGIN IMMEDIATE')
+            self._begin(db)
             state = self._load(db, identity, actor, conversation)
             if state.version != plan_version or state.active_run != run_id:
                 raise VersionConflict('Workflow changed while executing')
@@ -246,7 +263,7 @@ class WorkflowStore:
 
     def begin_run(self, identity, actor, conversation, *, expected_version, lease_seconds=45):
         with self.connect() as db:
-            db.execute('BEGIN IMMEDIATE')
+            self._begin(db)
             state = self._load(db, identity, actor, conversation)
             if state.version != expected_version:
                 raise VersionConflict('Stale plan version')
@@ -270,7 +287,7 @@ class WorkflowStore:
 
     def end_run(self, identity, actor, conversation, run_id, *, status):
         with self.connect() as db:
-            db.execute('BEGIN IMMEDIATE')
+            self._begin(db)
             state = self._load(db, identity, actor, conversation)
             if state.active_run != run_id:
                 return state
@@ -283,7 +300,7 @@ class WorkflowStore:
                plan_version, task_revision, event_id=None):
         """Bind one user's reply to the exact current question and candidate set."""
         with self.connect() as db:
-            db.execute('BEGIN IMMEDIATE')
+            self._begin(db)
             state = self._load(db, identity, actor, conversation)
             task = state.tasks.get(task_id)
             if state.version != plan_version or task is None or task.revision != task_revision:
@@ -343,9 +360,9 @@ class WorkflowStore:
     def commit_result(self, identity, actor, conversation, task_id, result, status,
                       *, plan_version, task_revision, run_id, failure=None, missing_fields=None,
                       options=None, action_id=None, arguments=None, origins=None,
-                      observed_at=None, valid_until=None, traces=None, wait_seconds=300):
+                      observed_at=None, valid_until=None, traces=None, wait_seconds=300, worker_result=None):
         with self.connect() as db:
-            db.execute('BEGIN IMMEDIATE')
+            self._begin(db)
             state = self._load(db, identity, actor, conversation)
             task = state.tasks.get(task_id)
             dispatch_owned = task is not None and (
@@ -362,6 +379,7 @@ class WorkflowStore:
                 self._write(db, state)
                 return False
             task.result, task.failure = result, failure
+            task.worker_result = worker_result
             task.missing_fields, task.options = missing_fields or [], options or []
             task.action_id = action_id
             if arguments is not None:
@@ -385,7 +403,7 @@ class WorkflowStore:
     def apply_change(self, identity, actor, conversation, change: PlanChange, *, user_text,
                      authorized_entities=None, source_at=None):
         with self.connect() as db:
-            db.execute('BEGIN IMMEDIATE')
+            self._begin(db)
             state = self._load(db, identity, actor, conversation)
             if state.version != change.base_version:
                 raise VersionConflict('Stale base plan version')
@@ -486,7 +504,9 @@ class WorkflowStore:
             specs.update(additions)
             source = '\n'.join(message['content'] for message in state.source_messages)+'\n'+user_text
             if specs:
-                validate_plan(PlanProposal(goal=state.goal, tasks=list(specs.values())), source)
+                validate_plan(PlanProposal(goal=state.goal, tasks=list(specs.values())), source,
+                    source_messages=state.source_messages+[
+                        {'id': message_id, 'content': user_text, 'at': message_at}])
             if not affected and not additions:
                 raise ValueError('No progress: change repeats the current plan')
             next_revisions = {key: task.revision+int(key in affected)
@@ -547,3 +567,33 @@ class WorkflowStore:
             self._write(db, state)
             self._expire_invalid_actions(db, state)
             return state
+
+    def apply_decision(self, identity, actor, conversation, decision, *, user_text,
+                       sources=(), source_at=None, authorized_entities=None):
+        """Apply a whole input/change package in one short transaction, or none."""
+        with self.connect() as db:
+            self._begin(db)
+            token = self._active_connection.set(db)
+            try:
+                state = self._load(db, identity, actor, conversation)
+                if state.version != decision.base_version or decision.workflow_id != identity:
+                    raise VersionConflict('Stale decision')
+                if state.expires_at <= utc_now().isoformat():
+                    raise WorkflowExpired('Workflow expired')
+                known = {s['id'] for s in state.source_messages}
+                state.source_messages.extend(dict(s) for s in sources if s['id'] not in known)
+                self._write(db, state)
+                for index, answer in enumerate(decision.answers):
+                    state = self.answer(identity, actor, conversation, answer.task_id, answer.values,
+                        plan_version=decision.base_version, task_revision=answer.task_revision,
+                        event_id=f"{sources[-1]['id'] if sources else state.id}:answer:{index}")
+                change = decision.change
+                if decision.kind == 'cancel':
+                    change = PlanChange(base_version=decision.base_version,
+                                        reason='用户明确取消', cancel=decision.cancel)
+                if change is not None:
+                    state = self.apply_change(identity, actor, conversation, change,
+                        user_text=user_text, source_at=source_at, authorized_entities=authorized_entities)
+                return state
+            finally:
+                self._active_connection.reset(token)

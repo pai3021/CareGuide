@@ -26,6 +26,8 @@ def workflow_status(state, *, extra_failures=()):
     tasks = [task for task in state.tasks.values() if task.status != TaskStatus.CANCELLED]
     if state.status == 'expired':
         return 'expired'
+    if not tasks and state.status == 'waiting_user':
+        return 'waiting_user'
     if tasks and all(task.status == TaskStatus.EXPIRED for task in tasks):
         return 'expired'
     if any(task.status == TaskStatus.RECONCILING for task in tasks):
@@ -101,7 +103,8 @@ def compose_workflow(state, budget, *, request_id=None, extra_failures=(), inten
         sections.append('\n'.join(lines))
         tasks.append({'id': task.spec.id, 'revision': task.revision, 'label': task.spec.fragment,
             'status': task.status.value, 'action': task.spec.action, 'depends_on': task.spec.depends_on,
-            'result': data, 'failure': task.failure, 'missing_fields': task.missing_fields,
+            'result': data, 'worker_result': task.worker_result,
+            'failure': task.failure, 'missing_fields': task.missing_fields,
             'options': task.options, 'action_id': task.action_id, 'expires_at': task.expires_at,
             'arguments': task.arguments, 'current_scope': current_scope,
             'result_observed_at': task.result_observed_at})

@@ -1,3 +1,5 @@
+import { postChatStream } from './sse'
+
 const BACKEND = {
   id: 'careguide',
   label: 'CareGuide',
@@ -58,7 +60,14 @@ export async function requestSearch(type, settings, query, topK = 5, rewrite = f
   return normalizeSearchResponse(raw)
 }
 
-export async function requestChat(type, settings, message, signal, workflowEvent) {
+export async function requestChat(type, settings, message, signal, workflowEvent, onEvent) {
+  const payload = buildChatPayload(type, settings, message)
+  if (workflowEvent) payload.workflow_event = workflowEvent
+  const raw = await postChatStream(`${backendMeta(type, settings).baseUrl}/chat/stream`, payload, { signal, onEvent })
+  return normalizeChatResponse(type, raw)
+}
+
+export async function requestChatJson(type, settings, message, signal, workflowEvent) {
   const meta = backendMeta(type, settings)
   const payload = buildChatPayload(type, settings, message)
   if (workflowEvent) payload.workflow_event = workflowEvent

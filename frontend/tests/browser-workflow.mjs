@@ -12,6 +12,7 @@ const browserPath = process.env.CAREGUIDE_TEST_BROWSER || 'C:\\Program Files\\Go
 const profile = await fs.mkdtemp(path.join(os.tmpdir(), 'careguide-browser-'))
 const requests = []
 const failures = []
+let releaseFirstStream
 let version = 1, revision = 1
 const tasks = [
   { id: 'drug', revision: 1, label: '查询药品说明书', status: 'waiting_input', missing_fields: ['specification'], options: [] },
@@ -20,12 +21,15 @@ const tasks = [
 ]
 let actions = []
 const workflow = () => ({ id: 'browser-workflow', version, revision, tasks: structuredClone(tasks) })
-const response = () => ({ conv_id: 'browser-conversation', request_id: 'browser-request-'+revision,
+const response = () => ({ conversation_id: 'browser-conversation', request_id: 'browser-request-'+revision,
   response: '可继续当前任务', workflow_status: actions.some(item => item.status === 'pending_confirmation') ? 'pending_confirmation' : 'waiting_user',
   workflow: workflow(), action_requests: actions, evidence: [], agent_types: ['appointment', 'medication'], simulation: true })
 const server = http.createServer(async (req, res) => {
   try {
     const url = new URL(req.url, 'http://localhost')
+    if (url.pathname === '/api/test/release-stream') {
+      releaseFirstStream?.(); res.writeHead(204); res.end(); return
+    }
     if (url.pathname === '/favicon.ico') { res.writeHead(204); res.end(); return }
     if (url.pathname.startsWith('/api/')) {
       const chunks = []
@@ -33,7 +37,7 @@ const server = http.createServer(async (req, res) => {
       const body = chunks.length ? JSON.parse(Buffer.concat(chunks).toString()) : null
       requests.push({ method: req.method, path: url.pathname, body })
       let result = {}
-      if (url.pathname === '/api/chat') {
+      if (url.pathname === '/api/chat/stream') {
         const event = body.workflow_event
         if (event?.kind === 'answer') {
           assert.equal(event.workflow_id, 'browser-workflow')
@@ -63,6 +67,17 @@ const server = http.createServer(async (req, res) => {
         }
         revision += 1
         result = response()
+        const emit = (id, event, data) => res.write(`id: ${id}\nevent: ${event}\ndata: ${JSON.stringify(data)}\n\n`)
+        res.writeHead(200, { 'Content-Type': 'text/event-stream', 'Cache-Control': 'no-cache', 'X-Accel-Buffering': 'no' })
+        emit(0, 'session', { conversation_id: 'browser-conversation', stream_id: 'browser-stream' })
+        emit(1, 'stage', { stage: 'planning', message: '正在生成任务计划' })
+        emit(2, 'workflow', { workflow: { ...workflow(), tasks: tasks.map(task => ({ ...task, status: 'running' })) } })
+        // Keep the final response gated so the browser must render actual
+        // streamed progress before it can see the interactive result cards.
+        if (!body.workflow_event) await new Promise(resolve => { releaseFirstStream = resolve })
+        if (res.destroyed) return
+        emit(3, 'result', result)
+        res.end(); return
       } else if (url.pathname === '/api/actions/ACT-2/confirm') {
         assert.equal(body.conv_id, 'browser-conversation')
         actions[0].status = 'completed'; tasks.find(item => item.id === 'booking').status = 'succeeded'
@@ -136,6 +151,9 @@ try {
   await command('Page.navigate', { url: origin })
   await until(`document.querySelector('.composer textarea') !== null`)
   await send('查医生，同时查询药品说明书')
+  await until(`document.querySelector('[data-testid="stream-progress"]')?.textContent.includes('执行中')`)
+  assert.equal(await evaluate(`document.querySelector('.action-card form input') === null`), true)
+  await evaluate(`fetch('/api/test/release-stream').then(response => response.status)`)
   await until(`document.querySelector('.action-card form input:not(:disabled)') !== null`)
   await evaluate(`(() => { const input=document.querySelector('.action-card form input:not(:disabled)'); input.value='0.2g'; input.dispatchEvent(new Event('input',{bubbles:true})); input.closest('form').requestSubmit(); })()`)
   await until(`document.querySelector('.action-card form select:not(:disabled)') !== null`)
@@ -157,12 +175,21 @@ try {
   await until(`document.querySelectorAll('.action-card').length >= 3`)
   assert.equal(await evaluate(`Array.from(document.querySelectorAll('.action-buttons button')).some(button => !button.disabled)`), false)
   assert.deepEqual(requests.filter(item => item.path.includes('/confirm')).map(item => item.path), ['/api/actions/ACT-2/confirm'])
+  const beforeStop = requests.filter(item => item.path === '/api/chat/stream').length
+  await send('查医生，测试停止接收')
+  await until(`document.querySelector('[data-testid="stream-progress"]') !== null`)
+  await evaluate(`Array.from(document.querySelectorAll('.composer button')).find(button => button.textContent.includes('停止接收')).click()`)
+  await until(`document.body.textContent.includes('已停止接收')`)
+  await evaluate(`fetch('/api/test/release-stream').then(response => response.status)`)
+  assert.equal(requests.filter(item => item.path === '/api/chat/stream').length, beforeStop + 1)
+  assert.equal(await evaluate(`JSON.parse(localStorage.getItem('careguide.frontend.settings')).conversationId`), 'browser-conversation')
   assert.equal(failures.length, 0, failures.join('\n'))
   console.log(JSON.stringify({ kind: 'real_chrome_built_vue_scripted_api', checks: [
     'task_missing_field_submission', 'doctor_selection', 'slot_selection', 'versioned_change',
-    'old_confirmation_disabled', 'one_current_confirmation', 'reload_and_restore'],
+    'old_confirmation_disabled', 'one_current_confirmation', 'reload_and_restore', 'sse_progress_before_final',
+    'sse_stop_keeps_session_without_resubmit'],
     browser: (await command('Browser.getVersion', {}, null)).product,
-    chat_events: requests.filter(item => item.path === '/api/chat').map(item => item.body.workflow_event || { kind: 'initial' }),
+    chat_events: requests.filter(item => item.path === '/api/chat/stream').map(item => item.body.workflow_event || { kind: 'initial' }),
     confirmation_requests: 1, paid_calls: 0 }, null, 2))
 } finally {
   if (socket?.readyState === WebSocket.OPEN) { try { await Promise.race([command('Browser.close', {}, null), pause(1000)]) } catch {} }

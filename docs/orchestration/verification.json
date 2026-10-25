@@ -1,5 +1,21 @@
 {
   "schema_version": 1,
+  "merge_regression": {
+    "date": "2026-10-25",
+    "kind": "offline_release_gate",
+    "command": "python -m pytest -q -p no:cacheprovider",
+    "passed": 400,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "console_reported_seconds": 76.42,
+    "frontend_unit_tests": 10,
+    "frontend_failed": 0,
+    "frontend_production_build": "passed",
+    "orchestration_default": "unified",
+    "intent_semantic_default": "auto",
+    "external_model_calls": false
+  },
   "evidence_scope": "Controlled model responses, fault injection and synthetic hospital services; not real-provider planning accuracy.",
   "historical_regression": {
     "date": "2026-10-23",
@@ -404,7 +420,8 @@
         }
       ]
     },
-    "interpretation": "Bounded oracle fixture comparison only; additional persistent budget/state overhead measured, not real-model accuracy or clinical benefit."
+    "interpretation": "Bounded oracle fixture comparison only; additional persistent budget/state overhead measured, not real-model accuracy or clinical benefit.",
+    "scope_note": "Historical pre-unified comparison; not an evaluation of the current understanding/composition implementation."
   },
   "historical_browser_verification": {
     "kind": "real_chrome_built_vue_scripted_api",
@@ -479,15 +496,59 @@
   },
   "real_model_evaluation": {
     "status": "not_run",
-    "paid_calls": 0
+    "paid_calls": 0,
+    "scope": "Generative provider planning quality, paid calls and clinical effectiveness; separate from the operational local classifier smoke."
   },
   "current_limitations": [
     "Real-provider planning quality, token prices and paid evaluations not run; all provider-facing tests are scripted or MockTransport.",
     "Current deployment uses single-machine SQLite and demo user_id, not distributed persistence or production authentication.",
     "Expired workflow history and stale projections are logically excluded, not automatically physically purged; old unproven profile fields are not trusted.",
-    "Hybrid index attachment and known-document cached-vector query verified; arbitrary new query embedding/reranker and real-provider planning quality not evaluated to avoid unapproved paid calls."
+    "Hybrid index attachment and known-document cached-vector query verified; arbitrary new query embedding/reranker and real-provider planning quality not evaluated to avoid unapproved paid calls.",
+    "Classifier, character and dense similarity direct acceptance remains disabled without calibration evidence. Dense business retrieval is integrated but external semantic-quality evaluation has not run.",
+    "Local composition is deliberately limited to explicit supported grammars, doctor/drug independence and the doctor-slots-v1 template; other relationships use one dynamic decision or clarification.",
+    "Synthesis selects exact verified excerpts and cannot freely paraphrase medical claims.",
+    "Offline verification did not restart or deploy services; existing real-service integration was not rerun. Browser SSE evidence is recorded separately.",
+    "SSE streams stage/task progress and the complete verified final response; model token deltas and persistent Last-Event-ID replay are not implemented.",
+    "The business reference bank and 26 synthetic cases are small engineering fixtures. Routing accuracy, semantic gain, live latency and cost savings have not been established."
   ],
   "release_regression": {
+    "date": "2026-10-25",
+    "mode": "unified_default_with_explicit_legacy_regressions",
+    "kind": "offline_real_workers_scripted_provider_fault_injection",
+    "command": "python -m pytest -q -p no:cacheprovider",
+    "tests": 400,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "passed": 400,
+    "junit_seconds": 77.46,
+    "unified_test_cases": 42,
+    "external_model_calls": false,
+    "frontend_unit_tests": 10,
+    "frontend_failed": 0,
+    "frontend_production_build": "passed",
+    "browser_rerun": true,
+    "new_request_coverage": [
+      "default production factory and API uses independent local understanding",
+      "single task and independent doctor/drug composition without initial planner calls",
+      "versioned doctor-slots template with explicit selections and idempotent confirmation",
+      "unknown remainder and relationship abstention; classifier score/truncation never authorizes execution",
+      "atomic mixed answer and plan change with full rollback on invalid addition",
+      "source-grounded history references and original-time relative dates",
+      "isolated worker brief and owned versioned large-result references",
+      "verified multi-task excerpts and deterministic synthesis fallback",
+      "one unified decision using actual AsyncOpenAI SDK with MockTransport and bounded repair",
+      "shared budget on model-discovered new request and mode/direct-confirm fallback",
+      "structured cancellation after model exhaustion; emergency preemption",
+      "separate-process restart without repeating a completed branch"
+    ],
+    "console_reported_seconds": 77.49,
+    "sse_backend_tests": 8,
+    "semantic_intent_tests": 15,
+    "deployment_environment_cleared_for_pytest": true,
+    "compose_public_template_validation": "passed"
+  },
+  "historical_pre_unified_release": {
     "date": "2026-10-24",
     "kind": "offline_scripted_or_fault_injection",
     "command": "python -m pytest -q -p no:cacheprovider",
@@ -508,5 +569,240 @@
       "old workflow remains unchanged and resumable",
       "ambiguous message clarifies without spending task budget"
     ]
+  },
+  "unified_offline_examples": {
+    "command": "python scripts/reproduce_unified.py",
+    "kind": "local_composition_real_workers_no_generative_model",
+    "compose": {
+      "status": "completed",
+      "tasks": 2,
+      "plan_source": "compose",
+      "model_calls": 0,
+      "tool_calls": 2
+    },
+    "template": {
+      "status": "completed",
+      "tasks": 3,
+      "plan_source": "template",
+      "model_calls": 0,
+      "tool_calls_including_confirmation": 4,
+      "confirmation_count": 2,
+      "created_appointments": 1
+    },
+    "wait_separate_processes": {
+      "initial_status": "waiting_user",
+      "final_status": "completed",
+      "initial_tool_calls": 1,
+      "final_tool_calls": 2,
+      "model_calls": 0,
+      "successful_branch_attempts": 1
+    },
+    "paid_calls": 0
+  },
+  "local_classifier_smoke": {
+    "date": "2026-10-24",
+    "kind": "existing_container_current_adapter_local_checkpoint_smoke",
+    "execution": "Current adapter source evaluated from stdin in an existing CPU container; no server code deployment or restart.",
+    "model": "careguide-13-chinese-roberta-wwm-ext-v1",
+    "device": "cpu",
+    "samples": 3,
+    "input_tokens": [
+      9,
+      10,
+      402
+    ],
+    "truncated": [
+      false,
+      false,
+      true
+    ],
+    "network_calls": 0,
+    "downloaded_weights": false,
+    "host_test_environment_torch_available": false,
+    "interpretation": "Operational local checkpoint/label-order/truncation smoke only; not end-to-end generative planning, semantic accuracy, calibration, or online latency evaluation."
+  },
+  "historical_unified_release": {
+    "date": "2026-10-24",
+    "mode": "unified_default_with_explicit_legacy_regressions",
+    "kind": "offline_real_workers_scripted_provider_fault_injection",
+    "command": "python -m pytest -q -p no:cacheprovider",
+    "tests": 377,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "passed": 377,
+    "junit_seconds": 72.95,
+    "unified_test_cases": 42,
+    "external_model_calls": false,
+    "frontend_unit_tests": 3,
+    "frontend_failed": 0,
+    "frontend_production_build": "passed",
+    "browser_rerun": false,
+    "new_request_coverage": [
+      "default production factory and API uses independent local understanding",
+      "single task and independent doctor/drug composition without initial planner calls",
+      "versioned doctor-slots template with explicit selections and idempotent confirmation",
+      "unknown remainder and relationship abstention; classifier score/truncation never authorizes execution",
+      "atomic mixed answer and plan change with full rollback on invalid addition",
+      "source-grounded history references and original-time relative dates",
+      "isolated worker brief and owned versioned large-result references",
+      "verified multi-task excerpts and deterministic synthesis fallback",
+      "one unified decision using actual AsyncOpenAI SDK with MockTransport and bounded repair",
+      "shared budget on model-discovered new request and mode/direct-confirm fallback",
+      "structured cancellation after model exhaustion; emergency preemption",
+      "separate-process restart without repeating a completed branch"
+    ]
+  },
+  "sse_verification": {
+    "date": "2026-10-25",
+    "endpoint": "POST /chat/stream",
+    "legacy_json_endpoint": "POST /chat",
+    "execution": "Shared chat pipeline, real workflow store, workers and budget; no paid provider calls.",
+    "events": [
+      "session",
+      "stage",
+      "workflow",
+      "result",
+      "error"
+    ],
+    "heartbeat_seconds": 10,
+    "progress_queue_limit": 64,
+    "token_streaming": false,
+    "persistent_event_replay": false,
+    "automatic_post_retry": false,
+    "disconnect_policy": "Stop delivery; bounded execution persists in the same process; explicit workflow cancellation remains separate.",
+    "backend_tests": [
+      "test_stream_and_json_use_same_workers_budgets_and_final_contract",
+      "test_real_progress_precedes_worker_completion_and_disconnect_preserves_execution",
+      "test_error_frames_and_pre_header_validation_are_sanitized",
+      "test_stream_wait_resume_versions_and_confirmation_remain_authoritative",
+      "test_concurrent_users_receive_only_their_own_progress",
+      "test_heartbeat_does_not_require_worker_completion",
+      "test_backpressure_can_drop_progress_but_never_terminal_result",
+      "test_asgi_disconnect_stops_delivery_without_cancelling_persisted_task"
+    ],
+    "frontend_protocol_tests": 7,
+    "nginx_syntax": "passed using a temporary config in existing frontend container; no reload or restart",
+    "proxy_buffering": false,
+    "proxy_cache": false,
+    "proxy_gzip": false,
+    "nginx_read_timeout_seconds": 120,
+    "client_receive_timeout_seconds": 90,
+    "paid_calls": 0
+  },
+  "browser_verification": {
+    "date": "2026-10-25",
+    "kind": "real_chrome_built_vue_scripted_sse_api",
+    "command": "node frontend/tests/browser-workflow.mjs",
+    "browser": "Chrome/155.0.8059.85",
+    "confirmation_requests": 1,
+    "paid_calls": 0,
+    "checks": [
+      "task_missing_field_submission",
+      "doctor_selection",
+      "slot_selection",
+      "versioned_change",
+      "old_confirmation_disabled",
+      "one_current_confirmation",
+      "reload_and_restore",
+      "sse_progress_before_final",
+      "sse_stop_keeps_session_without_resubmit"
+    ],
+    "scope": "Real built Vue and Chrome with scripted HTTP/SSE API. Real API execution is covered separately by backend tests."
+  },
+  "historical_sse_release": {
+    "date": "2026-10-25",
+    "mode": "unified_default_with_explicit_legacy_regressions",
+    "kind": "offline_real_workers_scripted_provider_fault_injection",
+    "command": "python -m pytest -q -p no:cacheprovider",
+    "tests": 385,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "passed": 385,
+    "junit_seconds": 74.018,
+    "unified_test_cases": 42,
+    "external_model_calls": false,
+    "frontend_unit_tests": 10,
+    "frontend_failed": 0,
+    "frontend_production_build": "passed",
+    "browser_rerun": true,
+    "new_request_coverage": [
+      "default production factory and API uses independent local understanding",
+      "single task and independent doctor/drug composition without initial planner calls",
+      "versioned doctor-slots template with explicit selections and idempotent confirmation",
+      "unknown remainder and relationship abstention; classifier score/truncation never authorizes execution",
+      "atomic mixed answer and plan change with full rollback on invalid addition",
+      "source-grounded history references and original-time relative dates",
+      "isolated worker brief and owned versioned large-result references",
+      "verified multi-task excerpts and deterministic synthesis fallback",
+      "one unified decision using actual AsyncOpenAI SDK with MockTransport and bounded repair",
+      "shared budget on model-discovered new request and mode/direct-confirm fallback",
+      "structured cancellation after model exhaustion; emergency preemption",
+      "separate-process restart without repeating a completed branch"
+    ],
+    "console_reported_seconds": 74.03,
+    "sse_backend_tests": 8
+  },
+  "semantic_intent_verification": {
+    "date": "2026-10-25",
+    "kind": "actual_embedding_sdk_mock_transport_and_real_unified_runtime",
+    "provider_configuration": "Existing CAREGUIDE_EMBEDDING_*; default SiliconFlow Qwen/Qwen3-Embedding-0.6B / 1024 dimensions.",
+    "default_mode": "auto",
+    "business_examples": 36,
+    "bank_version": "business-intents-v1",
+    "medical_rag_index_modified": false,
+    "frozen_qic_centroids_modified": false,
+    "business_query_instruction_separate": true,
+    "score_direct_execution": false,
+    "budget_dimension": "model; each physical embedding SDK request; no SDK implicit retry",
+    "cache": {
+      "max_entries": 256,
+      "ttl_seconds": 300,
+      "query_scope": "model/index/instruction + user + conversation + text hash"
+    },
+    "remote_retrieval_timeout_seconds": 3,
+    "failure_cooldown_seconds": 30,
+    "tests": [
+      "test_real_sdk_business_bank_usage_cache_scope_and_no_authority",
+      "test_prebuilt_index_validates_bank_model_instruction_and_avoids_warmup_call",
+      "test_invalid_vectors_fail_closed_and_enter_cooldown[bad0]",
+      "test_invalid_vectors_fail_closed_and_enter_cooldown[bad1]",
+      "test_invalid_vectors_fail_closed_and_enter_cooldown[bad2]",
+      "test_exhausted_or_missing_budget_never_dispatches_embedding",
+      "test_timeout_charges_one_attempt_without_retry_and_bounds_provider_failure",
+      "test_high_similarity_is_only_a_reference_and_cannot_authorize_negated_booking",
+      "test_production_factory_passes_real_embedding_candidates_to_one_planner",
+      "test_explicit_remote_requires_config_and_auto_does_not_create_fake_vectors",
+      "test_evaluation_cases_are_independent_and_baseline_is_network_free",
+      "test_concurrent_requests_share_only_public_index_and_charge_each_query",
+      "test_embedding_cost_survives_model_discovered_new_workflow",
+      "test_no_chat_planner_means_no_remote_embedding_cost",
+      "test_http_timeout_is_capped_by_actual_request_budget"
+    ],
+    "actual_external_embedding_calls": 0,
+    "interpretation": "Controlled vectors verify protocol, candidate delivery, provenance and budget safeguards; they are excluded from semantic-quality metrics."
+  },
+  "business_intent_retrieval_evaluation": {
+    "date": "2026-10-25",
+    "command": "python scripts/evaluate_intent_semantic.py --mode local_char_ngram",
+    "case_version": "business-intent-retrieval-eval-v1",
+    "cases": 26,
+    "scored_cases": 22,
+    "provenance": "Manually authored synthetic cases with no exact text overlap with the reference bank; no real users or clinical labels.",
+    "offline_lexical_baseline": {
+      "examples": 6,
+      "k": 3,
+      "mean_expected_action_coverage": 0.5681818181818182,
+      "remote_calls": 0
+    },
+    "remote_dense_evaluation": {
+      "status": "not_run",
+      "reference_examples": 36,
+      "k": 4,
+      "external_api_calls": 0,
+      "reason": "This implementation round did not invoke paid providers."
+    },
+    "interpretation": "Per-query action coverage averaged over positive cases only. Not semantic routing accuracy, calibrated confidence, goal completeness, or execution success. Dense vs character mode also changes the reference bank, so this is not a controlled embedding-only comparison."
   }
 }

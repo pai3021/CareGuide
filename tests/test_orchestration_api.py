@@ -24,6 +24,8 @@ def configured(monkeypatch, tmp_path, client):
         if key.startswith('CAREGUIDE_'):
             monkeypatch.delenv(key)
     monkeypatch.setenv('CAREGUIDE_BUSINESS_DB', str(tmp_path/'runtime.sqlite3'))
+    # These assertions describe the preserved pre-unified graph adapter.
+    monkeypatch.setenv('CAREGUIDE_ORCHESTRATION_MODE', 'langgraph')
     monkeypatch.setenv('CAREGUIDE_HOSPITAL_BACKEND', 'memory')
     monkeypatch.setenv('CAREGUIDE_LLM_API_KEY', 'offline-scripted-test')
     monkeypatch.setenv('CAREGUIDE_CORPUS_DIR', str(DEFAULT_CORPUS))

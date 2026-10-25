@@ -28,6 +28,7 @@ def configure_transformer(monkeypatch, model_path):
 
 
 def test_runtime_transformer_backend_requires_explicit_model_path(monkeypatch):
+    monkeypatch.setenv('CAREGUIDE_ORCHESTRATION_MODE', 'langgraph')
     configure_transformer(monkeypatch, "")
     runtime.get_chat_runtime.cache_clear()
     with pytest.raises(ValueError, match="CAREGUIDE_QIC_MODEL_PATH"):
@@ -36,6 +37,7 @@ def test_runtime_transformer_backend_requires_explicit_model_path(monkeypatch):
 
 
 def test_runtime_wires_explicit_transformer_without_fallback(monkeypatch):
+    monkeypatch.setenv('CAREGUIDE_ORCHESTRATION_MODE', 'langgraph')
     configure_transformer(monkeypatch, "D:/models/careguide-intent/best_model")
     monkeypatch.setattr(transformer_module, "TransformerIntentClassifier",
                         RuntimeFakeTransformer)

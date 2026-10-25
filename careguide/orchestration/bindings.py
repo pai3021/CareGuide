@@ -94,7 +94,8 @@ def resolve_inputs(record, workflow, *, verified_entities=None, now=None):
         if value is None:
             continue
         if (key in CRITICAL_FIELDS and origin.get('kind') not in {'user_reply', 'user_selection', 'long_term_preference', 'retained_scope', 'user_change'}
-                and not explicit_value(key, value, record.spec.fragment, verified_entities)):
+                and not explicit_value(key, value, record.spec.fragment+'\n'+'\n'.join(
+                    source.quote for source in record.spec.source_fragments), verified_entities)):
             result.missing_fields.append(key)
             result.origins[key] = {'kind': 'model_suggestion', 'confirmed': False}
         else:

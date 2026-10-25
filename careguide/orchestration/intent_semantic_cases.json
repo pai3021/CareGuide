@@ -1,0 +1,32 @@
+{
+  "version": "business-intent-retrieval-eval-v1",
+  "provenance": "Independent manually authored synthetic cases. No production users or clinical ground truth; no routing accuracy claims from fixtures.",
+  "cases": [
+    {"id":"e01","category":"paraphrase","text":"能给我列几位消化科大夫吗","actions":["search_doctors"]},
+    {"id":"e02","category":"paraphrase","text":"这个门诊有哪些坐诊医师","actions":["search_doctors"]},
+    {"id":"e03","category":"paraphrase","text":"这周还有没被约满的门诊时间吗","actions":["list_available_slots"]},
+    {"id":"e04","category":"paraphrase","text":"我想知道哪天能挂上这个人的号","actions":["list_available_slots"]},
+    {"id":"e05","category":"paraphrase","text":"哪里能查到这款药哪些人不能使用","actions":["lookup_drug_label"]},
+    {"id":"e06","category":"paraphrase","text":"请找一下这盒药随附的说明文字","actions":["lookup_drug_label"]},
+    {"id":"e07","category":"paraphrase","text":"药物甲与乙有没有已收录的相互作用记录","actions":["lookup_drug_interaction"]},
+    {"id":"e08","category":"paraphrase","text":"这个医院的神经内科能提供什么服务","actions":["lookup_department"]},
+    {"id":"e09","category":"paraphrase","text":"面诊前怎么整理不舒服的经过供医生参考","actions":["search_care_guidance"]},
+    {"id":"e10","category":"paraphrase","text":"第一次门诊报到该准备什么证件","actions":["lookup_hospital_guide"]},
+    {"id":"e11","category":"paraphrase","text":"替我看看上次那张模拟预约单办到了哪一步","actions":["get_appointment"]},
+    {"id":"e12","category":"paraphrase","text":"选定的这个模拟门诊号，请准备帮我订下","actions":["prepare_appointment"]},
+    {"id":"e13","category":"paraphrase","text":"已有的模拟预约想换一个就诊时间","actions":["prepare_reschedule"]},
+    {"id":"e14","category":"paraphrase","text":"准备把上次订好的模拟门诊预约退掉","actions":["prepare_cancellation"]},
+    {"id":"e15","category":"multiple_goals","text":"既要找消化科医生，也想查一款药的禁忌资料","actions":["search_doctors","lookup_drug_label"]},
+    {"id":"e16","category":"multiple_goals","text":"看看医生名单和剩余可预约时间，另外查医院报到流程","actions":["search_doctors","list_available_slots","lookup_hospital_guide"]},
+    {"id":"e17","category":"context_change","text":"药盒上写的是200毫克，再加一项医生查询","actions":["lookup_drug_label","search_doctors"]},
+    {"id":"e18","category":"context_change","text":"刚才那些日期不改，只看下午有没有号","actions":["list_available_slots"]},
+    {"id":"e19","category":"reference","text":"刚才第二款药有哪些注意事项","actions":["lookup_drug_label"]},
+    {"id":"e20","category":"reference","text":"换另一位大夫，仍然要那个时段的号","actions":["search_doctors","list_available_slots"]},
+    {"id":"e21","category":"negation","text":"我只看看还有哪些号，暂时不要预约","actions":["list_available_slots"],"forbidden_actions":["prepare_appointment"]},
+    {"id":"e22","category":"negation","text":"别取消已有预约，只想看看现在的状态","actions":["get_appointment"],"forbidden_actions":["prepare_cancellation"]},
+    {"id":"e23","category":"non_action","text":"把我刚才那项查询停掉，预约单不动","actions":[]},
+    {"id":"e24","category":"out_of_scope","text":"推荐几部电影供周末看","actions":[]},
+    {"id":"e25","category":"restricted","text":"替我确定每天应该服用几片降压药","actions":[]},
+    {"id":"e26","category":"ambiguous","text":"就是那个，按之前说的改吧","actions":[]}
+  ]
+}

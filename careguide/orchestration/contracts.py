@@ -65,6 +65,11 @@ class InputReference(Contract):
     result_version: int | None = Field(default=None, ge=1)
 
 
+class SourceFragment(Contract):
+    message_id: str = Field(min_length=1, max_length=100)
+    quote: str = Field(min_length=1, max_length=1000)
+
+
 class TaskSpec(Contract):
     id: str = Field(pattern=r'^[a-zA-Z][a-zA-Z0-9_-]{0,63}$')
     fragment: str = Field(min_length=1, max_length=4000)
@@ -76,6 +81,7 @@ class TaskSpec(Contract):
     completion: Literal['source_evidence', 'items', 'prepared', 'business_record']
     expected_output: list[str] = Field(default_factory=list, max_length=12)
     max_attempts: int = Field(default=2, ge=1, le=3)
+    source_fragments: list[SourceFragment] = Field(default_factory=list, max_length=8)
 
 
 class PlanProposal(Contract):
@@ -144,6 +150,7 @@ class TaskRecord(Contract):
     expires_at: str | None = None
     result_observed_at: str | None = None
     result_valid_until: str | None = None
+    worker_result: dict | None = None
 
     def transition(self, status: TaskStatus, *, at: str, reason: str = ''):
         status = TaskStatus(status)
@@ -154,7 +161,7 @@ class TaskRecord(Contract):
         self.status = status
 
 
-def validate_plan(proposal: PlanProposal, user_text: str, *, max_tasks=12):
+def validate_plan(proposal: PlanProposal, user_text: str, *, max_tasks=12, source_messages=()):
     """Validate authority, shapes and graph structure before any dispatch."""
     if len(proposal.tasks) > max_tasks:
         raise ValueError('Task count exceeds workflow budget')
@@ -162,12 +169,16 @@ def validate_plan(proposal: PlanProposal, user_text: str, *, max_tasks=12):
     if len(set(ids)) != len(ids):
         raise ValueError('Duplicate task IDs')
     lookup = {task.id: task for task in proposal.tasks}
+    sources = {item['id']: item['content'] for item in source_messages if item.get('id')}
     for task in proposal.tasks:
         if task.action not in ACTION_ARGUMENTS:
             raise PermissionError('Action is not in the execution catalog')
         require_tool(task.agent, task.action)
         if task.fragment not in user_text:
             raise ValueError('Task fragment must refer to the original user request')
+        for source in task.source_fragments:
+            if source.message_id not in sources or source.quote not in sources[source.message_id]:
+                raise ValueError('Unverified historical message source')
         if task.action in PREPARE_ACTIONS:
             expressions = {
                 'prepare_appointment': r'预约|挂号',
@@ -176,7 +187,7 @@ def validate_plan(proposal: PlanProposal, user_text: str, *, max_tasks=12):
             }
             forbidden_create = task.action == 'prepare_appointment' and re.search(r'改期|退号|取消', task.fragment)
             if (not re.search(expressions[task.action], task.fragment) or forbidden_create
-                    or re.search(r'不要(?:.{0,4})(?:预约|挂号|改期|退号)|不需要(?:.{0,4})(?:预约|挂号)|'
+                    or re.search(r'(?:先别|别|不要)(?:.{0,4})(?:预约|挂号|改期|退号)|不需要(?:.{0,4})(?:预约|挂号)|'
                                  r'(?:不|无需|暂不|先不)(?:进行)?(?:预约|挂号)', task.fragment)):
                 raise PermissionError('Appointment preparation requires an explicit user request')
         if len(set(task.depends_on)) != len(task.depends_on):

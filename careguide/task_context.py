@@ -49,6 +49,7 @@ class TaskContext:
     business_action: str | None = None
     boundary: str | None = None
     careguide_intent: str | None = None
+    task_brief: dict = field(default_factory=dict)
 
     @classmethod
     def from_intent_result(cls, result: IntentResult):

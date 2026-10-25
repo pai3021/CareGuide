@@ -16,7 +16,7 @@
     "intent_semantic_default": "auto",
     "external_model_calls": false
   },
-  "evidence_scope": "Controlled model responses, fault injection and synthetic hospital services; not real-provider planning accuracy.",
+  "evidence_scope": "Offline controlled responses and fault injection plus three selected live MiMo smoke cases with synthetic hospital services; not a routing accuracy or clinical benchmark.",
   "historical_regression": {
     "date": "2026-10-23",
     "kind": "offline_scripted_or_fault_injection",
@@ -495,15 +495,40 @@
     "paid_calls": 0
   },
   "real_model_evaluation": {
-    "status": "not_run",
-    "paid_calls": 0,
-    "scope": "Generative provider planning quality, paid calls and clinical effectiveness; separate from the operational local classifier smoke."
+    "status": "limited_live_smoke",
+    "paid_calls": 10,
+    "scope": "Three selected live MiMo answer/SSE cases, including one dynamic planning case. Includes diagnostic requests; not a representative quality, cost or clinical evaluation."
+  },
+  "live_answer_streaming_smoke": {
+    "date": "2026-10-25",
+    "model": "mimo-v2.6-flash",
+    "transport": "Real configured MiMo provider through production factory and SSE route body iterator",
+    "isolation": "Dedicated SQLite, frozen medical_v1 corpus with BM25, local intent candidates, in-memory synthetic hospital and session memory",
+    "timing_scope": "Single observations from route execution start; runtime construction excluded; not deployed network/browser latency",
+    "cases": [
+      {"case": "doctor", "first_content_ms": 1093.0, "total_ms": 2609.0, "model_requests": 1, "provider_tokens": 389},
+      {"case": "doctor_and_drug", "first_content_ms": 11953.0, "total_ms": 20062.0, "model_requests": 3, "provider_tokens": 7733},
+      {"case": "dynamic_doctor_query", "first_content_ms": 10672.0, "total_ms": 14922.0, "model_requests": 2, "provider_tokens": 5370}
+    ],
+    "checks": {
+      "all_final_answers_generated": true,
+      "content_deltas_before_terminal_result": true,
+      "streamed_body_matches_final_prefix": true,
+      "final_response_matches_memory_and_trace": true,
+      "no_actions_prepared_or_confirmed": true,
+      "dynamic_plan_validated_first_attempt_after_catalog_fix": true
+    },
+    "all_verification_requests_including_diagnostics": 10,
+    "all_provider_reported_tokens_including_diagnostics": 32541,
+    "monetary_cost": "not measured",
+    "deployed_services_restarted": false,
+    "interpretation": "Selected connectivity, streaming and contract smoke only. Citation membership is checked; semantic faithfulness and clinical correctness were not independently scored."
   },
   "current_limitations": [
-    "Real-provider planning quality, token prices and paid evaluations not run; all provider-facing tests are scripted or MockTransport.",
+    "Live MiMo access and three selected request paths were verified; representative planning/answer quality, monetary cost and clinical effectiveness remain unmeasured.",
     "Current deployment uses single-machine SQLite and demo user_id, not distributed persistence or production authentication.",
     "Expired workflow history and stale projections are logically excluded, not automatically physically purged; old unproven profile fields are not trusted.",
-    "Hybrid index attachment and known-document cached-vector query verified; arbitrary new query embedding/reranker and real-provider planning quality not evaluated to avoid unapproved paid calls.",
+    "The live answer smoke used isolated BM25, local intent candidates and a synthetic hospital; arbitrary-query remote embedding/reranking and deployed-browser integration were not part of it.",
     "Classifier, character and dense similarity direct acceptance remains disabled without calibration evidence. Dense business retrieval is integrated but external semantic-quality evaluation has not run.",
     "Local composition is deliberately limited to explicit supported grammars, doctor/drug independence and the doctor-slots-v1 template; other relationships use one dynamic decision or clarification.",
     "The final answer stage can paraphrase tool evidence. Citation and output-shape checks do not establish semantic entailment or clinical correctness; real-provider answer quality is unmeasured.",
@@ -516,12 +541,12 @@
     "mode": "unified_default_with_explicit_legacy_regressions",
     "kind": "offline_real_workers_scripted_provider_fault_injection",
     "command": "python -m pytest -q -p no:cacheprovider",
-    "tests": 416,
+    "tests": 417,
     "failures": 0,
     "errors": 0,
     "skipped": 0,
-    "passed": 416,
-    "junit_seconds": 82.247,
+    "passed": 417,
+    "junit_seconds": 86.988,
     "unified_test_cases": 42,
     "external_model_calls": false,
     "frontend_unit_tests": 12,
@@ -542,7 +567,7 @@
       "structured cancellation after model exhaustion; emergency preemption",
       "separate-process restart without repeating a completed branch"
     ],
-    "console_reported_seconds": 82.35,
+    "console_reported_seconds": 86.99,
     "sse_backend_tests": 8,
     "answer_streaming_tests": 16,
     "semantic_intent_tests": 15,

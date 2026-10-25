@@ -49,6 +49,12 @@ ACTION_ARGUMENTS = {**ARGUMENT_TYPES, **{key: value[0] for key, value in HOSPITA
 PREPARE_ACTIONS = frozenset({'prepare_appointment', 'prepare_reschedule', 'prepare_cancellation'})
 
 
+def action_completion(action):
+    """The action catalog and validator must expose the same completion contract."""
+    return ('prepared' if action in PREPARE_ACTIONS else
+            'items' if action in HOSPITAL_ACTIONS else 'source_evidence')
+
+
 def fanout_authorized(action, parameter, text):
     if action == 'list_available_slots' and parameter == 'practitioner_id':
         return bool(re.search(r'(?:全部|所有|每位|每个)'
@@ -218,8 +224,7 @@ def validate_plan(proposal: PlanProposal, user_text: str, *, max_tasks=12, sourc
                 raise PermissionError('Candidate fan-out cannot prepare bulk writes')
             if reference.mode == 'each' and not fanout_authorized(task.action, parameter, task.fragment):
                 raise PermissionError('Querying every candidate requires user authorization')
-        expected = ('prepared' if task.action in PREPARE_ACTIONS else
-                    'items' if task.action in HOSPITAL_ACTIONS else 'source_evidence')
+        expected = action_completion(task.action)
         if task.completion != expected:
             raise ValueError('Completion condition disagrees with action contract')
     visiting, visited = set(), set()

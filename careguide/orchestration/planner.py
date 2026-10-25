@@ -15,7 +15,7 @@ from careguide.errors import ErrorCode, Failure
 from careguide.llm_utils import create_chat_completion, extract_text_content
 from careguide.orchestration.budget import BudgetExhausted, BudgetLedger, use_budget
 from careguide.orchestration.contracts import (
-    ACTION_ARGUMENTS, PlanChange, PlanProposal, validate_plan)
+    ACTION_ARGUMENTS, PlanChange, PlanProposal, validate_plan, action_completion)
 
 
 class PlanningFailure(RuntimeError):
@@ -52,7 +52,8 @@ class ModelPlanner:
     def catalog():
         return {action: {'agents': [agent.value for agent, contract in AGENTS.items()
                                     if action in contract.tools],
-                         'arguments_schema': schema.model_json_schema()}
+                         'arguments_schema': schema.model_json_schema(),
+                         'completion': action_completion(action)}
                 for action, schema in ACTION_ARGUMENTS.items()}
 
     async def plan(self, user_text, intent_signals, *, existing=None, budget: BudgetLedger | None = None):

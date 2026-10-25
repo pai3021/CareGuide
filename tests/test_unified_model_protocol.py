@@ -58,3 +58,32 @@ def test_bad_decisions_have_one_bounded_repair_and_no_tool_dispatch(tmp_path):
             assert len(requests) == 2
             assert ledger.summary()['used'] == {'model': 2, 'tool': 0, 'retry': 1, 'replan': 0}
     asyncio.run(run())
+
+
+def test_live_observed_completion_mismatch_gets_catalog_guided_bounded_repair(tmp_path):
+    requests = []
+    text = '帮我看看有哪些消化内科医生，只查询，不预约'
+    def handler(request):
+        body = json.loads(request.content)
+        payload = json.loads(body['messages'][-1]['content'])
+        requests.append(payload)
+        completion = 'source_evidence' if len(requests) == 1 else payload['allowed_actions']['search_doctors']['completion']
+        decision = {'kind': 'new', 'plan': {'goal': text, 'tasks': [dict(
+            id='doctor', fragment='帮我看看有哪些消化内科医生', action='search_doctors',
+            agent='appointment', arguments={'department': '消化内科'}, completion=completion)]}}
+        return httpx.Response(200, json={'id': 'offline', 'object': 'chat.completion', 'created': 1,
+            'model': 'script', 'choices': [{'index': 0, 'finish_reason': 'stop',
+                'message': {'role': 'assistant', 'content': json.dumps(decision, ensure_ascii=False)}}]})
+    async def run():
+        async with AsyncOpenAI(api_key='offline', max_retries=0,
+                http_client=httpx.AsyncClient(transport=httpx.MockTransport(handler))) as client:
+            budget = BudgetLedger(tmp_path/'budget.sqlite3', 'w', 'u', 'c')
+            decision, events = await UnderstandingPlanner(client).decide(
+                build_context(text, 'm', '2026-10-25T10:00:00+00:00'), budget=budget)
+            assert decision.plan.tasks[0].completion == 'items'
+            assert [event['status'] for event in events] == ['rejected', 'validated']
+            assert requests[0]['allowed_actions']['prepare_appointment']['completion'] == 'prepared'
+            assert requests[0]['allowed_actions']['lookup_drug_label']['completion'] == 'source_evidence'
+            assert 'completion' in requests[1]['validation_feedback']['hint']
+            assert budget.summary()['used']['model'] == 2 and budget.summary()['used']['retry'] == 1
+    asyncio.run(run())

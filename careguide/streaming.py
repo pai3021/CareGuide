@@ -2,6 +2,7 @@
 from contextlib import contextmanager
 from contextvars import ContextVar
 import json
+import inspect
 
 _sink = ContextVar('careguide_progress_sink', default=None)
 
@@ -19,6 +20,15 @@ def emit(event, **data):
     sink = _sink.get()
     if sink is not None:
         sink(event, data)
+
+
+async def emit_answer(event, **data):
+    """Answer deltas/reset are ordered and backpressured, unlike snapshots."""
+    sink = _sink.get()
+    if sink is not None:
+        pending = sink(event, data)
+        if inspect.isawaitable(pending):
+            await pending
 
 
 def workflow_progress(state, *, stage='executing'):

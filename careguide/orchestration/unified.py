@@ -41,12 +41,22 @@ class UnifiedRuntime(OrchestrationRuntime):
                                  plan_version=state.version, run_id=state.active_run)
 
     async def _respond(self, state, budget, message, started, **kwargs):
-        from careguide.orchestration.synthesis import synthesize
+        from careguide.orchestration.answering import generate_answer
         deadline = started+budget.limits.request_seconds
         with use_budget(budget, deadline=deadline):
-            emit('stage', stage='summarizing', message='正在整理已核验结果')
-            note, diagnostic = await synthesize(self.engine.client, self.engine.model, state, budget)
-        return self._reply(state, budget, message, started, note=note, synthesis=diagnostic, **kwargs)
+            emit('stage', stage='answering', message='正在根据查询结果生成回答')
+            answer, diagnostic = await generate_answer(self.engine.client, self.engine.model, state, budget, message)
+        latest = self.store.get(state.id, state.actor, state.conversation)
+        if (latest.version, latest.revision) != (state.version, state.revision):
+            from careguide.streaming import emit_answer
+            if answer is not None:
+                await emit_answer('answer_reset', answer_id=diagnostic['answer_id'], reason='workflow_changed')
+            answer, state = None, latest
+            diagnostic = {**diagnostic, 'status': 'stale_result_fallback'}
+            kwargs['failures'] = ()
+        result = self._reply(state, budget, message, started, answer=answer, synthesis=diagnostic, **kwargs)
+        result['answer_generation'] = diagnostic
+        return result
 
     async def process(self, message, user_id, conv_id, history=None, *, workflow_event=None):
         started, at, message_id = time.monotonic(), utc_now().isoformat(), uuid.uuid4().hex

@@ -72,11 +72,13 @@ const server = http.createServer(async (req, res) => {
         emit(0, 'session', { conversation_id: 'browser-conversation', stream_id: 'browser-stream' })
         emit(1, 'stage', { stage: 'planning', message: '正在生成任务计划' })
         emit(2, 'workflow', { workflow: { ...workflow(), tasks: tasks.map(task => ({ ...task, status: 'running' })) } })
+        emit(3, 'delta', { answer_id: 'browser-answer', offset: 0, text: '正在为您', provisional: true })
+        emit(4, 'delta', { answer_id: 'browser-answer', offset: 4, text: '整理查询结果', provisional: true })
         // Keep the final response gated so the browser must render actual
         // streamed progress before it can see the interactive result cards.
         if (!body.workflow_event) await new Promise(resolve => { releaseFirstStream = resolve })
         if (res.destroyed) return
-        emit(3, 'result', result)
+        emit(5, 'result', result)
         res.end(); return
       } else if (url.pathname === '/api/actions/ACT-2/confirm') {
         assert.equal(body.conv_id, 'browser-conversation')
@@ -152,6 +154,7 @@ try {
   await until(`document.querySelector('.composer textarea') !== null`)
   await send('查医生，同时查询药品说明书')
   await until(`document.querySelector('[data-testid="stream-progress"]')?.textContent.includes('执行中')`)
+  await until(`document.body.textContent.includes('正在为您整理查询结果')`)
   assert.equal(await evaluate(`document.querySelector('.action-card form input') === null`), true)
   await evaluate(`fetch('/api/test/release-stream').then(response => response.status)`)
   await until(`document.querySelector('.action-card form input:not(:disabled)') !== null`)
@@ -186,7 +189,7 @@ try {
   assert.equal(failures.length, 0, failures.join('\n'))
   console.log(JSON.stringify({ kind: 'real_chrome_built_vue_scripted_api', checks: [
     'task_missing_field_submission', 'doctor_selection', 'slot_selection', 'versioned_change',
-    'old_confirmation_disabled', 'one_current_confirmation', 'reload_and_restore', 'sse_progress_before_final',
+    'old_confirmation_disabled', 'one_current_confirmation', 'reload_and_restore', 'sse_progress_before_final', 'answer_deltas_before_final',
     'sse_stop_keeps_session_without_resubmit'],
     browser: (await command('Browser.getVersion', {}, null)).product,
     chat_events: requests.filter(item => item.path === '/api/chat/stream').map(item => item.body.workflow_event || { kind: 'initial' }),

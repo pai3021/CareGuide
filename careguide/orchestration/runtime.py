@@ -129,9 +129,9 @@ class OrchestrationRuntime:
         return BudgetLedger(self.store.path, state.budget_id or state.id, state.actor, state.conversation, self.limits,
                             require_existing=not create)
 
-    def _reply(self, state, budget, message, started, *, signals=None, failures=(), run_ids=(), note='', synthesis=None):
+    def _reply(self, state, budget, message, started, *, signals=None, failures=(), run_ids=(), note='', synthesis=None, answer=None):
         result = compose_workflow(state, budget, extra_failures=failures, intent_signals=signals)
-        result['response'] += note
+        result['response'] = (answer if answer is not None else result['response']) + note
         if synthesis is not None:
             result['synthesis'] = synthesis
         result['latency_ms'] = (time.monotonic()-started)*1000

@@ -200,7 +200,9 @@ def test_production_factory_passes_real_embedding_candidates_to_one_planner(monk
             assert options[0]['model'] == 'Qwen/Qwen3-Embedding-0.6B'
             next_query = http.post('/chat', json={'message': '查消化内科医生', 'user_id': 'u', 'conv_id': 'c'}).json()
             assert next_query['workflow_status'] == 'completed'
-            assert next_query['budget']['used']['model'] == 0 and len(calls) == 2
+            # Local routing still skips embedding/planning; final answer attempts one stream.
+            assert next_query['budget']['used']['model'] == 1 and len(calls) == 2
+            assert next_query['answer_generation']['status'] == 'deterministic_fallback'
     finally:
         factory.get_chat_runtime.cache_clear()
         factory.get_registry.cache_clear()
@@ -258,9 +260,10 @@ def test_embedding_cost_survives_model_discovered_new_workflow(tmp_path):
         runtime.planner = UnderstandingPlanner(client)
         result = await runtime.process(text, 'u', 'c')
         assert result['workflow_status'] == 'completed' and result['workflow']['id'] != original.id
-        assert result['budget']['used']['model'] == 3
-        assert runtime.ledger(original).summary()['used']['model'] == 3
-        assert result['budget']['used']['tool'] == 2 and len(calls) == 2 and len(client.calls) == 1
+        # Bank, query, planner and attempted answer all stay on the same ledger.
+        assert result['budget']['used']['model'] == 4
+        assert runtime.ledger(original).summary()['used']['model'] == 4
+        assert result['budget']['used']['tool'] == 2 and len(calls) == 2 and len(client.calls) == 2
         await runtime.understanding.close()
     asyncio.run(run())
 

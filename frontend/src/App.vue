@@ -411,6 +411,7 @@ import {
 } from './lib/backends'
 import { requestOperations, uploadKnowledge } from './lib/backends'
 import { acceptWorkflow, currentTask, currentAction, answerEvent } from './lib/workflow'
+import { applyAnswerEvent } from './lib/sse'
 
 const settings = reactive(createInitialSettings())
 const activeView = ref('chat')
@@ -721,6 +722,10 @@ async function sendMessage(workflowEvent) {
         streamConversation = data.conversation_id
         persist()
       }
+      if (event === 'delta' || event === 'answer_reset') {
+        applyAnswerEvent(assistant(), event, data)
+        assistant().meta = event === 'delta' ? '正在生成，尚未完成' : '正在展示查询结果'
+      }
       if (event === 'stage') assistant().progress = { ...assistant().progress, message: data.message }
       if (event === 'workflow') {
         const previous = assistant().progress?.workflow
@@ -750,7 +755,8 @@ async function sendMessage(workflowEvent) {
     })
     void loadMonitor()
   } catch (error) {
-    if (stillCurrent() && assistant()) Object.assign(assistant(), { content: error.message, meta: '接收已结束' })
+    if (stillCurrent() && assistant()) Object.assign(assistant(), {
+      content: error.message, meta: '接收已结束', progress: null, answerId: null, answerOffset: 0 })
   } finally {
     chatAbortController = null
     busy.value = false

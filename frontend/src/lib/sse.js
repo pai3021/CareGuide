@@ -1,4 +1,26 @@
 // POST SSE: one execution per request. Never reconnect or resubmit implicitly.
+export function applyAnswerEvent(message, event, data) {
+  if (event === 'answer_reset') {
+    if (message.answerId === data.answer_id) {
+      message.content = ''; message.answerId = null; message.answerOffset = 0
+    }
+    return
+  }
+  if (event !== 'delta') return
+  if (typeof data.answer_id !== 'string' || !data.answer_id || typeof data.text !== 'string' ||
+      !Number.isSafeInteger(data.offset) || data.offset < 0) throw new Error('回答增量格式无效')
+  if (!message.answerId) {
+    if (data.offset !== 0) throw new Error('回答增量不完整，请恢复会话任务')
+    message.answerId = data.answer_id; message.answerOffset = 0; message.content = ''
+  }
+  if (message.answerId !== data.answer_id || data.offset !== message.answerOffset) {
+    throw new Error('回答增量顺序无效，请恢复会话任务')
+  }
+  message.content += data.text
+  message.answerOffset += Array.from(data.text).length
+  if (message.answerOffset > 12000) throw new Error('回答过长，请恢复会话任务')
+}
+
 export function createSSEParser(onEvent) {
   let buffer = '', event = '', data = [], id = '', size = 0
   const line = (value) => {

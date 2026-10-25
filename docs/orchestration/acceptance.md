@@ -2,6 +2,8 @@
 
 默认 unified 入口及共享执行器的验收场景。以下结果来自离线真实 worker、可控模型和故障注入；真实提供方规划质量尚未评测。最终结果与历史离线对比样本见 [verification.json](verification.json)，运行说明见 [implementation.md](implementation.md)。
 
+MiMo v2.6 回答流式改造后，完整后端回归 **416 项通过**，其中回答流式新增 **16 项**；前端 Node **12 项通过**，生产构建与真实 Chrome 脚本 API 工作流验证通过。提供方响应由 MockTransport 模拟，未调用真实付费服务。
+
 ## SSE 前后端
 
 | 场景 | 实际结果 | 主要证据 |
@@ -14,8 +16,11 @@
 | 开流前／中途错误 | 缺字段仍 HTTP 422；中途 404／409／503 发送脱敏 error 帧，无私有异常内容 | test_chat_stream.py::test_error_frames_and_pre_header_validation_are_sanitized |
 | 补参、身份和确认 | 通过 SSE 补参；跨用户 404、旧版本 409；重复显式确认只创建一次 | test_chat_stream.py::test_stream_wait_resume_versions_and_confirmation_remain_authoritative |
 | 前端协议 | UTF-8 任意分片、CRLF、多行 data、重复／倒序 id、EOF、abort、大小限制及非 SSE 响应均有明确处理 | frontend/tests/sse.test.js；原 workflow.test.js |
+| 模型正文增量 | 真实 OpenAI SDK 消费 MockTransport SSE；模型尚未结束时，前端已收到正文 delta，最终回复与记忆／trace 一致 | test_answer_streaming.py::test_real_sse_delta_precedes_model_finish_final_memory_and_trace_agree；Chrome answer_deltas_before_final |
+| 回答失败回退 | 引用无效、无结束标志、截断、工具调用、超时或业务版本变化时撤回草稿，不丢已完成查询结果 | test_answer_streaming.py 的 bad_answers／deadline／concurrent_workflow_change 测试 |
+| 正文背压和预算 | 正文增量按序传送；断线释放等待，撤回可替换积压草稿；一次完整回答计一次模型调用，缺失 usage 不编造 | test_answer_streaming.py 的 backpressure／reset／usage／budget 测试 |
 
-当前是阶段／任务进度 SSE，最终已校验回答整体推送，未接入模型 token 逐字输出。浏览器验证使用实际 Chrome 和生产构建 Vue，后端是脚本 API；真实 FastAPI／编排器另由上述后端测试覆盖。没有据此声称线上网络可靠性、模型质量或费用收益。
+当前支持阶段／任务进度与真实模型正文增量，最终回复做引用和结构检查，不能据此证明语义忠实或医学正确。浏览器验证使用实际 Chrome 和生产构建 Vue，后端是脚本 API；真实 SDK／FastAPI／编排器另由上述后端测试覆盖。没有据此声称线上网络可靠性、模型质量或费用收益。
 
 ## 业务意图 embedding
 

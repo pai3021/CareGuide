@@ -121,8 +121,9 @@ def get_chat_runtime():
         FHIRHospitalBackend, InMemoryHospitalBackend)
     from careguide.knowledge_backends import EmbeddedKnowledgeBackend, WeKnoraMCPBackend
     key = os.environ.get('CAREGUIDE_LLM_API_KEY', '')
-    client = create_llm_client(key, os.environ.get('CAREGUIDE_LLM_BASE_URL') or None) if key and not key.startswith('YOUR_') else None
-    model = os.environ.get('CAREGUIDE_LLM_MODEL', 'gpt-4o-mini')
+    base_url = os.environ.get('CAREGUIDE_LLM_BASE_URL') or 'https://api.xiaomimimo.com/v1'
+    client = create_llm_client(key, base_url) if key and not key.startswith('YOUR_') else None
+    model = os.environ.get('CAREGUIDE_LLM_MODEL', 'mimo-v2.6-flash')
     orchestration = os.environ.get('CAREGUIDE_ORCHESTRATION_MODE', 'unified').strip().casefold()
     if orchestration not in {'unified', 'langgraph', 'direct'}:
         raise ValueError('Unknown orchestration mode')
@@ -206,7 +207,7 @@ def get_chat_runtime():
             chroma_host=os.environ.get('CAREGUIDE_CHROMA_HOST', '127.0.0.1'),
             chroma_port=int(os.environ.get('CAREGUIDE_CHROMA_PORT', '8002')),
             chroma_path=str(PROJECT_ROOT/'data'/'chroma_memory'), api_key=key,
-            base_url=os.environ.get('CAREGUIDE_LLM_BASE_URL') or None, model=model, client=client,
+            base_url=base_url, model=model, client=client,
             embedding_function=semantic_embedding() if os.environ.get('CAREGUIDE_MEMORY_EMBEDDING_MODE') == 'remote' else None,
             collection_prefix='careguide_semantic' if os.environ.get('CAREGUIDE_MEMORY_EMBEDDING_MODE') == 'remote' else 'careguide',
             profile_path=business_path)

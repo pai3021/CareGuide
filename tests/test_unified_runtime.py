@@ -201,10 +201,11 @@ def test_model_discovered_new_request_keeps_charged_budget_and_old_wait(tmp_path
         result = await instance.process(text, 'u', 'c')
         assert result['workflow_status'] == 'completed'
         assert result['workflow']['id'] != old_state.id
-        assert result['budget']['used']['model'] == 1
-        assert instance.ledger(old_state).summary()['used']['model'] == 1
+        # Planning and the attempted final-answer stream share the old ledger.
+        assert result['budget']['used']['model'] == 2
+        assert instance.ledger(old_state).summary()['used']['model'] == 2
         assert instance.store.get(old_state.id, 'u', 'c').model_dump(mode='json') == before
-        assert len(client.calls) == 1
+        assert len(client.calls) == 2
     asyncio.run(run())
 
 

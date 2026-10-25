@@ -1,9 +1,35 @@
 import test from 'node:test'
 import assert from 'node:assert/strict'
-import { createSSEParser, readChatEvents, postChatStream } from '../src/lib/sse.js'
+import { createSSEParser, readChatEvents, postChatStream, applyAnswerEvent } from '../src/lib/sse.js'
 
 const frame = (id, event, data) => `id: ${id}\nevent: ${event}\ndata: ${JSON.stringify(data)}\n\n`
 const final = { response: '已核验：药品资料', conversation_id: 'c' }
+
+test('answer deltas append Unicode text; reset retracts drafts and final replaces them', async () => {
+  const message = { content: '' }
+  const text = frame(0, 'delta', { answer_id: 'a', offset: 0, text: '查询😀' }) +
+    frame(1, 'delta', { answer_id: 'a', offset: 3, text: '结果' }) +
+    frame(2, 'answer_reset', { answer_id: 'a' }) + frame(3, 'result', final)
+  const seen = []
+  const result = await readChatEvents(response(text, 1), ({ event, data }) => {
+    applyAnswerEvent(message, event, data)
+    seen.push(message.content)
+    if (event === 'result') message.content = data.response
+  })
+  assert.deepEqual(seen.slice(0, 3), ['查询😀', '查询😀结果', ''])
+  assert.equal(message.content, result.response)
+})
+
+test('answer gaps, foreign streams and malformed chunks cannot corrupt the draft', () => {
+  const message = { content: '' }
+  assert.throws(() => applyAnswerEvent(message, 'delta', { answer_id: 'a', offset: 2, text: 'x' }), /不完整/)
+  applyAnswerEvent(message, 'delta', { answer_id: 'a', offset: 0, text: '医生' })
+  assert.throws(() => applyAnswerEvent(message, 'delta', { answer_id: 'a', offset: 1, text: 'x' }), /顺序/)
+  assert.throws(() => applyAnswerEvent(message, 'delta', { answer_id: 'b', offset: 2, text: 'x' }), /顺序/)
+  applyAnswerEvent(message, 'answer_reset', { answer_id: 'b' })
+  assert.equal(message.content, '医生')
+  assert.throws(() => applyAnswerEvent(message, 'delta', { text: 1 }), /格式/)
+})
 function response(text, byteSize = 3) {
   const bytes = new TextEncoder().encode(text)
   return new Response(new ReadableStream({ start(controller) {

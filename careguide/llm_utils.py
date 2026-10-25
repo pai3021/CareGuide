@@ -188,6 +188,58 @@ async def create_chat_completion(
     return response
 
 
+async def stream_answer_completion(client, *, model, messages, on_delta, on_usage=None, max_tokens=2048):
+    """Stream only public answer content, with one quota for the entire stream.
+
+    Tool calls and reasoning are never forwarded. A clean stop is required;
+    callers must discard the provisional answer on any exception.
+    """
+    if not is_openai_chat_client(client):
+        raise TypeError('Answer streaming requires a chat-completions client')
+    kwargs = dict(model=model, messages=messages, max_tokens=max_tokens,
+                  stream=True, stream_options={'include_usage': True})
+    if model.casefold().startswith('mimo-'):
+        kwargs['extra_body'] = {'thinking': {'type': 'disabled'}}
+    stream, chunks, finished, usage, length = None, [], False, None, 0
+    try:
+        async with budgeted_call('model') as ticket:
+            stream = await client.chat.completions.create(**kwargs)
+            async for chunk in stream:
+                if _field(chunk, 'usage') is not None:
+                    usage = chunk
+                    if ticket is not None:
+                        ticket.record_response(chunk)
+                    if on_usage is not None:
+                        on_usage(chunk)
+                for choice in _field(chunk, 'choices', []) or []:
+                    if _field(choice, 'index', 0) != 0:
+                        raise ValueError('Unexpected answer choice')
+                    delta = _field(choice, 'delta')
+                    if _field(delta, 'tool_calls') or _field(delta, 'function_call'):
+                        raise ValueError('Answer generation cannot call tools')
+                    text = _field(delta, 'content')
+                    if text:
+                        if finished or not isinstance(text, str):
+                            raise ValueError('Invalid answer chunk')
+                        chunks.append(text)
+                        length += len(text)
+                        if length > 12000:
+                            raise ValueError('Answer exceeds output limit')
+                        await on_delta(text)
+                    reason = _field(choice, 'finish_reason')
+                    if reason is not None:
+                        if reason != 'stop':
+                            raise ValueError('Incomplete or rejected answer')
+                        finished = True
+            if not finished:
+                raise ValueError('Answer stream ended without a clean stop')
+        _record_token_usage(usage or {}, model)
+        return ''.join(chunks)
+    finally:
+        if stream is not None:
+            await stream.close()
+
+
 def extract_text_content(value: Any) -> str:
     """Extract text from an OpenAI response or an older content-block list."""
     message = _completion_message(value)

@@ -160,9 +160,33 @@ async def chat_stream(request: ChatRequest, runtime=Depends(get_chat_runtime)):
     async def events():
         queue = asyncio.Queue(maxsize=64)
         connected = True
+        disconnected = asyncio.Event()
         sequence = 0
 
+        async def offer_answer(event, data):
+            if not connected:
+                return
+            put = asyncio.create_task(queue.put((event, data)))
+            closed = asyncio.create_task(disconnected.wait())
+            try:
+                await asyncio.wait({put, closed}, return_when=asyncio.FIRST_COMPLETED)
+            finally:
+                for task in (put, closed):
+                    if not task.done():
+                        task.cancel()
+                await asyncio.gather(put, closed, return_exceptions=True)
+
         def offer(event, data):
+            if event == 'answer_reset':
+                # Supersede queued provisional content instead of waiting on a
+                # stalled receiver after the model's deadline has expired.
+                if connected:
+                    while not queue.empty():
+                        queue.get_nowait()
+                    queue.put_nowait((event, data))
+                return
+            if event == 'delta':
+                return offer_answer(event, data)
             if connected:
                 # Intermediate snapshots may be dropped under backpressure;
                 # final result/error uses await put and is never dropped.
@@ -205,6 +229,7 @@ async def chat_stream(request: ChatRequest, runtime=Depends(get_chat_runtime)):
                     break
         finally:
             connected = False
+            disconnected.set()
             # Release a terminal put blocked behind a full queue. The bounded
             # workflow continues to persist; disconnect is not a business cancel.
             while not queue.empty():

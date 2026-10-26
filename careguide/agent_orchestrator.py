@@ -16,7 +16,7 @@ from pydantic import ValidationError
 
 from careguide.domain import AGENTS, ROUTES, AgentType, IntentCategory
 from careguide.errors import (ErrorCode, Failure, ModelFormatError,
-                              aggregate_status, output_failure)
+                              aggregate_status, output_failure, model_failure)
 from careguide.llm_utils import (build_openai_tool_followup, create_chat_completion,
                                 extract_tool_calls, is_openai_chat_client)
 from careguide.task_context import TaskContext, WorkflowStatus
@@ -448,10 +448,10 @@ class AgentOrchestrator:
             execution_failure = Failure(ErrorCode.BUDGET_EXHAUSTED, 'model_execution',
                 task.task_id or task.request_id).payload()
             error = execution_failure['message']
-        except Exception:
-            error = '模型服务暂不可用，保留已完成的工具查询。'
-            execution_failure = Failure(ErrorCode.MODEL_UNAVAILABLE, 'model_execution',
-                task.task_id or task.request_id, retryable=True).payload()
+        except Exception as exc:
+            execution_failure = model_failure(exc, 'model_execution',
+                task_id=task.task_id or task.request_id)
+            error = execution_failure['message']
         elapsed = (time.monotonic()-start)*1000
         success = bool(calls) and all(c['success'] for c in calls) and not error
         stats.total_ms += elapsed

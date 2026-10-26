@@ -9,7 +9,7 @@ import re
 from pydantic import ValidationError
 
 from careguide.domain import AGENTS
-from careguide.errors import ErrorCode, Failure
+from careguide.errors import ErrorCode, Failure, model_failure
 from careguide.llm_utils import create_chat_completion, extract_text_content
 from careguide.orchestration.bindings import explicit_value
 from careguide.orchestration.budget import BudgetExhausted, use_budget
@@ -155,8 +155,11 @@ class UnderstandingPlanner(ModelPlanner):
                 code = ErrorCode.PERMISSION_DENIED if isinstance(exc, PermissionError) else ErrorCode.MODEL_FORMAT
             except BudgetExhausted:
                 code = ErrorCode.BUDGET_EXHAUSTED
-            except Exception:
-                code = ErrorCode.MODEL_UNAVAILABLE
+            except Exception as exc:
+                failure = model_failure(exc, 'understanding_planning')
+                events.append({'stage': 'understanding_planning', 'attempt': attempt+1,
+                               'status': 'failed', 'failure': failure})
+                raise PlanningFailure(failure, events) from exc
             raise PlanningFailure(Failure(code, 'understanding_planning').payload(), events)
         raise AssertionError('Unreachable')
 

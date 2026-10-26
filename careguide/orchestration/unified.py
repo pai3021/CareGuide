@@ -55,6 +55,11 @@ class UnifiedRuntime(OrchestrationRuntime):
             diagnostic = {**diagnostic, 'status': 'stale_result_fallback'}
             kwargs['failures'] = ()
         body = diagnostic.pop('body', None) if answer is not None else None
+        if diagnostic.get('status') == 'deterministic_fallback' and diagnostic.get('failure'):
+            failure = diagnostic['failure']
+            kwargs['note'] = kwargs.get('note', '') + (
+                '\n\n回答生成未完成：'+failure['message']+'\n'+failure['next_step']+
+                '\n已完成的查询结果仍按系统记录展示。')
         result = self._reply(state, budget, message, started, answer=answer, synthesis=diagnostic, **kwargs)
         if body is not None:
             result['answer'] = {'body': body, 'sources': diagnostic['sources']}

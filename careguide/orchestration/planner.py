@@ -11,7 +11,7 @@ from datetime import datetime, timedelta, timezone
 from pydantic import ValidationError
 
 from careguide.domain import AGENTS
-from careguide.errors import ErrorCode, Failure
+from careguide.errors import ErrorCode, Failure, model_failure
 from careguide.llm_utils import create_chat_completion, extract_text_content
 from careguide.orchestration.budget import BudgetExhausted, BudgetLedger, use_budget
 from careguide.orchestration.contracts import (
@@ -139,7 +139,10 @@ class ModelPlanner:
                 feedback = {'code': code.value,
                     'hint': 'Check original fragments, dependency DAG, bindings, scope and base version.'}
             except Exception as exc:
-                code, retryable, diagnostic = ErrorCode.MODEL_UNAVAILABLE, False, type(exc).__name__
+                failure = model_failure(exc, 'planning', call_id=call_id)
+                events.append({'call_id': call_id, 'attempt': attempt+1,
+                               'status': 'rejected', 'failure': failure})
+                raise PlanningFailure(failure, events) from exc
             failure = Failure(code, 'plan_validation' if retryable else 'planning',
                               call_id=call_id, retryable=retryable).payload()
             events.append({'call_id': call_id, 'attempt': attempt+1,

@@ -10,7 +10,8 @@ import re
 import uuid
 
 from careguide.llm_utils import stream_answer_completion
-from careguide.orchestration.budget import use_budget
+from careguide.errors import model_failure
+from careguide.orchestration.budget import BudgetExhausted, use_budget
 from careguide.orchestration.contracts import TaskStatus
 from careguide.orchestration.replies import LABELS
 from careguide.streaming import emit_answer
@@ -153,6 +154,8 @@ async def _generate_answer(client, model, state, budget, message):
             'Answer stream ended without a clean stop': 'incomplete_stream',
             'Answer exceeds output limit': 'output_limit'}
         diagnostic = 'timeout' if isinstance(exc, TimeoutError) else codes.get(str(exc), 'unavailable_or_invalid')
+        failure = (model_failure(exc, 'answering')
+                   if not isinstance(exc, (ValueError, BudgetExhausted)) else None)
         return None, {'status': 'deterministic_fallback',
             'model_calls': budget.summary()['used']['model']-before, 'diagnostic_type': type(exc).__name__,
-            'diagnostic_code': diagnostic}
+            'diagnostic_code': diagnostic, **({'failure': failure} if failure else {})}

@@ -73,4 +73,8 @@ services:
 
 ## 工程检查
 
+模型调用失败统一输出稳定错误码和中文提示：`model_timeout`（程序或接口超时）、`model_auth_failed`（401）、`model_quota_exceeded`（402 或明确的余额/额度耗尽信号）、`model_rate_limited`（普通 429）、`model_connection_failed`（网络连接失败）、`model_access_denied`（其他 403）。未知错误与服务端故障保留 `model_unavailable`。不展示供应商原始报错或凭据；不自动重试鉴权或额度错误。规划与 Worker 使用相同分类；回答生成失败会保留已完成工具结果，并在回复中附上对应提示与结构化诊断。回答校验失败仍使用既有校验诊断，不归为供应商故障。
+
+此增量通过 106 项离线回归（模型错误分类、两种 Planner、Worker 失败、统一理解、回答流及聊天 SSE），包括真实 OpenAI SDK 的模拟 HTTP/网络错误和回答失败保留成功工具结果；未为此增量调用真实模型。
+
 CI 已运行前端协议与渲染测试。Markdown 依赖固定版本，现有 Vue/Vite 及其依赖仅在既有主版本范围内更新补丁，锁文件一并提交。原单机 SQLite、非持久 SSE 事件和兼容运行入口继续保留。

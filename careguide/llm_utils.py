@@ -109,6 +109,7 @@ async def create_chat_completion(
     temperature: Optional[float] = None,
     system: Optional[str] = None,
     tools: Optional[Sequence[Dict[str, Any]]] = None,
+    tool_choice: Optional[Dict[str, Any]] = None,
     response_format: Optional[Dict[str, Any]] = None,
     extra_body: Optional[Dict[str, Any]] = None,
 ) -> Any:
@@ -150,6 +151,8 @@ async def create_chat_completion(
             kwargs["temperature"] = temperature
         if tools:
             kwargs["tools"] = [_to_openai_tool(tool) for tool in tools]
+            if tool_choice is not None:
+                kwargs['tool_choice'] = tool_choice
         if response_format is not None:
             kwargs["response_format"] = response_format
         if extra_body is not None:

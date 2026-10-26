@@ -215,7 +215,7 @@ class TaskWorker:
                 brief = TaskBrief(workflow_id=workflow.id, task_id=record.spec.id,
                     task_revision=record.revision, run_id=workflow.active_run,
                     actor=workflow.actor, conversation=workflow.conversation,
-                    objective=record.spec.action, purpose='完成当前用户请求中的这项业务查询或受控准备',
+                    objective=record.spec.fragment, purpose='完成当前用户请求中的这项业务查询或受控准备',
                     known_facts={'arguments': dict(arguments), 'origins': dict(record.origins)},
                     inputs={'bound_arguments': dict(arguments)},
                     constraints=['只使用允许动作；不替代用户选择或确认；失败返回结构化状态',

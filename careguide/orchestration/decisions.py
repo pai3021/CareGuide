@@ -43,7 +43,7 @@ class TaskAnswer(Contract):
 
 
 class RequestDecision(Contract):
-    kind: Literal['new', 'change', 'answer', 'cancel', 'clarify', 'boundary', 'run']
+    kind: Literal['new', 'change', 'answer', 'cancel', 'clarify', 'boundary', 'run', 'direct']
     plan: PlanProposal | None = None
     change: PlanChange | None = None
     workflow_id: str | None = None
@@ -55,6 +55,8 @@ class RequestDecision(Contract):
 
     @model_validator(mode='after')
     def shape(self):
+        if self.kind == 'direct' and (self.workflow_id is not None or self.base_version is not None):
+            raise ValueError('Direct answers cannot target a workflow')
         if (self.kind == 'new') != (self.plan is not None):
             raise ValueError('Only new requests carry a plan')
         if (self.kind == 'change') != (self.change is not None):

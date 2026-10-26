@@ -64,6 +64,10 @@ def validate_decision(decision, context):
     current = context['current_message']
     text = current['content']
     existing = context['existing_workflow']
+    if decision.kind == 'direct':
+        from careguide.orchestration.general_answering import direct_allowed
+        if not direct_allowed(text):
+            raise PermissionError('Concrete source or business requests require tools or a boundary')
     if decision.kind in {'change', 'answer', 'cancel', 'run'}:
         if existing is None or (decision.workflow_id, decision.base_version) != (existing['id'], existing['version']):
             raise ValueError('Decision targets another workflow or version')
@@ -97,8 +101,12 @@ SYSTEM = '''你是 CareGuide 主编排 Agent。一次完成请求理解、任务
 semantic_embedding 候选是业务示例参考，不是当前用户事实、用户原话或执行授权；相似度未校准。
 不能将近邻排名当成多个用户目标。保持当前原文的否定、范围、对象和历史指代，即使与示例不同。
 保留所有目标、每项目标自己的参数、否定限制和缺失字段；分类 Top-K 不是多个目标。
-列表、Markdown 等输出格式不是额外业务目标。就诊证件/挂号材料查询使用 lookup_hospital_guide；
-未指定医院/院区时保留缺失参数交由工具澄清，不猜医院，也不添加一般症状检索来替代材料查询。
+回答方式先分流：通用就诊准备、一般概念、整理表达和问候使用 kind=direct，不带 plan，不要求知识库命中。
+例如“帮我整理一下就诊前需要准备哪些材料，用列表回答”应 direct，不能因为未提供医院而澄清。
+具体医院规定、药品资料、官方来源要求使用 new 检索计划；实时医生/号源及预约业务必须使用工具。
+不得用 direct 代替受限医疗判断、业务操作、补充任务参数或查询具体来源。direct 不改变既有任务。
+列表、Markdown 等输出格式不是额外业务目标。某家医院的就诊材料查询使用 lookup_hospital_guide；
+具体医院要求缺医院/院区时保留缺失参数交由工具澄清，不猜医院，不添加无关症状检索来凑结果。
 当前消息可能是新查询、补参、修改、取消、继续或澄清；不能让旧等待任务吞掉新查询。
 明确新请求使用 new；修改使用 change，可同时包含 answers 和 add/update/cancel。
 answers 必须绑定当前工作流/任务版本且值由本次用户明确提供。多个可能任务时 clarify，不猜。

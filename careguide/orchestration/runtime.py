@@ -134,6 +134,8 @@ class OrchestrationRuntime:
         result['response'] = (answer if answer is not None else result['response']) + note
         if synthesis is not None:
             result['synthesis'] = synthesis
+            if synthesis.get('mode') == 'llm_direct':
+                result['execution_mode'] = 'llm_direct'
         result['latency_ms'] = (time.monotonic()-started)*1000
         from careguide.timing import timing_snapshot
         result['timings'] = timing_snapshot()
@@ -154,11 +156,14 @@ class OrchestrationRuntime:
             'input': message, 'started_at': (utc_now()-timedelta(milliseconds=result['latency_ms'])).isoformat(),
             'finished_at': finished,
             'total_latency_ms': result['latency_ms'], 'status': result['workflow_status'],
-            'task_understanding': {'task_type': 'validated_task_plan', 'entities': {},
+            'task_understanding': {'task_type': ('general_information'
+                if result.get('execution_mode') == 'llm_direct' else 'validated_task_plan'), 'entities': {},
                 'missing_fields': {key: task.missing_fields for key, task in state.tasks.items()},
                 'workflow_status_after_understanding': result['workflow_status'], 'intent_signals': signals or {}},
             'routing': {'primary_agent': result['primary_agent'], 'supporting_agents': result['supporting_agents'],
-                'routing_reason': 'Full-text model plan validated by code', 'routing_confidence': None},
+                'routing_reason': ('General information; no tools or retrieval'
+                    if result.get('execution_mode') == 'llm_direct' else
+                    'Full-text model plan validated by code'), 'routing_confidence': None},
             'execution': {'execution_waves': [], 'tool_calls': calls,
                 'workflow': state.model_dump(mode='json'), 'budget': budget.summary(),
                 'synthesis': synthesis, 'timings': result['timings']},

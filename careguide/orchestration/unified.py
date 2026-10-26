@@ -5,6 +5,7 @@ import re
 import asyncio
 import time
 import uuid
+from datetime import timedelta
 
 from careguide.domain import IntentCategory
 from careguide.errors import ErrorCode, Failure
@@ -15,7 +16,7 @@ from careguide.orchestration.contracts import PlanChange, TaskStatus
 from careguide.orchestration.decisions import RequestDecision, TaskAnswer
 from careguide.orchestration.planner import PlanningFailure
 from careguide.orchestration.runtime import OrchestrationRuntime, preference_snapshot
-from careguide.orchestration.store import VersionConflict, WorkflowExpired, utc_now
+from careguide.orchestration.store import VersionConflict, WorkflowExpired, WorkflowState, utc_now
 from careguide.orchestration.understanding import LocalUnderstanding, compose_plan
 from careguide.orchestration.understanding_planner import UnderstandingPlanner, build_context
 from careguide.streaming import emit
@@ -30,6 +31,27 @@ class UnifiedRuntime(OrchestrationRuntime):
         self.result_artifacts = ResultArtifacts(self.store.path)
         self.worker.brief_mode = True
         self.worker.artifacts = self.result_artifacts
+
+    async def _answer_general(self, message, user_id, conv_id, history, started, *, budget=None):
+        from careguide.orchestration.general_answering import generate_general_answer
+        # Request-only state for trace compatibility. Never persist it as the
+        # latest workflow: a general question must not hide a waiting booking.
+        now = utc_now()
+        state = WorkflowState(id='direct-'+uuid.uuid4().hex, actor=user_id, conversation=conv_id,
+            goal=message, tasks={}, status='completed', created_at=now.isoformat(),
+            expires_at=(now+timedelta(minutes=30)).isoformat(), events=[{'event': 'direct_answer'}])
+        budget = budget or self.ledger(state, create=True)
+        with use_budget(budget, deadline=started+budget.limits.request_seconds):
+            answer, diagnostic = await generate_general_answer(self.engine.client, self.engine.model,
+                                                               message, history, budget)
+        failures = [diagnostic['failure']] if diagnostic.get('failure') else []
+        result = self._reply(state, budget, message, started, answer=answer,
+                             synthesis=diagnostic, failures=failures)
+        result.update(workflow=None, knowledge_used=False, grounded=False,
+                      answer_kind='general_information', answer_generation=diagnostic)
+        if answer is not None:
+            result['answer'] = {'body': answer, 'sources': []}
+        return result
 
     def _save_context(self, state, context, metadata):
         def save(value):
@@ -87,6 +109,10 @@ class UnifiedRuntime(OrchestrationRuntime):
             # records a request; it does not contact a human or external system.
             return await self.engine.process(message, user_id, conv_id, history,
                 understood=IntentResult(None, 0, [], 'needs_clarification'))
+        if not workflow_event:
+            from careguide.orchestration.general_answering import local_general_request
+            if local_general_request(message, corpus=self.registry.corpus):
+                return await self._answer_general(message, user_id, conv_id, history, started)
         if state and workflow_event and state.version != workflow_event['plan_version']:
             raise VersionConflict('Old plan version')
         if state:
@@ -173,6 +199,12 @@ class UnifiedRuntime(OrchestrationRuntime):
                     return self._reply(state, budget, message, started, failures=[exc.failure],
                                        signals={'plan_source': 'llm', 'planning_events': exc.events})
                 metadata = {**metadata, 'plan_source': 'llm', 'recognition_source': understood.recognition_source}
+        if decision.kind == 'direct':
+            from careguide.orchestration.general_answering import direct_allowed
+            if not direct_allowed(message, corpus=self.registry.corpus):
+                return self._reply(state, budget, message, started, failures=[Failure(
+                    ErrorCode.INVALID_PARAMETERS, 'answer_route_validation').payload()])
+            return await self._answer_general(message, user_id, conv_id, history, started, budget=budget)
         if decision.kind == 'boundary':
             if decision.boundary == 'urgent_handoff':
                 self._preempt(state)

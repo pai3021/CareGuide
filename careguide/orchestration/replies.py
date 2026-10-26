@@ -24,6 +24,8 @@ FIELD_LABELS = {'drug_name': '药品全名', 'dosage_form': '剂型', 'specifica
 
 def workflow_status(state, *, extra_failures=()):
     tasks = [task for task in state.tasks.values() if task.status != TaskStatus.CANCELLED]
+    if not tasks and any(event.get('event') == 'direct_answer' for event in state.events):
+        return 'failed' if extra_failures else 'completed'
     if state.status == 'expired':
         return 'expired'
     if not tasks and state.status == 'waiting_user':

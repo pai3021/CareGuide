@@ -224,6 +224,8 @@ class BudgetLedger:
                 timeout_s = min(timeout_s, remaining)
         ticket = await asyncio.to_thread(self.reserve, kind, timeout_s, exploration=exploration)
         started = time.monotonic()
+        from careguide.timing import start_span, end_span
+        span = start_span(kind)
         try:
             if ticket.timeout_s:
                 async with asyncio.timeout(ticket.timeout_s):
@@ -239,3 +241,5 @@ class BudgetLedger:
             raise
         else:
             await asyncio.to_thread(self.finish, ticket, time.monotonic()-started)
+        finally:
+            end_span(span)

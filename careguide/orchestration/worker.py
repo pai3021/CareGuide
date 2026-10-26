@@ -127,6 +127,8 @@ class TaskWorker:
         return bound
 
     async def run(self, record, workflow, budget):
+        from careguide.streaming import emit
+        emit('stage', stage='tools', message='正在调用工具获取资料')
         outcome = await self._run(record, workflow, budget)
         if self.brief_mode:
             data, artifacts = outcome.data, []

@@ -24,6 +24,9 @@ def emit(event, **data):
 
 async def emit_answer(event, **data):
     """Answer deltas/reset are ordered and backpressured, unlike snapshots."""
+    if event == 'delta':
+        from careguide.timing import first_content
+        first_content()
     sink = _sink.get()
     if sink is not None:
         pending = sink(event, data)

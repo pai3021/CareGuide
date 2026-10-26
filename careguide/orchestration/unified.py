@@ -54,7 +54,10 @@ class UnifiedRuntime(OrchestrationRuntime):
             answer, state = None, latest
             diagnostic = {**diagnostic, 'status': 'stale_result_fallback'}
             kwargs['failures'] = ()
+        body = diagnostic.pop('body', None) if answer is not None else None
         result = self._reply(state, budget, message, started, answer=answer, synthesis=diagnostic, **kwargs)
+        if body is not None:
+            result['answer'] = {'body': body, 'sources': diagnostic['sources']}
         result['answer_generation'] = diagnostic
         return result
 

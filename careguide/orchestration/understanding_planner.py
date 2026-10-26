@@ -113,6 +113,11 @@ answers 必须绑定当前工作流/任务版本且值由本次用户明确提�
 
 class UnderstandingPlanner(ModelPlanner):
     async def decide(self, context, *, budget=None):
+        from careguide.timing import phase
+        with phase('planning'):
+            return await self._decide(context, budget=budget)
+
+    async def _decide(self, context, *, budget=None):
         if self.client is None:
             raise PlanningFailure(Failure(ErrorCode.MODEL_UNAVAILABLE, 'understanding').payload(), [])
         payload = {**context, 'allowed_actions': self.catalog(),

@@ -37,3 +37,5 @@ jobs:
         run: npm ci
       - name: Build frontend
         run: npm run build
+      - name: Frontend protocol and rendering tests
+        run: npm test

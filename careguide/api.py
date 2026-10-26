@@ -17,6 +17,7 @@ from careguide.tools import MedicalToolRegistry
 from careguide.orchestration.store import VersionConflict, WorkflowExpired
 from careguide.orchestration.budget import BudgetExhausted
 from careguide.streaming import emit, progress_events, encode_event
+from careguide.auth import ActorModel, authentication_middleware, principal, owned_trace, bound_actor
 
 @asynccontextmanager
 async def lifespan(app):
@@ -44,6 +45,7 @@ async def lifespan(app):
 
 
 app = FastAPI(title='CareGuide', version='0.3.0', lifespan=lifespan)
+app.middleware('http')(authentication_middleware)
 app.add_middleware(CORSMiddleware,
     allow_origins=os.environ.get('CAREGUIDE_CORS_ORIGINS', 'http://127.0.0.1:5175,http://localhost:5175').split(','),
     allow_methods=['GET', 'POST'], allow_headers=['Content-Type'])
@@ -72,7 +74,7 @@ class WorkflowEvent(BaseModel):
     event_id: str | None = Field(default=None, min_length=1, max_length=100)
 
 
-class ChatRequest(BaseModel):
+class ChatRequest(ActorModel):
     model_config = ConfigDict(extra='forbid')
     message: str = Field(min_length=1, max_length=4000)
     user_id: str = Field(default='demo-user', min_length=1, max_length=100)
@@ -97,6 +99,15 @@ def _validate_chat_event(request, engine):
 
 
 async def _chat_result(request, runtime):
+    from careguide.timing import request_timing
+    with request_timing() as timing:
+        result = await _execute_chat_result(request, runtime)
+        result['timings'] = timing.snapshot()
+        return result
+
+
+async def _execute_chat_result(request, runtime):
+    from careguide.timing import phase
     engine, memory, monitor = runtime
     _validate_chat_event(request, engine)
     conv_id = request.conv_id or uuid.uuid4().hex
@@ -116,7 +127,8 @@ async def _chat_result(request, runtime):
             memory_status = 'available'
             try:
                 async with asyncio.timeout(_MEMORY_READ_TIMEOUT_S):
-                    history = await memory.history(request.user_id, conv_id, query=request.message)
+                    with phase('memory_read'):
+                        history = await memory.history(request.user_id, conv_id, query=request.message)
             except Exception:
                 history, memory_status = [], 'unavailable'
             if request.workflow_event:
@@ -128,8 +140,9 @@ async def _chat_result(request, runtime):
             emit('stage', stage='saving', message='结果已生成，正在保存会话')
             try:
                 async with asyncio.timeout(_MEMORY_WRITE_TIMEOUT_S):
-                    await memory.add(request.user_id, conv_id, 'user', request.message)
-                    memory_update = await memory.add(request.user_id, conv_id, 'assistant', result['response'])
+                    with phase('memory_write'):
+                        await memory.add(request.user_id, conv_id, 'user', request.message)
+                        memory_update = await memory.add(request.user_id, conv_id, 'assistant', result['response'])
                 if memory_update is not None:
                     result['memory_update'] = memory_update
             except Exception:
@@ -302,13 +315,13 @@ def metrics(runtime=Depends(get_chat_runtime)):
 
 @app.get('/trace/tool/{request_id}')
 def trace(request_id: str, runtime=Depends(get_chat_runtime)):
-    result = runtime[0].traces.get(request_id)
+    result = owned_trace(runtime[0].traces.get(request_id))
     return {'request_id': request_id, 'found': result is not None, 'trace': result}
 
 
 @app.get('/trace/tools')
 def recent_traces(limit: int = 20, runtime=Depends(get_chat_runtime)):
-    return {'traces': runtime[0].traces.list_recent(limit)}
+    return {'traces': [trace for trace in runtime[0].traces.list_recent(limit) if owned_trace(trace)]}
 
 
 @app.get('/knowledge/stats')
@@ -350,7 +363,7 @@ def get_handoff(identity: str, user_id: str, runtime=Depends(get_chat_runtime)):
     return item
 
 
-class HandoffUpdate(BaseModel):
+class HandoffUpdate(ActorModel):
     model_config = ConfigDict(extra='forbid')
     user_id: str = Field(min_length=1, max_length=100)
     status: str = Field(pattern='^(in_progress|resolved|cancelled)$')
@@ -388,7 +401,7 @@ async def add_knowledge(request: Request, submitter: str = 'local-developer', ru
         bundle = KnowledgeBundle.model_validate_json(body)
     except ValidationError as error:
         raise HTTPException(422, '需要带来源、核验记录和适用范围的JSON资料包') from error
-    return knowledge_workflow(runtime).submit(bundle, submitter)
+    return knowledge_workflow(runtime).submit(bundle, bound_actor(submitter))
 
 
 class KnowledgeReview(BaseModel):
@@ -401,7 +414,7 @@ class KnowledgeReview(BaseModel):
 @app.post('/knowledge/{identity}/review')
 def review_knowledge(identity: str, request: KnowledgeReview, runtime=Depends(get_chat_runtime)):
     try:
-        return knowledge_workflow(runtime).review(identity, request.reviewer, request.approve, request.note)
+        return knowledge_workflow(runtime).review(identity, bound_actor(request.reviewer), request.approve, request.note)
     except LookupError as error:
         raise HTTPException(404, '未找到资料包') from error
     except ValueError as error:
@@ -513,7 +526,7 @@ class ToolRequest(BaseModel):
     arguments: dict
 
 
-class ActionIdentityRequest(BaseModel):
+class ActionIdentityRequest(ActorModel):
     model_config = ConfigDict(extra='forbid')
     user_id: str = Field(min_length=1, max_length=100)
     conv_id: str = Field(min_length=1, max_length=100)
@@ -532,6 +545,14 @@ def _intent_classifier_status(engine) -> dict:
         backend = 'legacy'
         model = recognizer.__class__.__name__
     return {'status': 'available', 'backend': backend, 'model': model}
+
+
+@app.get('/auth/me')
+def auth_identity():
+    identity = principal()
+    return {'mode': 'bearer' if identity else 'local_demo',
+            'user_id': identity.user_id if identity else None,
+            'role': identity.role if identity else 'demo'}
 
 
 @app.get('/health')

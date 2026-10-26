@@ -135,6 +135,8 @@ class OrchestrationRuntime:
         if synthesis is not None:
             result['synthesis'] = synthesis
         result['latency_ms'] = (time.monotonic()-started)*1000
+        from careguide.timing import timing_snapshot
+        result['timings'] = timing_snapshot()
         result['integrations'] = {
             'knowledge': {'backend': getattr(self.knowledge_backend, 'name', 'embedded'),
                           'status': 'used' if result['evidence'] else 'not_used'},
@@ -159,7 +161,7 @@ class OrchestrationRuntime:
                 'routing_reason': 'Full-text model plan validated by code', 'routing_confidence': None},
             'execution': {'execution_waves': [], 'tool_calls': calls,
                 'workflow': state.model_dump(mode='json'), 'budget': budget.summary(),
-                'synthesis': synthesis},
+                'synthesis': synthesis, 'timings': result['timings']},
             'evidence': result['evidence'], 'side_effects': [
                 {'type': 'synthetic_action_prepared', 'id': call['output']['id']}
                 for call in calls if call['output'].get('status') == 'pending_confirmation'],

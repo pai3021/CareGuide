@@ -506,9 +506,27 @@
     "isolation": "Dedicated SQLite, frozen medical_v1 corpus with BM25, local intent candidates, in-memory synthetic hospital and session memory",
     "timing_scope": "Single observations from route execution start; runtime construction excluded; not deployed network/browser latency",
     "cases": [
-      {"case": "doctor", "first_content_ms": 1093.0, "total_ms": 2609.0, "model_requests": 1, "provider_tokens": 389},
-      {"case": "doctor_and_drug", "first_content_ms": 11953.0, "total_ms": 20062.0, "model_requests": 3, "provider_tokens": 7733},
-      {"case": "dynamic_doctor_query", "first_content_ms": 10672.0, "total_ms": 14922.0, "model_requests": 2, "provider_tokens": 5370}
+      {
+        "case": "doctor",
+        "first_content_ms": 1093.0,
+        "total_ms": 2609.0,
+        "model_requests": 1,
+        "provider_tokens": 389
+      },
+      {
+        "case": "doctor_and_drug",
+        "first_content_ms": 11953.0,
+        "total_ms": 20062.0,
+        "model_requests": 3,
+        "provider_tokens": 7733
+      },
+      {
+        "case": "dynamic_doctor_query",
+        "first_content_ms": 10672.0,
+        "total_ms": 14922.0,
+        "model_requests": 2,
+        "provider_tokens": 5370
+      }
     ],
     "checks": {
       "all_final_answers_generated": true,
@@ -526,30 +544,30 @@
   },
   "current_limitations": [
     "Live MiMo access and three selected request paths were verified; representative planning/answer quality, monetary cost and clinical effectiveness remain unmeasured.",
-    "Current deployment uses single-machine SQLite and demo user_id, not distributed persistence or production authentication.",
+    "Single-machine SQLite remains. Optional server-bound bearer authentication is implemented; local preview remains demo mode, without OIDC/SSO or distributed persistence.",
     "Expired workflow history and stale projections are logically excluded, not automatically physically purged; old unproven profile fields are not trusted.",
     "The live answer smoke used isolated BM25, local intent candidates and a synthetic hospital; arbitrary-query remote embedding/reranking and deployed-browser integration were not part of it.",
-    "Classifier, character and dense similarity direct acceptance remains disabled without calibration evidence. Dense business retrieval is integrated but external semantic-quality evaluation has not run.",
+    "Classifier, character and dense similarity direct acceptance remains disabled. A six-case candidate ablation is exploratory, not calibration or representative semantic evaluation.",
     "Local composition is deliberately limited to explicit supported grammars, doctor/drug independence and the doctor-slots-v1 template; other relationships use one dynamic decision or clarification.",
-    "The final answer stage can paraphrase tool evidence. Citation and output-shape checks do not establish semantic entailment or clinical correctness; real-provider answer quality is unmeasured.",
+    "Citation and narrow quantity checks do not prove semantic faithfulness. Four reused development probes and same-model judging are not independent clinical or broad answer-quality validation.",
     "Offline verification did not restart or deploy services; existing real-service integration was not rerun. Browser SSE evidence is recorded separately.",
     "SSE streams progress and provisional model content deltas. Failure retracts the draft; only the terminal result is saved. Persistent Last-Event-ID replay is not implemented.",
     "The business reference bank and 26 synthetic cases are small engineering fixtures. Routing accuracy, semantic gain, live latency and cost savings have not been established."
   ],
   "release_regression": {
-    "date": "2026-10-25",
+    "date": "2026-10-26",
     "mode": "unified_default_with_explicit_legacy_regressions",
     "kind": "offline_real_workers_scripted_provider_fault_injection",
     "command": "python -m pytest -q -p no:cacheprovider",
-    "tests": 417,
+    "tests": 426,
     "failures": 0,
     "errors": 0,
     "skipped": 0,
-    "passed": 417,
-    "junit_seconds": 86.988,
+    "passed": 426,
+    "junit_seconds": 102.295,
     "unified_test_cases": 42,
     "external_model_calls": false,
-    "frontend_unit_tests": 12,
+    "frontend_unit_tests": 15,
     "frontend_failed": 0,
     "frontend_production_build": "passed",
     "browser_rerun": true,
@@ -567,12 +585,13 @@
       "structured cancellation after model exhaustion; emergency preemption",
       "separate-process restart without repeating a completed branch"
     ],
-    "console_reported_seconds": 86.99,
+    "console_reported_seconds": 102.31,
     "sse_backend_tests": 8,
     "answer_streaming_tests": 16,
     "semantic_intent_tests": 15,
     "deployment_environment_cleared_for_pytest": true,
-    "compose_public_template_validation": "passed"
+    "compose_public_template_validation": "passed",
+    "auth_timing_and_quality_tests": 9
   },
   "answer_streaming_verification": {
     "date": "2026-10-25",
@@ -857,5 +876,23 @@
       "reason": "This implementation round did not invoke paid providers."
     },
     "interpretation": "Per-query action coverage averaged over positive cases only. Not semantic routing accuracy, calibrated confidence, goal completeness, or execution success. Dense vs character mode also changes the reference bank, so this is not a controlled embedding-only comparison."
+  },
+  "quality_and_ui_verification": {
+    "date": "2026-10-26",
+    "report": "quality-verification.json",
+    "backend_passed": 426,
+    "frontend_passed": 15,
+    "production_build": "passed",
+    "browser": "Chrome/155.0.8059.85; scripted API; Markdown and citation navigation verified",
+    "identity_mode": "optional server-bound opaque bearer; local preview remains demo",
+    "online_judge": false,
+    "worker_call_chain_changed": false,
+    "remote_requests_including_development_refinement": 44,
+    "provider_tokens_including_embedding": 91952,
+    "quality_scope": "Six selected intent cases per arm and four reused answer development probes; same-model judge is provisional, not clinical or independent accuracy",
+    "final_metadata_guard_targeted_tests": 20,
+    "requests_without_provider_usage": 1,
+    "local_preview_deployed": true,
+    "preview_url": "http://127.0.0.1:5175/"
   }
 }

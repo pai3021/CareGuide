@@ -1,0 +1,12 @@
+{
+  "version": "intent-ablation-v1",
+  "provenance": "Six hand-authored engineering smoke cases, fixed before the live comparison; not representative routing accuracy.",
+  "cases": [
+    {"id":"canonical", "text":"查消化内科医生", "actions":["search_doctors"], "arguments":{"search_doctors":{"department":"消化内科"}}},
+    {"id":"paraphrase", "text":"胃不舒服想看看门诊，给我找消化内科坐诊的大夫，只查医生", "actions":["search_doctors"], "arguments":{"search_doctors":{"department":"消化内科"}}},
+    {"id":"multi", "text":"我想知道心血管内科有哪些医师，也想看看精氨酸布洛芬片0.2g说明书上的注意事项", "actions":["search_doctors","lookup_drug_label"], "arguments":{"search_doctors":{"department":"心血管内科"},"lookup_drug_label":{"drug_name":"精氨酸布洛芬片","specification":"0.2g"}}},
+    {"id":"negation", "text":"帮我找消化内科的门诊大夫，先不要预约，也不需要查询号源", "actions":["search_doctors"], "arguments":{"search_doctors":{"department":"消化内科"}}, "forbidden_actions":["prepare_appointment","list_available_slots"]},
+    {"id":"scope", "text":"请给出心血管内科的医生列表，其他科室都不查", "actions":["search_doctors"], "arguments":{"search_doctors":{"department":"心血管内科"}}},
+    {"id":"history", "text":"它的禁忌呢", "history":[{"role":"user","content":"精氨酸布洛芬片0.2g说明书"}], "actions":["lookup_drug_label"], "arguments":{"lookup_drug_label":{"drug_name":"精氨酸布洛芬片","specification":"0.2g","section":"contraindications"}}}
+  ]
+}

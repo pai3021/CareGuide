@@ -113,7 +113,7 @@ export async function readChatEvents(response, onEvent, signal) {
   }
 }
 
-export async function postChatStream(url, payload, { signal, onEvent, timeoutMs = 90000 } = {}) {
+export async function postChatStream(url, payload, { signal, onEvent, timeoutMs = 90000, headers = {} } = {}) {
   const controller = new AbortController()
   const abort = () => controller.abort()
   signal?.addEventListener('abort', abort, { once: true })
@@ -121,7 +121,7 @@ export async function postChatStream(url, payload, { signal, onEvent, timeoutMs 
   const timer = setTimeout(abort, timeoutMs)
   try {
     const response = await fetch(url, { method: 'POST', signal: controller.signal,
-      headers: { 'Content-Type': 'application/json', Accept: 'text/event-stream' }, body: JSON.stringify(payload) })
+      headers: { ...headers, 'Content-Type': 'application/json', Accept: 'text/event-stream' }, body: JSON.stringify(payload) })
     return await readChatEvents(response, onEvent, controller.signal)
   } catch (error) {
     if (controller.signal.aborted) throw new Error(signal?.aborted

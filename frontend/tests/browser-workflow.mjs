@@ -22,6 +22,8 @@ const tasks = [
 let actions = []
 const workflow = () => ({ id: 'browser-workflow', version, revision, tasks: structuredClone(tasks) })
 const response = () => ({ conversation_id: 'browser-conversation', request_id: 'browser-request-'+revision,
+  answer: { body: '## 当前查询\n\n可继续当前任务。[S1]',
+    sources: [{ id: 'S1', task_id: 'drug', title: '浏览器测试资料', excerpt: '仅用于验证引用定位。' }] },
   response: '可继续当前任务', workflow_status: actions.some(item => item.status === 'pending_confirmation') ? 'pending_confirmation' : 'waiting_user',
   workflow: workflow(), action_requests: actions, evidence: [], agent_types: ['appointment', 'medication'], simulation: true })
 const server = http.createServer(async (req, res) => {
@@ -86,6 +88,7 @@ const server = http.createServer(async (req, res) => {
         revision += 1
         result = { ...actions[0], workflow: workflow() }
       } else if (url.pathname === '/api/workflows/latest') result = response()
+      else if (url.pathname === '/api/auth/me') result = { mode: 'local_demo', user_id: null, role: 'demo' }
       else if (url.pathname === '/api/health') result = { status: 'ok' }
       else if (url.pathname === '/api/appointments') result = { appointments: [] }
       else if (url.pathname === '/api/knowledge/stats') result = { total_chunks: 1 }
@@ -158,6 +161,9 @@ try {
   assert.equal(await evaluate(`document.querySelector('.action-card form input') === null`), true)
   await evaluate(`fetch('/api/test/release-stream').then(response => response.status)`)
   await until(`document.querySelector('.action-card form input:not(:disabled)') !== null`)
+  assert.equal(await evaluate(`document.querySelector('.answer-markdown h2')?.textContent`), '当前查询')
+  await evaluate(`document.querySelector('.source-reference').click()`)
+  await until(`document.querySelector('.answer-sources article.selected')?.textContent.includes('引用定位')`)
   await evaluate(`(() => { const input=document.querySelector('.action-card form input:not(:disabled)'); input.value='0.2g'; input.dispatchEvent(new Event('input',{bubbles:true})); input.closest('form').requestSubmit(); })()`)
   await until(`document.querySelector('.action-card form select:not(:disabled)') !== null`)
   for (const value of ['PRA-1', 'SLOT-1']) {
@@ -189,7 +195,7 @@ try {
   assert.equal(failures.length, 0, failures.join('\n'))
   console.log(JSON.stringify({ kind: 'real_chrome_built_vue_scripted_api', checks: [
     'task_missing_field_submission', 'doctor_selection', 'slot_selection', 'versioned_change',
-    'old_confirmation_disabled', 'one_current_confirmation', 'reload_and_restore', 'sse_progress_before_final', 'answer_deltas_before_final',
+    'old_confirmation_disabled', 'one_current_confirmation', 'reload_and_restore', 'sse_progress_before_final', 'answer_deltas_before_final', 'markdown_and_citation_navigation',
     'sse_stop_keeps_session_without_resubmit'],
     browser: (await command('Browser.getVersion', {}, null)).product,
     chat_events: requests.filter(item => item.path === '/api/chat/stream').map(item => item.body.workflow_event || { kind: 'initial' }),

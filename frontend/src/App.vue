@@ -9,7 +9,7 @@
       <nav class="view-nav" aria-label="页面导航">
         <button :class="{ active: activeView === 'chat' }" @click="activeView = 'chat'">对话</button>
         <button :class="{ active: activeView === 'knowledge' }" @click="activeView = 'knowledge'">知识库</button>
-        <button :class="{ active: activeView === 'operations' }" @click="activeView = 'operations'; loadOperations()">咨询记录与评测</button>
+        <button v-if="identity.role !== 'user'" :class="{ active: activeView === 'operations' }" @click="activeView = 'operations'; loadOperations()">咨询记录与评测</button>
         <button :class="{ active: activeView === 'appointments' }" @click="activeView = 'appointments'; loadAppointments()">模拟预约</button>
       </nav>
 
@@ -48,6 +48,13 @@
         </div>
       </div>
 
+      <details class="access-settings">
+        <summary>{{ identity.mode === 'bearer' ? `已认证：${settings.userId}` : identity.mode === 'required' ? '需要访问令牌' : '本地演示 / 访问设置' }}</summary>
+        <label>访问令牌 <input v-model="accessInput" type="password" autocomplete="off" placeholder="仅启用认证的服务需要" /></label>
+        <button :disabled="busy" @click="connectIdentity">连接</button>
+        <small>令牌仅保存在当前浏览器标签页会话中。</small>
+      </details>
+
       <div class="chat-layout">
         <section class="chat-stage">
           <div class="stage-bar">
@@ -58,13 +65,20 @@
             <span>{{ messages.length }} 条消息</span>
           </div>
 
-          <div class="messages" ref="messageList">
+          <div class="messages" ref="messageList" @scroll="trackScroll">
             <article v-for="item in messages" :key="item.id" :class="['message', item.role]">
               <div class="message-meta">
                 <span>{{ item.role === 'user' ? '你' : currentBackend.label + ' Agent' }}</span>
                 <small v-if="item.meta">{{ item.meta }}</small>
               </div>
-              <p>{{ item.content }}</p>
+              <AnswerBody v-if="item.role === 'assistant'" :content="item.answer?.body || item.content" :sources="item.answer?.sources || []" />
+              <p v-else>{{ item.content }}</p>
+              <details v-if="item.timings" class="answer-timings">
+                <summary>处理耗时 · {{ Math.round(item.timings.total_ms) }} ms</summary>
+                <span v-for="(ms, phase) in item.timings.phases_ms" :key="phase">{{ phaseLabel(phase) }}：{{ Math.round(ms) }} ms · </span>
+                <small v-if="item.timings.first_content_ms != null">首段正文：{{ Math.round(item.timings.first_content_ms) }} ms。</small>
+                <small>阶段可能嵌套或并行，不能直接相加。</small>
+              </details>
               <div v-if="item.progress" class="action-card" aria-live="polite" data-testid="stream-progress">
                 <strong>{{ item.progress.message }}</strong>
                 <div v-for="task in item.progress.workflow?.tasks || []" :key="`${task.id}-${task.revision}`">
@@ -72,9 +86,9 @@
                 </div>
               </div>
               <div v-if="item.simulation" class="simulation-banner">CareGuide 合成医院 · 模拟数据 · 不可用于真实就诊</div>
-              <div v-if="item.evidence?.length" class="evidence-list">
+              <div v-if="item.evidence?.length && !item.answer?.sources?.length" class="evidence-list">
                 <div v-for="source in item.evidence" :key="source.record_id" class="evidence-source">
-                  <a :href="source.citation?.url || source.source_url" target="_blank" rel="noreferrer">
+                  <a :href="safeSourceUrl(source.citation?.url || source.source_url)" target="_blank" rel="noopener noreferrer">
                     {{ source.title || source.record_id }}
                   </a>
                   <small v-if="source.citation?.review_status === 'open_dataset_unreviewed'">
@@ -412,8 +426,27 @@ import {
 import { requestOperations, uploadKnowledge } from './lib/backends'
 import { acceptWorkflow, currentTask, currentAction, answerEvent } from './lib/workflow'
 import { applyAnswerEvent } from './lib/sse'
+import AnswerBody from './components/AnswerBody.vue'
+import { safeSourceUrl } from './lib/markdown'
+import { requestIdentity } from './lib/backends'
+import { accessToken, setAccessToken } from './lib/auth'
 
 const settings = reactive(createInitialSettings())
+const identity = reactive({ mode: 'unknown', role: 'demo' })
+const accessInput = ref(accessToken(backendMeta(settings.backend, settings).baseUrl))
+async function connectIdentity() {
+  setAccessToken(currentBackend.value.baseUrl, accessInput.value)
+  try {
+    const value = await requestIdentity(settings.backend, settings)
+    if (value.user_id && value.user_id !== settings.userId) {
+      clearConversation()
+      settings.userId = value.user_id
+    }
+    Object.assign(identity, value)
+    persist()
+    await refreshConsole()
+  } catch (error) { identity.mode = 'required'; showToast(error.message) }
+}
 const activeView = ref('chat')
 const messages = ref([])
 const draft = ref('')
@@ -577,6 +610,19 @@ async function promoteBaseline() {
   } catch (error) { toast.value = error.message }
 }
 const messageList = ref(null)
+const followOutput = ref(true)
+function trackScroll() {
+  const node = messageList.value
+  if (node) followOutput.value = node.scrollHeight - node.scrollTop - node.clientHeight < 80
+}
+function phaseLabel(phase) {
+  return ({ memory_read: '读取上下文', understanding: '理解请求', intent_candidates: '检索意图线索',
+    planning: '生成计划', model: '模型调用', tool: '工具调用', answering: '生成回答', memory_write: '保存会话' })[phase] || phase
+}
+async function followStream() {
+  await nextTick()
+  if (followOutput.value && messageList.value) messageList.value.scrollTop = messageList.value.scrollHeight
+}
 const sidebarRef = ref(null)
 const monitorData = ref(emptyMonitorData())
 const skillsData = ref({ count: 0, skills: [], errors: [] })
@@ -601,6 +647,12 @@ watch(() => settings.theme, (theme) => {
   persist()
 }, { immediate: true })
 onMounted(() => {
+  void requestIdentity(settings.backend, settings).then(value => {
+    Object.assign(identity, value)
+    if (value.user_id && value.user_id !== settings.userId) {
+      clearConversation(); settings.userId = value.user_id; persist()
+    }
+  }).catch(() => { identity.mode = 'required' })
   refreshConsole()
   updateSidebarHeight()
   if (typeof ResizeObserver !== 'undefined') {
@@ -702,6 +754,7 @@ async function sendMessage(workflowEvent) {
       plan_version: activeWorkflow.value.version }
   }
   messages.value.push({ id: createMessageId(), role: 'user', content })
+  followOutput.value = true
   draft.value = ''
   busy.value = true
   chatAbortController = new AbortController()
@@ -725,6 +778,7 @@ async function sendMessage(workflowEvent) {
       if (event === 'delta' || event === 'answer_reset') {
         applyAnswerEvent(assistant(), event, data)
         assistant().meta = event === 'delta' ? '正在生成，尚未完成' : '正在展示查询结果'
+        void followStream()
       }
       if (event === 'stage') assistant().progress = { ...assistant().progress, message: data.message }
       if (event === 'workflow') {
@@ -743,7 +797,7 @@ async function sendMessage(workflowEvent) {
     activeWorkflow.value = acceptWorkflow(activeWorkflow.value, response.workflow)
     lastTrace.value = null
     const meta = [response.intent, response.primaryAgent || response.agentType, response.knowledgeUsed ? 'RAG' : '', response.escalated ? '转人工' : ''].filter(Boolean).join(' · ')
-    Object.assign(assistant(), { content: response.response, meta, progress: null,
+    Object.assign(assistant(), { content: response.response, answer: response.answer, timings: response.timings, meta, progress: null,
       trace: null, simulation: response.simulation,
       actionRequests: response.actionRequests, evidence: response.evidence, workflow: response.workflow })
     // Diagnostics must not delay displaying the terminal result or unlocking
@@ -761,7 +815,7 @@ async function sendMessage(workflowEvent) {
     chatAbortController = null
     busy.value = false
     await nextTick()
-    messageList.value?.scrollTo({ top: messageList.value.scrollHeight, behavior: 'smooth' })
+    if (followOutput.value) messageList.value?.scrollTo({ top: messageList.value.scrollHeight, behavior: 'smooth' })
   }
 }
 

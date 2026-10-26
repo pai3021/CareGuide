@@ -1,0 +1,10 @@
+{
+  "version": "answer-probes-v1",
+  "provenance": "Manually authored synthetic source fixtures; not clinical guidance or a medical benchmark.",
+  "cases": [
+    {"id":"quantity", "question":"仅解释测试资料中的规格，不提供服药建议。", "sources":[{"id":"S1","task_id":"drug","text":"测试资料：某演示片剂的规格为0.2g，未提供个体服用剂量。"}], "good":"资料中的规格为200mg，并未给出个人服用剂量。[S1]", "bad":"该片剂规格是0.4g。[S1]", "probes":["0[.]2\\s*g|200\\s*mg", "未|不"]},
+    {"id":"negation", "question":"根据测试资料，可以饮酒吗？", "sources":[{"id":"S1","task_id":"drug","text":"测试资料明确写明：不可饮酒，不可与酒精同用。"}], "good":"资料明确要求不可饮酒。[S1]", "bad":"资料表明可以放心饮酒。[S1]", "probes":["不可饮酒|不.*饮酒|避免.*饮酒|禁止.*饮酒"]},
+    {"id":"conditions", "question":"根据资料，什么条件下可继续处理？", "sources":[{"id":"S1","task_id":"guide","text":"测试流程：仅当资料齐全且人工审核通过时可继续处理；资料不全时应先补充材料。"}], "good":"资料齐全且人工审核通过后才可继续。[S1]", "bad":"只要资料齐全，就不需要人工审核，可以直接继续。[S1]", "probes":["资料齐全", "审核.*通过|通过.*审核"]},
+    {"id":"source_match", "question":"比较两位合成医生的科室，并说明是否知道出诊时间。", "sources":[{"id":"S1","task_id":"doctor1","text":"合成医生甲属于消化内科，出诊时间未提供。"},{"id":"S2","task_id":"doctor2","text":"合成医生乙属于心血管内科，出诊时间未提供。"}], "good":"甲属于消化内科，出诊时间未知。[S1] 乙属于心血管内科，出诊时间未知。[S2]", "bad":"甲属于心血管内科，每天上午出诊。[S1] 乙属于消化内科。[S2]", "probes":["甲.{0,40}消化内科", "乙.{0,40}心血管内科", "未知|未提供|未.*给出"]}
+  ]
+}

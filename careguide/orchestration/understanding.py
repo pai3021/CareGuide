@@ -131,6 +131,11 @@ class LocalUnderstanding:
                     constraints=constraints, sources={key: message_id for key in args}), relation
 
     async def understand(self, text, *, message_id, at, history=(), classify=True):
+        from careguide.timing import phase
+        with phase('understanding'):
+            return await self._understand(text, message_id=message_id, at=at, history=history, classify=classify)
+
+    async def _understand(self, text, *, message_id, at, history=(), classify=True):
         output = IntentUnderstanding(recognition_source=['rule'], request_relation='new')
         # Only each fully matched clause can enter a local combination. Unknown
         # clauses keep the whole message on the dynamic path before any dispatch.
@@ -180,6 +185,11 @@ class LocalUnderstanding:
             output.diagnostics.append('classifier_unavailable:'+type(exc).__name__)
 
     async def enrich(self, text, output, *, budget, scope, allow_remote=True):
+        from careguide.timing import phase
+        with phase('intent_candidates'):
+            return await self._enrich(text, output, budget=budget, scope=scope, allow_remote=allow_remote)
+
+    async def _enrich(self, text, output, *, budget, scope, allow_remote=True):
         if output.relation != 'unknown':
             return output
         async def semantic():

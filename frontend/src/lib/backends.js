@@ -1,4 +1,5 @@
 import { postChatStream } from './sse'
+import { authHeaders } from './auth'
 
 const BACKEND = {
   id: 'careguide',
@@ -19,7 +20,12 @@ export function createInitialSettings() {
 }
 
 export function saveSettings(settings) {
-  localStorage.setItem('careguide.frontend.settings', JSON.stringify(settings))
+  const { backend, userId, conversationId, endpoint, theme } = settings
+  localStorage.setItem('careguide.frontend.settings', JSON.stringify({ backend, userId, conversationId, endpoint, theme }))
+}
+
+export function requestIdentity(type, settings) {
+  return requestJson(backendMeta(type, settings).baseUrl, '/auth/me')
 }
 
 export function backendMeta(_type, settings) {
@@ -63,7 +69,8 @@ export async function requestSearch(type, settings, query, topK = 5, rewrite = f
 export async function requestChat(type, settings, message, signal, workflowEvent, onEvent) {
   const payload = buildChatPayload(type, settings, message)
   if (workflowEvent) payload.workflow_event = workflowEvent
-  const raw = await postChatStream(`${backendMeta(type, settings).baseUrl}/chat/stream`, payload, { signal, onEvent })
+  const base = backendMeta(type, settings).baseUrl
+  const raw = await postChatStream(`${base}/chat/stream`, payload, { signal, onEvent, headers: authHeaders(base) })
   return normalizeChatResponse(type, raw)
 }
 
@@ -160,6 +167,8 @@ function normalizeChatResponse(type, raw) {
     budget: payload.budget || null,
     appointment: asArray(payload.appointment),
     evidence: asArray(payload.evidence),
+    answer: payload.answer || null,
+    timings: payload.timings || null,
     verified: payload.verified,
     grounded: payload.grounded,
     raw: payload
@@ -298,7 +307,7 @@ async function requestJson(baseUrl, path, options = {}) {
   let response
   let text
   try {
-    response = await fetch(url, { ...fetchOptions, signal: controller.signal })
+    response = await fetch(url, { ...fetchOptions, headers: { ...authHeaders(baseUrl), ...fetchOptions.headers }, signal: controller.signal })
     text = await response.text()
   } catch (error) {
     if (controller.signal.aborted) {

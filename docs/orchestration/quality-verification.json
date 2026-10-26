@@ -1,0 +1,1480 @@
+{
+  "date": "2026-10-26",
+  "scope": "Selected development smoke, not population accuracy or clinical validation",
+  "intent": {
+    "kind": "intent_candidate_ablation",
+    "mode": "live",
+    "model": "mimo-v2.6-flash",
+    "dataset_version": "intent-ablation-v1",
+    "dataset_sha256": "b10670270518df697d6c2fe995e5a4057e53cf9890f876a0776e65e6e56a6f7c",
+    "classifier_warmup": {
+      "status": "ready",
+      "seconds": 5.355,
+      "included_in_query_latency": false
+    },
+    "summary": {
+      "rules_classifier_embedding_llm": {
+        "cases": 6,
+        "complete": 6,
+        "errors": 0,
+        "classifier_candidate_cases": 5,
+        "embedding_candidate_cases": 5,
+        "model_requests": 11,
+        "mean_latency_ms": 3212.88
+      },
+      "rules_classifier_llm": {
+        "cases": 6,
+        "complete": 6,
+        "errors": 0,
+        "classifier_candidate_cases": 5,
+        "embedding_candidate_cases": 0,
+        "model_requests": 5,
+        "mean_latency_ms": 4246.15
+      },
+      "rules_llm": {
+        "cases": 6,
+        "complete": 5,
+        "errors": 1,
+        "classifier_candidate_cases": 0,
+        "embedding_candidate_cases": 0,
+        "model_requests": 6,
+        "mean_latency_ms": 4258.83
+      }
+    },
+    "rows": [
+      {
+        "variant": "rules_llm",
+        "id": "canonical",
+        "status": "ok",
+        "plan_source": "local",
+        "candidate_sources": [],
+        "candidate_diagnostics": [],
+        "semantic_retrieval": {},
+        "action_precision": 1.0,
+        "action_recall": 1.0,
+        "action_f1": 1.0,
+        "argument_match": true,
+        "forbidden_actions": [],
+        "complete": true,
+        "budget": {
+          "limits": {
+            "model": 4,
+            "tool": 0,
+            "retry": 3,
+            "replan": 3,
+            "execution_seconds": 120.0,
+            "request_seconds": 45.0,
+            "closing_ratio": 0.8
+          },
+          "used": {
+            "model": 0,
+            "tool": 0,
+            "retry": 0,
+            "replan": 0
+          },
+          "active_execution_seconds": 0.0,
+          "tokens": {
+            "prompt_tokens": 0,
+            "completion_tokens": 0,
+            "total_tokens": 0,
+            "calls_without_usage": 0
+          },
+          "usage_accounting": "provider_reported; missing usage is counted separately",
+          "closing": false,
+          "reservations": {}
+        },
+        "elapsed_ms": 62.98
+      },
+      {
+        "variant": "rules_llm",
+        "id": "paraphrase",
+        "status": "ok",
+        "decision": "new",
+        "plan_source": "llm",
+        "candidate_sources": [],
+        "candidate_diagnostics": [],
+        "semantic_retrieval": {
+          "status": "local_ngram",
+          "remote_calls": 0,
+          "direct_acceptance": false
+        },
+        "action_precision": 1.0,
+        "action_recall": 1.0,
+        "action_f1": 1.0,
+        "argument_match": true,
+        "forbidden_actions": [],
+        "complete": true,
+        "budget": {
+          "limits": {
+            "model": 4,
+            "tool": 0,
+            "retry": 3,
+            "replan": 3,
+            "execution_seconds": 120.0,
+            "request_seconds": 45.0,
+            "closing_ratio": 0.8
+          },
+          "used": {
+            "model": 1,
+            "tool": 0,
+            "retry": 0,
+            "replan": 0
+          },
+          "active_execution_seconds": 4.019739991053939,
+          "tokens": {
+            "prompt_tokens": 4399,
+            "completion_tokens": 117,
+            "total_tokens": 4516,
+            "calls_without_usage": 0
+          },
+          "usage_accounting": "provider_reported; missing usage is counted separately",
+          "closing": false,
+          "reservations": {
+            "settled": 1
+          }
+        },
+        "elapsed_ms": 4071.6
+      },
+      {
+        "variant": "rules_llm",
+        "id": "multi",
+        "status": "ok",
+        "decision": "new",
+        "plan_source": "llm",
+        "candidate_sources": [],
+        "candidate_diagnostics": [],
+        "semantic_retrieval": {
+          "status": "local_ngram",
+          "remote_calls": 0,
+          "direct_acceptance": false
+        },
+        "action_precision": 1.0,
+        "action_recall": 1.0,
+        "action_f1": 1.0,
+        "argument_match": true,
+        "forbidden_actions": [],
+        "complete": true,
+        "budget": {
+          "limits": {
+            "model": 4,
+            "tool": 0,
+            "retry": 3,
+            "replan": 3,
+            "execution_seconds": 120.0,
+            "request_seconds": 45.0,
+            "closing_ratio": 0.8
+          },
+          "used": {
+            "model": 1,
+            "tool": 0,
+            "retry": 0,
+            "replan": 0
+          },
+          "active_execution_seconds": 7.904180872254074,
+          "tokens": {
+            "prompt_tokens": 4413,
+            "completion_tokens": 222,
+            "total_tokens": 4635,
+            "calls_without_usage": 0
+          },
+          "usage_accounting": "provider_reported; missing usage is counted separately",
+          "closing": false,
+          "reservations": {
+            "settled": 1
+          }
+        },
+        "elapsed_ms": 7940.53
+      },
+      {
+        "variant": "rules_llm",
+        "id": "negation",
+        "status": "ok",
+        "decision": "new",
+        "plan_source": "llm",
+        "candidate_sources": [],
+        "candidate_diagnostics": [],
+        "semantic_retrieval": {
+          "status": "local_ngram",
+          "remote_calls": 0,
+          "direct_acceptance": false
+        },
+        "action_precision": 1.0,
+        "action_recall": 1.0,
+        "action_f1": 1.0,
+        "argument_match": true,
+        "forbidden_actions": [],
+        "complete": true,
+        "budget": {
+          "limits": {
+            "model": 4,
+            "tool": 0,
+            "retry": 3,
+            "replan": 3,
+            "execution_seconds": 120.0,
+            "request_seconds": 45.0,
+            "closing_ratio": 0.8
+          },
+          "used": {
+            "model": 1,
+            "tool": 0,
+            "retry": 0,
+            "replan": 0
+          },
+          "active_execution_seconds": 3.3709499700926244,
+          "tokens": {
+            "prompt_tokens": 4396,
+            "completion_tokens": 102,
+            "total_tokens": 4498,
+            "calls_without_usage": 0
+          },
+          "usage_accounting": "provider_reported; missing usage is counted separately",
+          "closing": false,
+          "reservations": {
+            "settled": 1
+          }
+        },
+        "elapsed_ms": 3414.65
+      },
+      {
+        "variant": "rules_llm",
+        "id": "scope",
+        "status": "error",
+        "diagnostic_type": "PlanningFailure",
+        "action_precision": 0,
+        "action_recall": 0.0,
+        "action_f1": 0,
+        "argument_match": false,
+        "forbidden_actions": [],
+        "complete": false,
+        "budget": {
+          "limits": {
+            "model": 4,
+            "tool": 0,
+            "retry": 3,
+            "replan": 3,
+            "execution_seconds": 120.0,
+            "request_seconds": 45.0,
+            "closing_ratio": 0.8
+          },
+          "used": {
+            "model": 2,
+            "tool": 0,
+            "retry": 1,
+            "replan": 0
+          },
+          "active_execution_seconds": 6.067357058636844,
+          "tokens": {
+            "prompt_tokens": 8804,
+            "completion_tokens": 260,
+            "total_tokens": 9064,
+            "calls_without_usage": 0
+          },
+          "usage_accounting": "provider_reported; missing usage is counted separately",
+          "closing": false,
+          "reservations": {
+            "settled": 3
+          }
+        },
+        "elapsed_ms": 6171.95
+      },
+      {
+        "variant": "rules_llm",
+        "id": "history",
+        "status": "ok",
+        "decision": "new",
+        "plan_source": "llm",
+        "candidate_sources": [],
+        "candidate_diagnostics": [],
+        "semantic_retrieval": {
+          "status": "local_ngram",
+          "remote_calls": 0,
+          "direct_acceptance": false
+        },
+        "action_precision": 1.0,
+        "action_recall": 1.0,
+        "action_f1": 1.0,
+        "argument_match": true,
+        "forbidden_actions": [],
+        "complete": true,
+        "budget": {
+          "limits": {
+            "model": 4,
+            "tool": 0,
+            "retry": 3,
+            "replan": 3,
+            "execution_seconds": 120.0,
+            "request_seconds": 45.0,
+            "closing_ratio": 0.8
+          },
+          "used": {
+            "model": 1,
+            "tool": 0,
+            "retry": 0,
+            "replan": 0
+          },
+          "active_execution_seconds": 3.8575177118182182,
+          "tokens": {
+            "prompt_tokens": 4424,
+            "completion_tokens": 170,
+            "total_tokens": 4594,
+            "calls_without_usage": 0
+          },
+          "usage_accounting": "provider_reported; missing usage is counted separately",
+          "closing": false,
+          "reservations": {
+            "settled": 1
+          }
+        },
+        "elapsed_ms": 3891.29
+      },
+      {
+        "variant": "rules_classifier_llm",
+        "id": "canonical",
+        "status": "ok",
+        "plan_source": "local",
+        "candidate_sources": [],
+        "candidate_diagnostics": [],
+        "semantic_retrieval": {},
+        "action_precision": 1.0,
+        "action_recall": 1.0,
+        "action_f1": 1.0,
+        "argument_match": true,
+        "forbidden_actions": [],
+        "complete": true,
+        "budget": {
+          "limits": {
+            "model": 4,
+            "tool": 0,
+            "retry": 3,
+            "replan": 3,
+            "execution_seconds": 120.0,
+            "request_seconds": 45.0,
+            "closing_ratio": 0.8
+          },
+          "used": {
+            "model": 0,
+            "tool": 0,
+            "retry": 0,
+            "replan": 0
+          },
+          "active_execution_seconds": 0.0,
+          "tokens": {
+            "prompt_tokens": 0,
+            "completion_tokens": 0,
+            "total_tokens": 0,
+            "calls_without_usage": 0
+          },
+          "usage_accounting": "provider_reported; missing usage is counted separately",
+          "closing": false,
+          "reservations": {}
+        },
+        "elapsed_ms": 7.92
+      },
+      {
+        "variant": "rules_classifier_llm",
+        "id": "paraphrase",
+        "status": "ok",
+        "decision": "new",
+        "plan_source": "llm",
+        "candidate_sources": [
+          "classifier"
+        ],
+        "candidate_diagnostics": [],
+        "semantic_retrieval": {
+          "status": "local_ngram",
+          "remote_calls": 0,
+          "direct_acceptance": false
+        },
+        "action_precision": 1.0,
+        "action_recall": 1.0,
+        "action_f1": 1.0,
+        "argument_match": true,
+        "forbidden_actions": [],
+        "complete": true,
+        "budget": {
+          "limits": {
+            "model": 4,
+            "tool": 0,
+            "retry": 3,
+            "replan": 3,
+            "execution_seconds": 120.0,
+            "request_seconds": 45.0,
+            "closing_ratio": 0.8
+          },
+          "used": {
+            "model": 1,
+            "tool": 0,
+            "retry": 0,
+            "replan": 0
+          },
+          "active_execution_seconds": 3.207621647976339,
+          "tokens": {
+            "prompt_tokens": 4842,
+            "completion_tokens": 129,
+            "total_tokens": 4971,
+            "calls_without_usage": 0
+          },
+          "usage_accounting": "provider_reported; missing usage is counted separately",
+          "closing": false,
+          "reservations": {
+            "settled": 1
+          }
+        },
+        "elapsed_ms": 3350.25
+      },
+      {
+        "variant": "rules_classifier_llm",
+        "id": "multi",
+        "status": "ok",
+        "decision": "new",
+        "plan_source": "llm",
+        "candidate_sources": [
+          "classifier"
+        ],
+        "candidate_diagnostics": [],
+        "semantic_retrieval": {
+          "status": "local_ngram",
+          "remote_calls": 0,
+          "direct_acceptance": false
+        },
+        "action_precision": 1.0,
+        "action_recall": 1.0,
+        "action_f1": 1.0,
+        "argument_match": true,
+        "forbidden_actions": [],
+        "complete": true,
+        "budget": {
+          "limits": {
+            "model": 4,
+            "tool": 0,
+            "retry": 3,
+            "replan": 3,
+            "execution_seconds": 120.0,
+            "request_seconds": 45.0,
+            "closing_ratio": 0.8
+          },
+          "used": {
+            "model": 1,
+            "tool": 0,
+            "retry": 0,
+            "replan": 0
+          },
+          "active_execution_seconds": 7.382139194756746,
+          "tokens": {
+            "prompt_tokens": 4861,
+            "completion_tokens": 268,
+            "total_tokens": 5129,
+            "calls_without_usage": 0
+          },
+          "usage_accounting": "provider_reported; missing usage is counted separately",
+          "closing": false,
+          "reservations": {
+            "settled": 1
+          }
+        },
+        "elapsed_ms": 7551.28
+      },
+      {
+        "variant": "rules_classifier_llm",
+        "id": "negation",
+        "status": "ok",
+        "decision": "new",
+        "plan_source": "llm",
+        "candidate_sources": [
+          "classifier"
+        ],
+        "candidate_diagnostics": [],
+        "semantic_retrieval": {
+          "status": "local_ngram",
+          "remote_calls": 0,
+          "direct_acceptance": false
+        },
+        "action_precision": 1.0,
+        "action_recall": 1.0,
+        "action_f1": 1.0,
+        "argument_match": true,
+        "forbidden_actions": [],
+        "complete": true,
+        "budget": {
+          "limits": {
+            "model": 4,
+            "tool": 0,
+            "retry": 3,
+            "replan": 3,
+            "execution_seconds": 120.0,
+            "request_seconds": 45.0,
+            "closing_ratio": 0.8
+          },
+          "used": {
+            "model": 1,
+            "tool": 0,
+            "retry": 0,
+            "replan": 0
+          },
+          "active_execution_seconds": 7.141271815169603,
+          "tokens": {
+            "prompt_tokens": 4847,
+            "completion_tokens": 192,
+            "total_tokens": 5039,
+            "calls_without_usage": 0
+          },
+          "usage_accounting": "provider_reported; missing usage is counted separately",
+          "closing": false,
+          "reservations": {
+            "settled": 1
+          }
+        },
+        "elapsed_ms": 7249.59
+      },
+      {
+        "variant": "rules_classifier_llm",
+        "id": "scope",
+        "status": "ok",
+        "decision": "new",
+        "plan_source": "llm",
+        "candidate_sources": [
+          "classifier"
+        ],
+        "candidate_diagnostics": [],
+        "semantic_retrieval": {
+          "status": "local_ngram",
+          "remote_calls": 0,
+          "direct_acceptance": false
+        },
+        "action_precision": 1.0,
+        "action_recall": 1.0,
+        "action_f1": 1.0,
+        "argument_match": true,
+        "forbidden_actions": [],
+        "complete": true,
+        "budget": {
+          "limits": {
+            "model": 4,
+            "tool": 0,
+            "retry": 3,
+            "replan": 3,
+            "execution_seconds": 120.0,
+            "request_seconds": 45.0,
+            "closing_ratio": 0.8
+          },
+          "used": {
+            "model": 1,
+            "tool": 0,
+            "retry": 0,
+            "replan": 0
+          },
+          "active_execution_seconds": 3.268145794980228,
+          "tokens": {
+            "prompt_tokens": 4827,
+            "completion_tokens": 104,
+            "total_tokens": 4931,
+            "calls_without_usage": 0
+          },
+          "usage_accounting": "provider_reported; missing usage is counted separately",
+          "closing": false,
+          "reservations": {
+            "settled": 1
+          }
+        },
+        "elapsed_ms": 3473.09
+      },
+      {
+        "variant": "rules_classifier_llm",
+        "id": "history",
+        "status": "ok",
+        "decision": "new",
+        "plan_source": "llm",
+        "candidate_sources": [
+          "classifier"
+        ],
+        "candidate_diagnostics": [],
+        "semantic_retrieval": {
+          "status": "local_ngram",
+          "remote_calls": 0,
+          "direct_acceptance": false
+        },
+        "action_precision": 1.0,
+        "action_recall": 1.0,
+        "action_f1": 1.0,
+        "argument_match": true,
+        "forbidden_actions": [],
+        "complete": true,
+        "budget": {
+          "limits": {
+            "model": 4,
+            "tool": 0,
+            "retry": 3,
+            "replan": 3,
+            "execution_seconds": 120.0,
+            "request_seconds": 45.0,
+            "closing_ratio": 0.8
+          },
+          "used": {
+            "model": 1,
+            "tool": 0,
+            "retry": 0,
+            "replan": 0
+          },
+          "active_execution_seconds": 3.592001444194466,
+          "tokens": {
+            "prompt_tokens": 4874,
+            "completion_tokens": 170,
+            "total_tokens": 5044,
+            "calls_without_usage": 0
+          },
+          "usage_accounting": "provider_reported; missing usage is counted separately",
+          "closing": false,
+          "reservations": {
+            "settled": 1
+          }
+        },
+        "elapsed_ms": 3844.77
+      },
+      {
+        "variant": "rules_classifier_embedding_llm",
+        "id": "canonical",
+        "status": "ok",
+        "plan_source": "local",
+        "candidate_sources": [],
+        "candidate_diagnostics": [],
+        "semantic_retrieval": {},
+        "action_precision": 1.0,
+        "action_recall": 1.0,
+        "action_f1": 1.0,
+        "argument_match": true,
+        "forbidden_actions": [],
+        "complete": true,
+        "budget": {
+          "limits": {
+            "model": 4,
+            "tool": 0,
+            "retry": 3,
+            "replan": 3,
+            "execution_seconds": 120.0,
+            "request_seconds": 45.0,
+            "closing_ratio": 0.8
+          },
+          "used": {
+            "model": 0,
+            "tool": 0,
+            "retry": 0,
+            "replan": 0
+          },
+          "active_execution_seconds": 0.0,
+          "tokens": {
+            "prompt_tokens": 0,
+            "completion_tokens": 0,
+            "total_tokens": 0,
+            "calls_without_usage": 0
+          },
+          "usage_accounting": "provider_reported; missing usage is counted separately",
+          "closing": false,
+          "reservations": {}
+        },
+        "elapsed_ms": 9.2
+      },
+      {
+        "variant": "rules_classifier_embedding_llm",
+        "id": "paraphrase",
+        "status": "ok",
+        "decision": "new",
+        "plan_source": "llm",
+        "candidate_sources": [
+          "classifier",
+          "semantic_embedding"
+        ],
+        "candidate_diagnostics": [],
+        "semantic_retrieval": {
+          "source": "semantic_embedding",
+          "model": "Qwen/Qwen3-Embedding-0.6B",
+          "bank_version": "business-intents-v1",
+          "fingerprint": "bf330c6a72a14131f981e636a8b853c6eed16a1ab14137f5cf73af5421b307e0",
+          "direct_acceptance": false,
+          "remote_calls": 2,
+          "status": "retrieved"
+        },
+        "action_precision": 1.0,
+        "action_recall": 1.0,
+        "action_f1": 1.0,
+        "argument_match": true,
+        "forbidden_actions": [],
+        "complete": true,
+        "budget": {
+          "limits": {
+            "model": 4,
+            "tool": 0,
+            "retry": 3,
+            "replan": 3,
+            "execution_seconds": 120.0,
+            "request_seconds": 45.0,
+            "closing_ratio": 0.8
+          },
+          "used": {
+            "model": 3,
+            "tool": 0,
+            "retry": 0,
+            "replan": 0
+          },
+          "active_execution_seconds": 3.9904383686371148,
+          "tokens": {
+            "prompt_tokens": 5690,
+            "completion_tokens": 125,
+            "total_tokens": 5815,
+            "calls_without_usage": 0
+          },
+          "usage_accounting": "provider_reported; missing usage is counted separately",
+          "closing": false,
+          "reservations": {
+            "settled": 3
+          }
+        },
+        "elapsed_ms": 4073.89
+      },
+      {
+        "variant": "rules_classifier_embedding_llm",
+        "id": "multi",
+        "status": "ok",
+        "decision": "new",
+        "plan_source": "llm",
+        "candidate_sources": [
+          "classifier",
+          "semantic_embedding"
+        ],
+        "candidate_diagnostics": [],
+        "semantic_retrieval": {
+          "source": "semantic_embedding",
+          "model": "Qwen/Qwen3-Embedding-0.6B",
+          "bank_version": "business-intents-v1",
+          "fingerprint": "bf330c6a72a14131f981e636a8b853c6eed16a1ab14137f5cf73af5421b307e0",
+          "direct_acceptance": false,
+          "remote_calls": 1,
+          "status": "retrieved"
+        },
+        "action_precision": 1.0,
+        "action_recall": 1.0,
+        "action_f1": 1.0,
+        "argument_match": true,
+        "forbidden_actions": [],
+        "complete": true,
+        "budget": {
+          "limits": {
+            "model": 4,
+            "tool": 0,
+            "retry": 3,
+            "replan": 3,
+            "execution_seconds": 120.0,
+            "request_seconds": 45.0,
+            "closing_ratio": 0.8
+          },
+          "used": {
+            "model": 2,
+            "tool": 0,
+            "retry": 0,
+            "replan": 0
+          },
+          "active_execution_seconds": 4.730538988485932,
+          "tokens": {
+            "prompt_tokens": 5441,
+            "completion_tokens": 220,
+            "total_tokens": 5661,
+            "calls_without_usage": 0
+          },
+          "usage_accounting": "provider_reported; missing usage is counted separately",
+          "closing": false,
+          "reservations": {
+            "settled": 2
+          }
+        },
+        "elapsed_ms": 4781.26
+      },
+      {
+        "variant": "rules_classifier_embedding_llm",
+        "id": "negation",
+        "status": "ok",
+        "decision": "new",
+        "plan_source": "llm",
+        "candidate_sources": [
+          "classifier",
+          "semantic_embedding"
+        ],
+        "candidate_diagnostics": [],
+        "semantic_retrieval": {
+          "source": "semantic_embedding",
+          "model": "Qwen/Qwen3-Embedding-0.6B",
+          "bank_version": "business-intents-v1",
+          "fingerprint": "bf330c6a72a14131f981e636a8b853c6eed16a1ab14137f5cf73af5421b307e0",
+          "direct_acceptance": false,
+          "remote_calls": 1,
+          "status": "retrieved"
+        },
+        "action_precision": 1.0,
+        "action_recall": 1.0,
+        "action_f1": 1.0,
+        "argument_match": true,
+        "forbidden_actions": [],
+        "complete": true,
+        "budget": {
+          "limits": {
+            "model": 4,
+            "tool": 0,
+            "retry": 3,
+            "replan": 3,
+            "execution_seconds": 120.0,
+            "request_seconds": 45.0,
+            "closing_ratio": 0.8
+          },
+          "used": {
+            "model": 2,
+            "tool": 0,
+            "retry": 0,
+            "replan": 0
+          },
+          "active_execution_seconds": 2.9930280931293964,
+          "tokens": {
+            "prompt_tokens": 5364,
+            "completion_tokens": 119,
+            "total_tokens": 5483,
+            "calls_without_usage": 0
+          },
+          "usage_accounting": "provider_reported; missing usage is counted separately",
+          "closing": false,
+          "reservations": {
+            "settled": 2
+          }
+        },
+        "elapsed_ms": 3053.94
+      },
+      {
+        "variant": "rules_classifier_embedding_llm",
+        "id": "scope",
+        "status": "ok",
+        "decision": "new",
+        "plan_source": "llm",
+        "candidate_sources": [
+          "classifier",
+          "semantic_embedding"
+        ],
+        "candidate_diagnostics": [],
+        "semantic_retrieval": {
+          "source": "semantic_embedding",
+          "model": "Qwen/Qwen3-Embedding-0.6B",
+          "bank_version": "business-intents-v1",
+          "fingerprint": "bf330c6a72a14131f981e636a8b853c6eed16a1ab14137f5cf73af5421b307e0",
+          "direct_acceptance": false,
+          "remote_calls": 1,
+          "status": "retrieved"
+        },
+        "action_precision": 1.0,
+        "action_recall": 1.0,
+        "action_f1": 1.0,
+        "argument_match": true,
+        "forbidden_actions": [],
+        "complete": true,
+        "budget": {
+          "limits": {
+            "model": 4,
+            "tool": 0,
+            "retry": 3,
+            "replan": 3,
+            "execution_seconds": 120.0,
+            "request_seconds": 45.0,
+            "closing_ratio": 0.8
+          },
+          "used": {
+            "model": 2,
+            "tool": 0,
+            "retry": 0,
+            "replan": 0
+          },
+          "active_execution_seconds": 2.7653189646080136,
+          "tokens": {
+            "prompt_tokens": 5338,
+            "completion_tokens": 124,
+            "total_tokens": 5462,
+            "calls_without_usage": 0
+          },
+          "usage_accounting": "provider_reported; missing usage is counted separately",
+          "closing": false,
+          "reservations": {
+            "settled": 2
+          }
+        },
+        "elapsed_ms": 2818.66
+      },
+      {
+        "variant": "rules_classifier_embedding_llm",
+        "id": "history",
+        "status": "ok",
+        "decision": "new",
+        "plan_source": "llm",
+        "candidate_sources": [
+          "classifier",
+          "semantic_embedding"
+        ],
+        "candidate_diagnostics": [],
+        "semantic_retrieval": {
+          "source": "semantic_embedding",
+          "model": "Qwen/Qwen3-Embedding-0.6B",
+          "bank_version": "business-intents-v1",
+          "fingerprint": "bf330c6a72a14131f981e636a8b853c6eed16a1ab14137f5cf73af5421b307e0",
+          "direct_acceptance": false,
+          "remote_calls": 1,
+          "status": "retrieved"
+        },
+        "action_precision": 1.0,
+        "action_recall": 1.0,
+        "action_f1": 1.0,
+        "argument_match": true,
+        "forbidden_actions": [],
+        "complete": true,
+        "budget": {
+          "limits": {
+            "model": 4,
+            "tool": 0,
+            "retry": 3,
+            "replan": 3,
+            "execution_seconds": 120.0,
+            "request_seconds": 45.0,
+            "closing_ratio": 0.8
+          },
+          "used": {
+            "model": 2,
+            "tool": 0,
+            "retry": 0,
+            "replan": 0
+          },
+          "active_execution_seconds": 4.485213577747345,
+          "tokens": {
+            "prompt_tokens": 5404,
+            "completion_tokens": 166,
+            "total_tokens": 5570,
+            "calls_without_usage": 0
+          },
+          "usage_accounting": "provider_reported; missing usage is counted separately",
+          "closing": false,
+          "reservations": {
+            "settled": 2
+          }
+        },
+        "elapsed_ms": 4540.34
+      }
+    ],
+    "chat_usage": {
+      "calls": 16,
+      "prompt_tokens": 77390,
+      "completion_tokens": 2488,
+      "total_tokens": 79878,
+      "calls_without_usage": 0,
+      "by_model": {
+        "mimo-v2.6-flash": {
+          "calls": 16,
+          "prompt_tokens": 77390,
+          "completion_tokens": 2488,
+          "total_tokens": 79878
+        }
+      }
+    },
+    "interpretation": "Six selected annotated cases, one run per arm. Canonical case is a local control. Character candidates removed equally. No tools executed. Cold embedding index cost included; classifier warmup excluded. Not a representative accuracy estimate or proof of improvement."
+  },
+  "answer": {
+    "initial_generated": 2,
+    "final_generated": 4,
+    "same_development_cases_reused": true,
+    "judge_family_same_as_generator": true,
+    "final_report": {
+      "kind": "labeled_answer_faithfulness_probes",
+      "version": "answer-probes-v1",
+      "mode": "live",
+      "model": "mimo-v2.6-flash",
+      "cases": 4,
+      "rows": [
+        {
+          "id": "quantity",
+          "known_good": {
+            "contract_accepted": true,
+            "quantity_check": {
+              "status": "no_quantitative_risk_found",
+              "scope": "mass/volume/percent only; no negation, condition or semantic proof",
+              "unsupported": []
+            },
+            "labeled_probe_coverage": 1.0
+          },
+          "known_bad": {
+            "contract_accepted": false,
+            "quantity_check": {
+              "status": "risk",
+              "scope": "mass/volume/percent only; no negation, condition or semantic proof",
+              "unsupported": [
+                {
+                  "unit": "mass_mg",
+                  "value": "400.0"
+                }
+              ]
+            },
+            "labeled_probe_coverage": 0.0
+          },
+          "generation": {
+            "status": "generated",
+            "model_calls": 1,
+            "answer_id": "2612758bb5d14485a3958b0459e906ec",
+            "sources": [
+              {
+                "id": "S1",
+                "task_id": "drug",
+                "url": "",
+                "title": "仅解释测试资料中的规格，不提供服药建议。",
+                "excerpt": "测试资料：某演示片剂的规格为0.2g，未提供个体服用剂量。",
+                "items": [],
+                "review_status": "unspecified"
+              }
+            ],
+            "checks": "citation_membership_and_output_shape; not_semantic_entailment"
+          },
+          "answer": "测试资料中展示的是一种演示用片剂，规格为0.2g；资料未提供任何个体服用剂量信息 [S1]。",
+          "generated_probes": {
+            "contract_accepted": true,
+            "quantity_check": {
+              "status": "no_quantitative_risk_found",
+              "scope": "mass/volume/percent only; no negation, condition or semantic proof",
+              "unsupported": []
+            },
+            "labeled_probe_coverage": 1.0
+          },
+          "judge": {
+            "claims": [
+              {
+                "answer_quote": "测试资料中展示的是一种演示用片剂，规格为0.2g",
+                "verdict": "supported",
+                "source_id": "S1",
+                "source_quote": "测试资料：某演示片剂的规格为0.2g"
+              },
+              {
+                "answer_quote": "资料未提供任何个体服用剂量信息",
+                "verdict": "supported",
+                "source_id": "S1",
+                "source_quote": "未提供个体服用剂量。"
+              }
+            ]
+          },
+          "known_bad_judge": {
+            "claims": [
+              {
+                "answer_quote": "该片剂规格是0.4g。",
+                "verdict": "contradicted",
+                "source_id": "S1",
+                "source_quote": "测试资料：某演示片剂的规格为0.2g，未提供个体服用剂量。"
+              }
+            ]
+          },
+          "budget": {
+            "limits": {
+              "model": 4,
+              "tool": 0,
+              "retry": 3,
+              "replan": 3,
+              "execution_seconds": 120.0,
+              "request_seconds": 45.0,
+              "closing_ratio": 0.8
+            },
+            "used": {
+              "model": 3,
+              "tool": 0,
+              "retry": 0,
+              "replan": 0
+            },
+            "active_execution_seconds": 12.471217218786478,
+            "tokens": {
+              "prompt_tokens": 1287,
+              "completion_tokens": 202,
+              "total_tokens": 1489,
+              "calls_without_usage": 0
+            },
+            "usage_accounting": "provider_reported; missing usage is counted separately",
+            "closing": false,
+            "reservations": {
+              "settled": 3
+            }
+          },
+          "elapsed_ms": 12547.02
+        },
+        {
+          "id": "negation",
+          "known_good": {
+            "contract_accepted": true,
+            "quantity_check": {
+              "status": "no_quantitative_risk_found",
+              "scope": "mass/volume/percent only; no negation, condition or semantic proof",
+              "unsupported": []
+            },
+            "labeled_probe_coverage": 1.0
+          },
+          "known_bad": {
+            "contract_accepted": true,
+            "quantity_check": {
+              "status": "no_quantitative_risk_found",
+              "scope": "mass/volume/percent only; no negation, condition or semantic proof",
+              "unsupported": []
+            },
+            "labeled_probe_coverage": 0.0
+          },
+          "generation": {
+            "status": "generated",
+            "model_calls": 1,
+            "answer_id": "8e4c772d607640d9805f06a45d8c9f34",
+            "sources": [
+              {
+                "id": "S1",
+                "task_id": "drug",
+                "url": "",
+                "title": "根据测试资料，可以饮酒吗？",
+                "excerpt": "测试资料明确写明：不可饮酒，不可与酒精同用。",
+                "items": [],
+                "review_status": "unspecified"
+              }
+            ],
+            "checks": "citation_membership_and_output_shape; not_semantic_entailment"
+          },
+          "answer": "根据测试资料，不可饮酒，不可与酒精同用 [S1]。",
+          "generated_probes": {
+            "contract_accepted": true,
+            "quantity_check": {
+              "status": "no_quantitative_risk_found",
+              "scope": "mass/volume/percent only; no negation, condition or semantic proof",
+              "unsupported": []
+            },
+            "labeled_probe_coverage": 1.0
+          },
+          "judge": {
+            "claims": [
+              {
+                "answer_quote": "不可饮酒，不可与酒精同用 [S1]。",
+                "verdict": "supported",
+                "source_id": "S1",
+                "source_quote": "测试资料明确写明：不可饮酒，不可与酒精同用。"
+              }
+            ]
+          },
+          "known_bad_judge": {
+            "claims": [
+              {
+                "answer_quote": "资料表明可以放心饮酒。",
+                "verdict": "contradicted",
+                "source_id": "S1",
+                "source_quote": "测试资料明确写明：不可饮酒，不可与酒精同用。"
+              }
+            ]
+          },
+          "budget": {
+            "limits": {
+              "model": 4,
+              "tool": 0,
+              "retry": 3,
+              "replan": 3,
+              "execution_seconds": 120.0,
+              "request_seconds": 45.0,
+              "closing_ratio": 0.8
+            },
+            "used": {
+              "model": 3,
+              "tool": 0,
+              "retry": 0,
+              "replan": 0
+            },
+            "active_execution_seconds": 11.903581228572875,
+            "tokens": {
+              "prompt_tokens": 1236,
+              "completion_tokens": 133,
+              "total_tokens": 1369,
+              "calls_without_usage": 0
+            },
+            "usage_accounting": "provider_reported; missing usage is counted separately",
+            "closing": false,
+            "reservations": {
+              "settled": 3
+            }
+          },
+          "elapsed_ms": 11953.0
+        },
+        {
+          "id": "conditions",
+          "known_good": {
+            "contract_accepted": true,
+            "quantity_check": {
+              "status": "no_quantitative_risk_found",
+              "scope": "mass/volume/percent only; no negation, condition or semantic proof",
+              "unsupported": []
+            },
+            "labeled_probe_coverage": 1.0
+          },
+          "known_bad": {
+            "contract_accepted": true,
+            "quantity_check": {
+              "status": "no_quantitative_risk_found",
+              "scope": "mass/volume/percent only; no negation, condition or semantic proof",
+              "unsupported": []
+            },
+            "labeled_probe_coverage": 0.5
+          },
+          "generation": {
+            "status": "generated",
+            "model_calls": 1,
+            "answer_id": "19de3e437e7b48b5be3a968ef4413da7",
+            "sources": [
+              {
+                "id": "S1",
+                "task_id": "guide",
+                "url": "",
+                "title": "根据资料，什么条件下可继续处理？",
+                "excerpt": "测试流程：仅当资料齐全且人工审核通过时可继续处理；资料不全时应先补充材料。",
+                "items": [],
+                "review_status": "unspecified"
+              }
+            ],
+            "checks": "citation_membership_and_output_shape; not_semantic_entailment"
+          },
+          "answer": "根据资料，继续处理需要同时满足两个条件：资料齐全，且人工审核通过。[S1] 若资料不全，应先补充相关材料后再推进。[S1]",
+          "generated_probes": {
+            "contract_accepted": true,
+            "quantity_check": {
+              "status": "no_quantitative_risk_found",
+              "scope": "mass/volume/percent only; no negation, condition or semantic proof",
+              "unsupported": []
+            },
+            "labeled_probe_coverage": 1.0
+          },
+          "judge": {
+            "claims": [
+              {
+                "answer_quote": "根据资料，继续处理需要同时满足两个条件：资料齐全，且人工审核通过。",
+                "verdict": "supported",
+                "source_id": "S1",
+                "source_quote": "仅当资料齐全且人工审核通过时可继续处理"
+              },
+              {
+                "answer_quote": "若资料不全，应先补充相关材料后再推进。",
+                "verdict": "supported",
+                "source_id": "S1",
+                "source_quote": "资料不全时应先补充材料。"
+              }
+            ]
+          },
+          "known_bad_judge": {
+            "claims": [
+              {
+                "answer_quote": "只要资料齐全，就不需要人工审核，可以直接继续。",
+                "verdict": "contradicted",
+                "source_id": "S1",
+                "source_quote": "测试流程：仅当资料齐全且人工审核通过时可继续处理；资料不全时应先补充材料。"
+              }
+            ]
+          },
+          "budget": {
+            "limits": {
+              "model": 4,
+              "tool": 0,
+              "retry": 3,
+              "replan": 3,
+              "execution_seconds": 120.0,
+              "request_seconds": 45.0,
+              "closing_ratio": 0.8
+            },
+            "used": {
+              "model": 3,
+              "tool": 0,
+              "retry": 0,
+              "replan": 0
+            },
+            "active_execution_seconds": 8.245365638285875,
+            "tokens": {
+              "prompt_tokens": 1297,
+              "completion_tokens": 224,
+              "total_tokens": 1521,
+              "calls_without_usage": 0
+            },
+            "usage_accounting": "provider_reported; missing usage is counted separately",
+            "closing": false,
+            "reservations": {
+              "settled": 3
+            }
+          },
+          "elapsed_ms": 8293.57
+        },
+        {
+          "id": "source_match",
+          "known_good": {
+            "contract_accepted": true,
+            "quantity_check": {
+              "status": "no_quantitative_risk_found",
+              "scope": "mass/volume/percent only; no negation, condition or semantic proof",
+              "unsupported": []
+            },
+            "labeled_probe_coverage": 1.0
+          },
+          "known_bad": {
+            "contract_accepted": true,
+            "quantity_check": {
+              "status": "no_quantitative_risk_found",
+              "scope": "mass/volume/percent only; no negation, condition or semantic proof",
+              "unsupported": []
+            },
+            "labeled_probe_coverage": 0.3333333333333333
+          },
+          "generation": {
+            "status": "generated",
+            "model_calls": 1,
+            "answer_id": "84a62a2c92e246a4bedc32c50d3f7f14",
+            "sources": [
+              {
+                "id": "S1",
+                "task_id": "doctor1",
+                "url": "",
+                "title": "比较两位合成医生的科室，并说明是否知道出诊时间。",
+                "excerpt": "合成医生甲属于消化内科，出诊时间未提供。",
+                "items": [],
+                "review_status": "unspecified"
+              },
+              {
+                "id": "S2",
+                "task_id": "doctor2",
+                "url": "",
+                "title": "比较两位合成医生的科室，并说明是否知道出诊时间。",
+                "excerpt": "合成医生乙属于心血管内科，出诊时间未提供。",
+                "items": [],
+                "review_status": "unspecified"
+              }
+            ],
+            "checks": "citation_membership_and_output_shape; not_semantic_entailment"
+          },
+          "answer": "**科室比较**\n- 合成医生甲属于消化内科 [S1]。\n- 合成医生乙属于心血管内科 [S2]。\n\n两位医生分属不同科室：一位是消化内科，一位是心血管内科，二者不相同。\n\n**出诊时间**\n- 甲的出诊时间未提供 [S1]；乙的出诊时间也未提供 [S2]。\n\n也就是说，目前并不知道两位医生各自的出诊时间，如需安排就诊，还需补充这方面的信息。",
+          "generated_probes": {
+            "contract_accepted": true,
+            "quantity_check": {
+              "status": "no_quantitative_risk_found",
+              "scope": "mass/volume/percent only; no negation, condition or semantic proof",
+              "unsupported": []
+            },
+            "labeled_probe_coverage": 1.0
+          },
+          "judge": {
+            "claims": [
+              {
+                "answer_quote": "合成医生甲属于消化内科 [S1]。",
+                "verdict": "supported",
+                "source_id": "S1",
+                "source_quote": "合成医生甲属于消化内科，出诊时间未提供。"
+              },
+              {
+                "answer_quote": "合成医生乙属于心血管内科 [S2]。",
+                "verdict": "supported",
+                "source_id": "S2",
+                "source_quote": "合成医生乙属于心血管内科，出诊时间未提供。"
+              },
+              {
+                "answer_quote": "甲的出诊时间未提供 [S1]",
+                "verdict": "supported",
+                "source_id": "S1",
+                "source_quote": "合成医生甲属于消化内科，出诊时间未提供。"
+              },
+              {
+                "answer_quote": "乙的出诊时间也未提供 [S2]。",
+                "verdict": "supported",
+                "source_id": "S2",
+                "source_quote": "合成医生乙属于心血管内科，出诊时间未提供。"
+              }
+            ]
+          },
+          "known_bad_judge": {
+            "claims": [
+              {
+                "answer_quote": "甲属于心血管内科",
+                "verdict": "contradicted",
+                "source_id": "S1",
+                "source_quote": "合成医生甲属于消化内科，出诊时间未提供。"
+              },
+              {
+                "answer_quote": "每天上午出诊",
+                "verdict": "contradicted",
+                "source_id": "S1",
+                "source_quote": "合成医生甲属于消化内科，出诊时间未提供。"
+              },
+              {
+                "answer_quote": "乙属于消化内科",
+                "verdict": "contradicted",
+                "source_id": "S2",
+                "source_quote": "合成医生乙属于心血管内科，出诊时间未提供。"
+              }
+            ]
+          },
+          "budget": {
+            "limits": {
+              "model": 4,
+              "tool": 0,
+              "retry": 3,
+              "replan": 3,
+              "execution_seconds": 120.0,
+              "request_seconds": 45.0,
+              "closing_ratio": 0.8
+            },
+            "used": {
+              "model": 3,
+              "tool": 0,
+              "retry": 0,
+              "replan": 0
+            },
+            "active_execution_seconds": 17.01167672453448,
+            "tokens": {
+              "prompt_tokens": 1541,
+              "completion_tokens": 462,
+              "total_tokens": 2003,
+              "calls_without_usage": 0
+            },
+            "usage_accounting": "provider_reported; missing usage is counted separately",
+            "closing": false,
+            "reservations": {
+              "settled": 3
+            }
+          },
+          "elapsed_ms": 17060.05
+        }
+      ],
+      "usage": {
+        "calls": 12,
+        "prompt_tokens": 5361,
+        "completion_tokens": 1021,
+        "total_tokens": 6382,
+        "calls_without_usage": 0,
+        "by_model": {
+          "mimo-v2.6-flash": {
+            "calls": 12,
+            "prompt_tokens": 5361,
+            "completion_tokens": 1021,
+            "total_tokens": 6382
+          }
+        }
+      },
+      "interpretation": "Contract checks and hand-labeled probes are narrow diagnostics. Live judge is the same model family, with exact-quote validation and known-bad controls; not independent clinical or semantic accuracy."
+    }
+  },
+  "all_remote_requests_including_refinement": 44,
+  "all_provider_tokens_including_embeddings_and_refinement": 91952,
+  "monetary_cost": "not measured",
+  "tools_executed": false,
+  "development_run_totals": {
+    "intent": {
+      "provider_requests": 22,
+      "provider_reported_tokens": 80412,
+      "requests_without_provider_usage": 0
+    },
+    "answer_initial": {
+      "provider_requests": 10,
+      "provider_reported_tokens": 5158,
+      "requests_without_provider_usage": 1
+    },
+    "answer_final": {
+      "provider_requests": 12,
+      "provider_reported_tokens": 6382,
+      "requests_without_provider_usage": 0
+    }
+  },
+  "requests_without_provider_usage": 1
+}

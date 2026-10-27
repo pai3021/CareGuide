@@ -102,6 +102,7 @@ def test_projection_failure_preserves_canonical_profile_and_never_deletes_old_do
         [{'candidates': [candidate('afternoon', '以后我偏好下午')]}])
     previous = {'legacy_preference': 'old profile'}
     memory._profile_store.ensure('alice', previous)
+    memory.legacy_profile_projection = True
     memory._profile.upsert.side_effect = OSError('controlled storage outage')
     outcome = asyncio.run(memory.update_profile('alice', 'c'))
     assert outcome['status'] == 'unavailable'
@@ -156,4 +157,12 @@ def test_repeated_preference_in_a_new_message_does_not_rewrite_snapshot(tmp_path
     memory._client.replies.append(reply({'candidates': [candidate(identity='source-2')]}))
     assert asyncio.run(memory.update_profile('alice', 'c'))['status'] == 'skipped'
     assert memory._profile_store.get('alice')[0] == 1
-    assert memory._profile.upsert.call_count == 1
+    memory._profile.upsert.assert_not_called()
+
+
+def test_sqlite_preference_write_does_not_depend_on_chroma(tmp_path):
+    memory = manager(tmp_path, [message('以后我偏好上午')], [{'candidates': [candidate()]}])
+    memory._profile.upsert.side_effect = OSError('chroma unavailable')
+    assert asyncio.run(memory.update_profile('alice', 'c'))['status'] == 'updated'
+    assert asyncio.run(memory._get_profile('alice'))['preferred_time']['value'] == 'morning'
+    memory._profile.upsert.assert_not_called()

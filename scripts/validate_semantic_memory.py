@@ -5,6 +5,7 @@ import json
 import os
 import uuid
 from pathlib import Path
+from tempfile import TemporaryDirectory
 
 
 async def run(args):
@@ -23,8 +24,11 @@ async def run(args):
     embedding = semantic_embedding()
     prefix = 'careguide_validation_' + uuid.uuid4().hex[:12]
     user, conv = prefix, 'synthetic-appointment'
+    Path('tmp').mkdir(exist_ok=True)
+    temporary = TemporaryDirectory(prefix='semantic-memory-validation-', dir='tmp')
     options = dict(client=llm, model=os.environ['CAREGUIDE_LLM_MODEL'], redis_client=connection,
-        chroma_client=chroma, embedding_function=embedding, collection_prefix=prefix)
+        chroma_client=chroma, embedding_function=embedding, collection_prefix=prefix,
+        profile_path=str(Path(temporary.name)/'profiles.sqlite3'))
     manager = MemoryManager(**options)
     report = {'checks': [], 'redis': 'real', 'chroma': 'real', 'summary_model': 'real_provider',
         'embedding': 'real_provider', 'embedding_dimensions': embedding.dimensions,
@@ -47,9 +51,10 @@ async def run(args):
         passed('real_summary_compression_and_semantic_episode_retrieval')
         assert await connection.ttl(manager._wm_key(user, conv)) > 0
         passed('working_memory_ttl')
-        await manager.update_profile(user, conv)
+        await manager.add_message(user, conv, MsgRole.USER, '以后我偏好上午')
+        assert (await manager.update_profile(user, conv))['status'] == 'updated'
         context = await manager.get_context(user, conv, '挂号材料')
-        assert context.user_profile.get('preferences')
+        assert context.user_profile['preferred_time']['value'] == 'morning'
         passed('real_profile_extraction')
         cross = await manager.get_context(user, 'new-conversation', '线上挂号材料')
         assert cross.relevant_history and cross.user_profile and not cross.recent_messages
@@ -73,10 +78,11 @@ async def run(args):
         with output.open('x', encoding='utf-8') as file:
             json.dump(report, file, ensure_ascii=False, indent=2)
         await connection.delete(manager._wm_key(user, conv), manager._summary_key(user, conv))
-        for suffix in ('_episodic', '_user_profile'):
+        for suffix in ('_episodic',):
             chroma.delete_collection(prefix + suffix)
         await manager.close()
         await llm.close()
+        temporary.cleanup()
 
 
 def main():

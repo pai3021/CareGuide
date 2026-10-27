@@ -136,7 +136,7 @@ class ProfileStore:
 
     def processed(self, actor, event_id):
         with self.connect() as db:
-            return db.execute('SELECT status FROM profile_events WHERE actor=? AND event_id=?',
+            return db.execute("SELECT status FROM profile_events WHERE actor=? AND event_id=? AND status IN ('updated','skipped')",
                               (actor, event_id)).fetchone() is not None
 
     def prune(self, actor, *, now=None):
@@ -162,14 +162,20 @@ class ProfileStore:
             db.execute('INSERT OR REPLACE INTO profile_events VALUES (?,?,?,?)',
                        (actor, event_id, status, json.dumps(payload, ensure_ascii=False)))
 
-    def merge(self, actor, extraction, *, expected_revision, projection, deadline=None):
+    def merge(self, actor, extraction, *, expected_revision, projection, deadline=None, source_order=None):
         current = self.get(actor)
         if current is None or current[0] != expected_revision:
             raise ProfileConflict('Profile was updated concurrently; extraction must be refreshed')
         old = current[1]
         now = datetime.now(timezone.utc)
         fields = dict(old.get('fields', {})) if old.get('schema_version') == 2 else {}
+        watermarks = dict(old.get('watermarks', {}))
         for item in extraction.candidates:
+            if source_order is not None:
+                order = source_order.get(item.source_message_id, 0)
+                if order <= watermarks.get(item.key, 0):
+                    raise ProfileConflict('Preference source is older than the current revision')
+                watermarks[item.key] = order
             if item.operation == 'delete':
                 fields.pop(item.key, None)
             else:
@@ -179,6 +185,8 @@ class ProfileStore:
                     'expires_at': (now+timedelta(days=180)).isoformat()}
         fields = {key: value for key, value in fields.items() if value['expires_at'] > now.isoformat()}
         payload = {'schema_version': 2, 'revision': expected_revision+1, 'fields': fields}
+        if watermarks:
+            payload['watermarks'] = watermarks
         projection(payload)
         if deadline is not None and time.monotonic() >= deadline:
             raise TimeoutError('Projection arrived after the extraction deadline')

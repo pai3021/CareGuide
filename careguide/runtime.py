@@ -1,5 +1,6 @@
 """Explicit medical retrieval configuration. Does not load any .env file."""
 import os
+import json
 from functools import lru_cache
 from pathlib import Path
 
@@ -210,12 +211,34 @@ def get_chat_runtime():
             base_url=base_url, model=model, client=client,
             embedding_function=semantic_embedding() if os.environ.get('CAREGUIDE_MEMORY_EMBEDDING_MODE') == 'remote' else None,
             collection_prefix='careguide_semantic' if os.environ.get('CAREGUIDE_MEMORY_EMBEDDING_MODE') == 'remote' else 'careguide',
-            profile_path=business_path)
+            profile_path=business_path,
+            legacy_profile_projection=os.environ.get('CAREGUIDE_LEGACY_PROFILE_PROJECTION', '0') == '1')
         memory = PersistentMemory(manager)
     elif memory_mode == 'session':
         memory = SessionMemory()
     else:
         raise ValueError('Unknown memory mode')
+    if os.environ.get('CAREGUIDE_SESSION_ARCHIVE', '0') == '1':
+        from careguide.archived_memory import ArchivedMemory
+        from careguide.context_memory import ContextSettings
+        if int(os.environ.get('CAREGUIDE_MEMORY_REVIEW_INTERVAL', '0')) and memory_mode != 'redis_chroma':
+            raise ValueError('Periodic profile review requires redis_chroma mode')
+        settings = None
+        if os.environ.get('CAREGUIDE_TOKEN_CONTEXT', '0') == '1':
+            if client is None:
+                raise ValueError('Token context requires a configured summary model client')
+            settings = ContextSettings(
+                window=int(os.environ.get('CAREGUIDE_CONTEXT_WINDOW', '32768')),
+                input_cap=int(os.environ.get('CAREGUIDE_CONTEXT_INPUT_CAP', '24000')),
+                output_reserve=int(os.environ.get('CAREGUIDE_CONTEXT_OUTPUT_RESERVE', '2048')),
+                margin=int(os.environ.get('CAREGUIDE_CONTEXT_MARGIN', '1024')),
+                trigger_ratio=float(os.environ.get('CAREGUIDE_CONTEXT_TRIGGER_RATIO', '.85')),
+                target_ratio=float(os.environ.get('CAREGUIDE_CONTEXT_TARGET_RATIO', '.60')),
+                model_windows=json.loads(os.environ.get('CAREGUIDE_CONTEXT_MODEL_WINDOWS', '{}')))
+        memory = ArchivedMemory(memory, business_path, client=client, model=model, settings=settings,
+            review_interval=int(os.environ.get('CAREGUIDE_MEMORY_REVIEW_INTERVAL', '0')))
+    elif os.environ.get('CAREGUIDE_TOKEN_CONTEXT', '0') == '1':
+        raise ValueError('Token context requires the durable session archive')
     if orchestration in {'unified', 'langgraph'}:
         from careguide.orchestration.runtime import OrchestrationRuntime
         from careguide.orchestration.budget import BudgetLimits

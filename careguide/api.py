@@ -4,6 +4,7 @@ import asyncio
 import uuid
 import os
 from contextlib import asynccontextmanager
+from contextlib import nullcontext
 
 from fastapi import Depends, FastAPI, HTTPException, Response, Request
 from fastapi.middleware.cors import CORSMiddleware
@@ -18,6 +19,7 @@ from careguide.orchestration.store import VersionConflict, WorkflowExpired
 from careguide.orchestration.budget import BudgetExhausted
 from careguide.streaming import emit, progress_events, encode_event
 from careguide.auth import ActorModel, authentication_middleware, principal, owned_trace, bound_actor
+from careguide.session_store import TurnConflict
 
 @asynccontextmanager
 async def lifespan(app):
@@ -80,6 +82,7 @@ class ChatRequest(ActorModel):
     user_id: str = Field(default='demo-user', min_length=1, max_length=100)
     conv_id: str | None = Field(default=None, min_length=1, max_length=100)
     workflow_event: WorkflowEvent | None = None
+    request_id: str | None = Field(default=None, min_length=1, max_length=100)
 
 
 @app.post('/chat')
@@ -122,27 +125,47 @@ async def _execute_chat_result(request, runtime):
     guard = (_versioned_change() if request.workflow_event and request.workflow_event.kind in {'change', 'cancel'}
              else _conversation_locks[key])
     async with guard:
+        archive_started = False
+        request_id = request.request_id or uuid.uuid4().hex
         try:
+            if hasattr(memory, 'begin_turn'):
+                cached = memory.begin_turn(request.user_id, conv_id, request_id, request.message)
+                if cached is not None:
+                    return cached
+                archive_started = True
             emit('stage', stage='understanding', message='正在理解请求')
             memory_status = 'available'
             try:
-                async with asyncio.timeout(_MEMORY_READ_TIMEOUT_S):
+                async with asyncio.timeout(getattr(memory, 'read_timeout', _MEMORY_READ_TIMEOUT_S)):
                     with phase('memory_read'):
                         history = await memory.history(request.user_id, conv_id, query=request.message)
             except Exception:
+                if archive_started:
+                    raise HTTPException(503, '会话历史暂不可恢复，请稍后重试')
                 history, memory_status = [], 'unavailable'
-            if request.workflow_event:
-                event = request.workflow_event
-                result = await engine.process(request.message, request.user_id, conv_id, history,
-                    workflow_event=event.model_dump())
-            else:
-                result = await engine.process(request.message, request.user_id, conv_id, history)
+            scope = (memory.request_context(request.user_id, conv_id, request_id)
+                     if hasattr(memory, 'request_context') else nullcontext())
+            with scope:
+                if request.workflow_event:
+                    event = request.workflow_event
+                    result = await engine.process(request.message, request.user_id, conv_id, history,
+                        workflow_event=event.model_dump())
+                else:
+                    result = await engine.process(request.message, request.user_id, conv_id, history)
+            result.setdefault('conversation_id', conv_id)
+            result.setdefault('request_id', request_id)
+            if archive_started:
+                result['archive_request_id'] = request_id
             emit('stage', stage='saving', message='结果已生成，正在保存会话')
             try:
                 async with asyncio.timeout(_MEMORY_WRITE_TIMEOUT_S):
                     with phase('memory_write'):
-                        await memory.add(request.user_id, conv_id, 'user', request.message)
-                        memory_update = await memory.add(request.user_id, conv_id, 'assistant', result['response'])
+                        if archive_started:
+                            memory_update = await memory.complete_turn(request.user_id, conv_id, request_id,
+                                                                     request.message, result)
+                        else:
+                            await memory.add(request.user_id, conv_id, 'user', request.message)
+                            memory_update = await memory.add(request.user_id, conv_id, 'assistant', result['response'])
                 if memory_update is not None:
                     result['memory_update'] = memory_update
             except Exception:
@@ -150,6 +173,8 @@ async def _execute_chat_result(request, runtime):
             result['memory_status'] = memory_status
             result.setdefault('conversation_id', conv_id)
             return result
+        except TurnConflict as exc:
+            raise HTTPException(409, '请求已受理或标识冲突，请查询任务状态或使用新的请求标识') from exc
         except HTTPException:
             raise
         except LookupError as exc:
@@ -162,6 +187,9 @@ async def _execute_chat_result(request, runtime):
             raise HTTPException(422, '回答不符合当前任务或候选项约束') from exc
         except Exception as exc:
             raise HTTPException(503, '对话服务暂不可用') from exc
+        finally:
+            if archive_started:
+                memory.fail_turn(request.user_id, conv_id, request_id)
 
 
 @app.post('/chat/stream')

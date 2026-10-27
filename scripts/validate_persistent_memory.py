@@ -4,6 +4,7 @@ import json
 import os
 import uuid
 from pathlib import Path
+from tempfile import TemporaryDirectory
 
 import chromadb
 import redis.asyncio as redis
@@ -24,7 +25,12 @@ class ScriptedSummary:
 
     async def create(self, **kwargs):
         prompt = kwargs['messages'][-1]['content']
-        content = json.dumps({'preferences': ['查询本院挂号流程'], 'entities': {'医院': ['测试医院']}}) if 'preferences' in prompt else 'SCRIPTED：测试用户讨论挂号流程。'
+        if '"sources"' in prompt:
+            sources = json.loads(prompt)['sources']
+            content = json.dumps({'candidates': [{'key': 'preferred_time', 'operation': 'set',
+                'value': 'morning', 'source_message_id': next(iter(sources)), 'source_quote': '以后我偏好上午'}]})
+        else:
+            content = 'SCRIPTED：测试用户讨论挂号流程。'
         return {'choices': [{'message': {'content': content}}]}
 
 
@@ -35,12 +41,15 @@ async def run():
     assert await connection.ping()
     prefix = 'careguide_validation_'+uuid.uuid4().hex[:12]
     user, conv = prefix, 'synthetic-conversation'
+    temporary = TemporaryDirectory(prefix='memory-validation-', dir='tmp')
     manager = MemoryManager(client=ScriptedSummary(), redis_client=connection, chroma_client=client,
-                            embedding_function=TestEmbedding(), collection_prefix=prefix)
+                            embedding_function=TestEmbedding(), collection_prefix=prefix,
+                            profile_path=str(Path(temporary.name)/'profiles.sqlite3'))
     checks = []
     try:
         for index in range(16):
-            await manager.add_message(user, conv, MsgRole.USER, f'测试挂号流程问题{index}')
+            await manager.add_message(user, conv, MsgRole.USER,
+                                      '以后我偏好上午' if index == 15 else f'测试挂号流程问题{index}')
         context = await manager.get_context(user, conv, '挂号流程')
         assert len(context.recent_messages) == 6
         assert context.summary and context.relevant_history
@@ -49,7 +58,7 @@ async def run():
         checks.append('redis_ttl')
         await manager.update_profile(user, conv)
         context = await manager.get_context(user, conv, '挂号流程')
-        assert context.user_profile.get('preferences')
+        assert context.user_profile['preferred_time']['value'] == 'morning'
         checks.append('profile_extraction_and_context_merge')
         other = await manager.get_context(user+'-other', conv, '挂号流程')
         assert not other.recent_messages and not other.relevant_history and not other.user_profile
@@ -64,11 +73,13 @@ async def run():
         print(json.dumps(report, ensure_ascii=False))
     finally:
         await connection.delete(manager._wm_key(user, conv), manager._summary_key(user, conv))
-        for suffix in ('_episodic', '_user_profile'):
+        for suffix in ('_episodic',):
             client.delete_collection(prefix+suffix)
         await manager.close()
+        temporary.cleanup()
 
 
 if __name__ == '__main__':
+    Path('tmp').mkdir(exist_ok=True)
     os.environ['NO_PROXY'] = '127.0.0.1,localhost'
     asyncio.run(run())

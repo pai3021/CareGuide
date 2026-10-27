@@ -18,6 +18,8 @@ CareGuide 是一个用于医疗资料查询和预约流程演示的 Agent 项目
 
 回答支持安全 Markdown、引用定位和分阶段耗时；可选 Bearer token 将用户身份绑定到服务端。回答忠实度探针、原 RoBERTa／业务 embedding 的小规模对比和接入说明见 [质量与访问说明](docs/orchestration/quality-and-ui.md)。这些工程验证不代表临床有效性或总体意图识别准确率。
 
+可选启用 SQLite 完整会话归档与恢复、按 token 预算的四阶段压缩，以及周期长期偏好复盘。默认仍为进程内 `session` 记忆，新能力需显式配置。存储职责、开关、重试语义和验证范围见 [Context 与 Memory 说明](docs/context-memory.md)。
+
 ## 仓库结构
 
 | 路径 | 内容 |

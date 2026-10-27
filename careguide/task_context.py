@@ -109,7 +109,7 @@ class SessionMemory:
 
 
 class PersistentMemory:
-    """Adapter for Redis working memory and Chroma episodic/profile memory."""
+    """Redis working memory, Chroma episodes, and authoritative SQLite preferences."""
     def __init__(self, manager):
         self.manager = manager
 
@@ -137,7 +137,7 @@ class PersistentMemory:
     def info(self):
         return {'backend': 'redis_chroma', 'persistent': True,
                 'working_memory': 'redis', 'episodic_memory': 'chroma',
-                'user_profile': 'chroma'}
+                'user_profile': 'sqlite'}
 
     async def health(self):
         return await self.manager.health()

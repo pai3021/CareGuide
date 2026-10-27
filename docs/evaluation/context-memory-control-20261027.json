@@ -1,0 +1,66 @@
+{
+  "protocol": "careguide-context-control-v1",
+  "seed": "fixed-30-turn-transcript",
+  "model": "scripted fixture",
+  "token_count_method": "UTF-8 heuristic; not provider usage",
+  "episodic_retrieval": "disabled in synthetic comparisons to isolate context behavior; checked separately with real services",
+  "semantic_quality_evaluated": false,
+  "clinical_quality_evaluated": false,
+  "hospital_actions_executed": false,
+  "rows": [
+    {
+      "mode": "session_baseline",
+      "turns": 30,
+      "estimated_input_tokens_sum": 82395,
+      "estimated_input_tokens_peak": 3402,
+      "summary_model_calls": 0,
+      "archived_chat_messages": null,
+      "context_present_after_cache_loss": false,
+      "fixture_elapsed_ms": 0.955
+    },
+    {
+      "mode": "redis_chroma_baseline",
+      "turns": 30,
+      "estimated_input_tokens_sum": 36442,
+      "estimated_input_tokens_peak": 1669,
+      "summary_model_calls": 9,
+      "archived_chat_messages": null,
+      "context_present_after_cache_loss": false,
+      "fixture_elapsed_ms": 22.163
+    },
+    {
+      "mode": "enhanced",
+      "turns": 30,
+      "estimated_input_tokens_sum": 40778,
+      "estimated_input_tokens_peak": 1938,
+      "summary_model_calls": 8,
+      "archived_chat_messages": 60,
+      "context_present_after_cache_loss": true,
+      "fixture_elapsed_ms": 631.556
+    }
+  ],
+  "source_sha256": {
+    "careguide/session_store.py": "415ad52cd1c3fc1fdc56fe10ede284e462ac09af89b7206cdeb07a1acf12e934",
+    "careguide/archived_memory.py": "b286065eb40d36953cb3ddbb09b2954ad48389c7bfe089af763ae75ea2467570",
+    "careguide/context_memory.py": "9c292be9ecd2bc5dbfb113280eb38e334d181d704bd9c8c0baa3971728296461",
+    "careguide/conversation_memory.py": "c13c8f16e6312257e3be30a5a7ce38f58d49462081f31c24d44b1c02bc9f3779",
+    "careguide/profile_memory.py": "7fd62ec4e05d2ef84aa1a41c0b8d96e01da4d68ff975b066c9a09b7f4ff8fca0",
+    "careguide/task_context.py": "9c720cee7723b70a8326ec4ae9252307db2ecf62a88ad93370e01b95a40b41f9",
+    "careguide/llm_utils.py": "dfcdb7c0cec30bfdcc51c75254c78f5000312864d5ea81a2e7537d031a249835",
+    "careguide/api.py": "4c8ea427c0e56acb0ab2ebabaf3002ac48089f06595b8951f5de7de8a166d238",
+    "careguide/runtime.py": "68bde1b7b795cc0feba5bae68bb104375a02e8754e3fe8b5f34129ad43e11d71",
+    "scripts/benchmark_context_memory.py": "14e04255e686d139096eb740db7412f666389ce67ccde74425568ed14e16fa24"
+  },
+  "real_services": {
+    "status": "passed",
+    "checks": [
+      "redis_key_loss_recovery",
+      "redis_ttl",
+      "durable_summary",
+      "chroma_episode_projection",
+      "actor_isolation"
+    ],
+    "embedding": "synthetic test vectors",
+    "model": "scripted fixture"
+  }
+}

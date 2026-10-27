@@ -157,11 +157,18 @@ async def create_chat_completion(
             kwargs["response_format"] = response_format
         if extra_body is not None:
             kwargs["extra_body"] = extra_body
+        from careguide.context_memory import current_context_policy
+        policy = current_context_policy()
+        if policy is not None:
+            kwargs['messages'] = await policy.prepare(kwargs['messages'], tools=kwargs.get('tools'),
+                                                     model=model, output=max_tokens or 0)
         async with budgeted_call('model') as ticket:
             response = await client.chat.completions.create(**kwargs)
             if ticket is not None:
                 ticket.record_response(response)
         _record_token_usage(response, model)
+        if policy is not None:
+            policy.observe(kwargs['messages'], kwargs.get('tools'), model, response)
         return response
 
     # Compatibility path for deterministic tests and externally injected
@@ -183,11 +190,19 @@ async def create_chat_completion(
         kwargs["system"] = system
     if tools:
         kwargs["tools"] = [_to_legacy_tool(tool) for tool in tools]
+    from careguide.context_memory import current_context_policy
+    policy = current_context_policy()
+    if policy is not None:
+        original = ([{'role': 'system', 'content': system}] if system else []) + list(messages)
+        prepared = await policy.prepare(original, tools=kwargs.get('tools'), model=model, output=max_tokens or 0)
+        kwargs['messages'] = [m for m in prepared if m.get('role') != 'system']
     async with budgeted_call('model') as ticket:
         response = await create(**kwargs)
         if ticket is not None:
             ticket.record_response(response)
     _record_token_usage(response, model)
+    if policy is not None:
+        policy.observe(prepared, kwargs.get('tools'), model, response)
     return response
 
 
@@ -203,6 +218,10 @@ async def stream_answer_completion(client, *, model, messages, on_delta, on_usag
                   stream=True, stream_options={'include_usage': True})
     if model.casefold().startswith('mimo-'):
         kwargs['extra_body'] = {'thinking': {'type': 'disabled'}}
+    from careguide.context_memory import current_context_policy
+    policy = current_context_policy()
+    if policy is not None:
+        kwargs['messages'] = await policy.prepare(kwargs['messages'], model=model, output=max_tokens)
     stream, chunks, finished, usage, length = None, [], False, None, 0
     try:
         async with budgeted_call('model') as ticket:
@@ -237,6 +256,8 @@ async def stream_answer_completion(client, *, model, messages, on_delta, on_usag
             if not finished:
                 raise ValueError('Answer stream ended without a clean stop')
         _record_token_usage(usage or {}, model)
+        if policy is not None:
+            policy.observe(kwargs['messages'], None, model, usage or {})
         return ''.join(chunks)
     finally:
         if stream is not None:

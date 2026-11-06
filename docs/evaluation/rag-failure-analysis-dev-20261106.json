@@ -1,0 +1,116 @@
+{
+  "evaluation": "dev RAG stage diagnostic",
+  "frozen_test_run": false,
+  "external_requests_this_run": 0,
+  "stage_counts": {
+    "baseline_rrf20": {
+      "absent_from_retrieval_union": 13,
+      "removed_at_pool_cutoff": 20,
+      "inside_pool_outside_final10": 9,
+      "final10_hit": 58
+    },
+    "baseline_rrf40": {
+      "absent_from_retrieval_union": 13,
+      "removed_at_pool_cutoff": 7,
+      "inside_pool_outside_final10": 20,
+      "final10_hit": 60
+    },
+    "tuning_selected40": {
+      "absent_from_retrieval_union": 13,
+      "removed_at_pool_cutoff": 8,
+      "inside_pool_outside_final10": 20,
+      "final10_hit": 59
+    }
+  },
+  "rerank_before_after": {
+    "baseline_rrf20": {
+      "before": {
+        "case_count": 100,
+        "mrr_at_10": 0.36984523809523806,
+        "recall_at_1": 0.29,
+        "recall_at_5": 0.49,
+        "recall_at_10": 0.58,
+        "ndcg_at_10": 0.4198154832842302
+      },
+      "after": {
+        "case_count": 100,
+        "mrr_at_10": 0.3952896825396825,
+        "recall_at_1": 0.31,
+        "recall_at_5": 0.51,
+        "recall_at_10": 0.58,
+        "ndcg_at_10": 0.4394409185357994
+      },
+      "gained": 3,
+      "lost": 3
+    },
+    "baseline_rrf40": {
+      "before": {
+        "case_count": 100,
+        "mrr_at_10": 0.36984523809523806,
+        "recall_at_1": 0.29,
+        "recall_at_5": 0.49,
+        "recall_at_10": 0.58,
+        "ndcg_at_10": 0.4198154832842302
+      },
+      "after": {
+        "case_count": 100,
+        "mrr_at_10": 0.40032936507936506,
+        "recall_at_1": 0.32,
+        "recall_at_5": 0.51,
+        "recall_at_10": 0.6,
+        "ndcg_at_10": 0.4474727223350773
+      },
+      "gained": 6,
+      "lost": 4
+    },
+    "tuning_selected40": {
+      "before": {
+        "case_count": 100,
+        "mrr_at_10": 0.34745238095238096,
+        "recall_at_1": 0.27,
+        "recall_at_5": 0.44,
+        "recall_at_10": 0.56,
+        "ndcg_at_10": 0.39698403552518646
+      },
+      "after": {
+        "case_count": 100,
+        "mrr_at_10": 0.3919404761904762,
+        "recall_at_1": 0.31,
+        "recall_at_5": 0.5,
+        "recall_at_10": 0.59,
+        "ndcg_at_10": 0.43886726855473734
+      },
+      "gained": 7,
+      "lost": 4
+    }
+  },
+  "candidate_upper_bounds": {
+    "tuning500": {
+      "pool_20": 0.754,
+      "pool_40": 0.824,
+      "pool_60": 0.848,
+      "pool_100": 0.888,
+      "union_top100_each": 0.906
+    },
+    "validation500": {
+      "pool_20": 0.702,
+      "pool_40": 0.8,
+      "pool_60": 0.83,
+      "pool_100": 0.86,
+      "union_top100_each": 0.884
+    },
+    "pilot100": {
+      "pool_20": 0.67,
+      "pool_40": 0.8,
+      "pool_60": 0.84,
+      "pool_100": 0.86,
+      "union_top100_each": 0.87
+    }
+  },
+  "source_sha256": {
+    "scores": "082e47e111e19a1bb2fd529c88ac859dcd711417a205ae49b9087d494cd29ab6",
+    "plan": "33b11fce466068af3d5c9431aee3735e3d944989b63e9c7f0e0f698eb1269c2f",
+    "responses": "34fdbedf6a850e921dfb5c2011b541b1c32965a00e4a0e1f48fdbfc8f31642d5"
+  },
+  "scope": "Observed loss stages only. No automatic semantic-cause or clinical adjudication. Pilot is reused development data."
+}

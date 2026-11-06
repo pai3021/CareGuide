@@ -10,6 +10,7 @@ from typing import Any
 
 from careguide.corpus import Corpus, Record
 from careguide.retrieval.bm25_index import BM25Index
+from careguide.retrieval.score_fusion import fuse_scores
 
 COLLECTION_NAME = 'careguide_medical_v1'
 
@@ -23,19 +24,37 @@ class MedicalKnowledgeBase:
                  mode: str = 'bm25', min_dense_score: float = -1.0,
                  reranker: Any = None, rerank_candidates: int = 20,
                  dense_weight: float = 4.0, lexical_weight: float = 1.0,
-                 hybrid_candidates: int = 100):
+                 hybrid_candidates: int = 100, sparse_retriever: Any = None,
+                 hybrid_fusion: str = 'rrf', hybrid_weights: dict[str, float] | None = None,
+                 rrf_constant: int = 60, dense_search: str = 'ann'):
         if mode not in {'bm25', 'dense', 'hybrid'}:
             raise ValueError('Retrieval mode must be bm25, dense or hybrid')
+        if dense_search not in {'ann', 'exact'}:
+            raise ValueError('Dense search must be ann or exact')
         if not -1 <= min_dense_score <= 1:
             raise ValueError('Dense threshold must be between -1 and 1')
         if dense_weight <= 0 or lexical_weight <= 0:
             raise ValueError('Hybrid RRF weights must be positive')
         if hybrid_candidates < 1:
             raise ValueError('Hybrid candidate depth must be positive')
+        if isinstance(rrf_constant, bool) or not isinstance(rrf_constant, int) or rrf_constant < 1:
+            raise ValueError('RRF constant must be a positive integer')
+        if sparse_retriever is not None and mode != 'hybrid':
+            raise ValueError('BGE sparse recall requires hybrid mode')
+        weights = {'dense': float(dense_weight), 'bm25': float(lexical_weight)}
+        if sparse_retriever is not None:
+            weights['bge_sparse'] = 1.0
+        self.hybrid_weights = dict(hybrid_weights) if hybrid_weights is not None else weights
+        fuse_scores({key: [] for key in weights}, weights=self.hybrid_weights,
+                    method=hybrid_fusion, constant=rrf_constant)
+        self.rrf_constant = rrf_constant
+        self.sparse_retriever, self.hybrid_fusion = sparse_retriever, hybrid_fusion
+        self.explicit_fusion = sparse_retriever is not None or hybrid_weights is not None or hybrid_fusion != 'rrf'
         if mode != 'bm25' and (collection is None or embedding is None):
             raise ValueError('Dense retrieval requires an explicitly indexed collection and real embedding provider')
         self.corpus, self.collection, self.embedding = corpus, collection, embedding
         self.mode, self.min_dense_score = mode, min_dense_score
+        self.dense_search, self.exact_index = dense_search, None
         self.reranker = reranker
         self.rerank_candidates = max(1, int(rerank_candidates))
         self.dense_weight = float(dense_weight)
@@ -48,6 +67,12 @@ class MedicalKnowledgeBase:
             for record in corpus.records)
         if mode != 'bm25':
             self._validate_collection()
+            if dense_search == 'exact':
+                from careguide.retrieval.exact_index import ExactCosineIndex
+                stored = self.collection.get(include=['embeddings'])
+                if set(stored['ids']) != {r.id for r in corpus.records}:
+                    raise ValueError('Exact vector records disagree with verified corpus')
+                self.exact_index = ExactCosineIndex(stored['ids'], stored['embeddings'], dimensions=embedding.dimensions)
 
     def _validate_collection(self):
         metadata = self.collection.metadata or {}
@@ -76,7 +101,8 @@ class MedicalKnowledgeBase:
         lexical_limit = self.hybrid_candidates if self.mode == 'hybrid' else len(eligible)
         lexical = self.lexical_index.search(
             query, top_k=min(len(eligible), lexical_limit),
-            eligible_ids=set(eligible)) if self.mode != 'dense' else []
+            eligible_ids=set(eligible)) if self.mode != 'dense' and (
+                self.mode != 'hybrid' or self.hybrid_weights['bm25'] > 0) else []
         preferred_ids: set[str] = set()
         if lexical:
             # When an official/curated note is essentially tied with an open
@@ -91,16 +117,22 @@ class MedicalKnowledgeBase:
                 preferred_ids = {hit.chunk_id for hit in preferred}
                 lexical = preferred + [hit for hit in lexical if hit.chunk_id not in preferred_ids]
         dense = []
-        if self.mode != 'bm25':
+        if self.mode != 'bm25' and (self.mode != 'hybrid' or self.hybrid_weights['dense'] > 0):
             dense_limit = (self.hybrid_candidates if self.mode == 'hybrid' else
                            max(top_k, self.rerank_candidates if self.reranker else top_k))
-            result = self.collection.query(
-                query_embeddings=[self.embedding.embed_query(query)],
-                n_results=min(dense_limit, len(eligible)), where={'record_id': {'$in': list(eligible)}},
-                include=['distances'])
-            dense = [(identity, 1-float(distance)) for identity, distance
-                     in zip(result['ids'][0], result['distances'][0])
-                     if identity in eligible and 1-float(distance) >= self.min_dense_score]
+            query_vector = self.embedding.embed_query(query)
+            if self.exact_index is not None:
+                dense = [(key, score) for key, score in self.exact_index.search(
+                    query_vector, eligible_ids=set(eligible), top_k=min(dense_limit, len(eligible)))
+                    if score >= self.min_dense_score]
+            else:
+                result = self.collection.query(
+                    query_embeddings=[query_vector],
+                    n_results=min(dense_limit, len(eligible)), where={'record_id': {'$in': list(eligible)}},
+                    include=['distances'])
+                dense = [(identity, 1-float(distance)) for identity, distance
+                         in zip(result['ids'][0], result['distances'][0])
+                         if identity in eligible and 1-float(distance) >= self.min_dense_score]
         rows = {}
         if self.mode == 'bm25':
             for hit in lexical:
@@ -112,6 +144,26 @@ class MedicalKnowledgeBase:
         elif self.mode == 'dense':
             rows = {identity: {'mode': 'dense', 'cosine_score': score, 'rank_score': score}
                     for identity, score in dense}
+        elif self.explicit_fusion:
+            streams = {'bm25': [(hit.chunk_id, hit.score) for hit in lexical], 'dense': dense}
+            if self.sparse_retriever is not None:
+                sparse = (self.sparse_retriever.search(
+                    query, eligible_ids=set(eligible), top_k=self.hybrid_candidates)
+                    if self.hybrid_weights['bge_sparse'] > 0 else [])
+                streams['bge_sparse'] = [(key, float(score)) for key, score in sparse
+                                        if key in eligible][:self.hybrid_candidates]
+            fused = fuse_scores(streams, weights=self.hybrid_weights,
+                                method=self.hybrid_fusion, constant=self.rrf_constant)
+            rows = {key: {'mode': 'hybrid_'+self.hybrid_fusion, 'rank_score': score,
+                          'fusion_weights': dict(self.hybrid_weights),
+                          'rrf_constant': self.rrf_constant if self.hybrid_fusion == 'rrf' else None}
+                    for key, score in fused}
+            for name, stream in streams.items():
+                for rank, (key, score) in enumerate(stream, 1):
+                    if key in rows:
+                        rows[key][name+'_rank'] = rank
+                        rows[key][{'dense': 'cosine_score', 'bm25': 'bm25_score',
+                                   'bge_sparse': 'bge_sparse_score'}[name]] = score
         else:
             # RRF ranking is not a relevance probability or clinical confidence.
             # Weights are development-set ranking parameters, not confidence.
@@ -120,14 +172,19 @@ class MedicalKnowledgeBase:
                                      'bm25_score': hit.score,
                                      'rrf_weights': {'dense': self.dense_weight,
                                                      'bm25': self.lexical_weight},
-                                     'rank_score': self.lexical_weight/(60+rank)}
+                                     'rrf_constant': self.rrf_constant,
+                                     'rank_score': self.lexical_weight/(self.rrf_constant+rank)}
             for rank, (identity, score) in enumerate(dense, 1):
                 row = rows.setdefault(identity, {
                     'mode': 'hybrid_rrf', 'rank_score': 0.0,
                     'rrf_weights': {'dense': self.dense_weight,
-                                    'bm25': self.lexical_weight}})
+                                    'bm25': self.lexical_weight},
+                    'rrf_constant': self.rrf_constant})
                 row.update({'dense_rank': rank, 'cosine_score': score})
-                row['rank_score'] += self.dense_weight/(60+rank)
+                row['rank_score'] += self.dense_weight/(self.rrf_constant+rank)
+        if self.exact_index is not None:
+            for key, _ in dense:
+                rows[key]['dense_search'] = 'exact'
         initial_k = max(top_k, self.rerank_candidates) if self.reranker else top_k
         ordered = sorted(rows, key=lambda key: (-rows[key]['rank_score'], key))[:initial_k]
         if self.reranker and ordered:

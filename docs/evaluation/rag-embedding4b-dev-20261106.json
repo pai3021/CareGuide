@@ -1,0 +1,164 @@
+{
+  "evaluation": "0.6B vs 4B embedding, same 4B reranker and Top40",
+  "frozen_test_run": false,
+  "pre_rerank": {
+    "embedding_06b": {
+      "tuning500": {
+        "case_count": 500,
+        "mrr_at_10": 0.4420563492063492,
+        "recall_at_1": 0.36,
+        "recall_at_5": 0.582,
+        "recall_at_10": 0.65,
+        "ndcg_at_10": 0.4914519943923735,
+        "coverage_20": 0.754,
+        "coverage_40": 0.824,
+        "coverage_100": 0.888,
+        "dense_top100": 0.888,
+        "union_top100_each": 0.906
+      },
+      "validation500": {
+        "case_count": 500,
+        "mrr_at_10": 0.4122777777777778,
+        "recall_at_1": 0.324,
+        "recall_at_5": 0.526,
+        "recall_at_10": 0.642,
+        "ndcg_at_10": 0.4663971826720346,
+        "coverage_20": 0.702,
+        "coverage_40": 0.8,
+        "coverage_100": 0.86,
+        "dense_top100": 0.86,
+        "union_top100_each": 0.884
+      },
+      "all_dev": {
+        "case_count": 1000,
+        "mrr_at_10": 0.4271670634920635,
+        "recall_at_1": 0.342,
+        "recall_at_5": 0.554,
+        "recall_at_10": 0.646,
+        "ndcg_at_10": 0.4789245885322041,
+        "coverage_20": 0.728,
+        "coverage_40": 0.812,
+        "coverage_100": 0.874,
+        "dense_top100": 0.874,
+        "union_top100_each": 0.895
+      }
+    },
+    "embedding_4b": {
+      "tuning500": {
+        "case_count": 500,
+        "mrr_at_10": 0.46465793650793646,
+        "recall_at_1": 0.368,
+        "recall_at_5": 0.598,
+        "recall_at_10": 0.69,
+        "ndcg_at_10": 0.5184114372285417,
+        "coverage_20": 0.774,
+        "coverage_40": 0.85,
+        "coverage_100": 0.916,
+        "dense_top100": 0.916,
+        "union_top100_each": 0.934
+      },
+      "validation500": {
+        "case_count": 500,
+        "mrr_at_10": 0.46783174603174604,
+        "recall_at_1": 0.374,
+        "recall_at_5": 0.602,
+        "recall_at_10": 0.692,
+        "ndcg_at_10": 0.5213175217947403,
+        "coverage_20": 0.768,
+        "coverage_40": 0.836,
+        "coverage_100": 0.894,
+        "dense_top100": 0.894,
+        "union_top100_each": 0.91
+      },
+      "all_dev": {
+        "case_count": 1000,
+        "mrr_at_10": 0.4662448412698413,
+        "recall_at_1": 0.371,
+        "recall_at_5": 0.6,
+        "recall_at_10": 0.691,
+        "ndcg_at_10": 0.5198644795116409,
+        "coverage_20": 0.771,
+        "coverage_40": 0.843,
+        "coverage_100": 0.905,
+        "dense_top100": 0.905,
+        "union_top100_each": 0.922
+      }
+    }
+  },
+  "pilot": {
+    "embedding_06b": {
+      "case_count": 100,
+      "mrr_at_10": 0.46557539682539684,
+      "recall_at_1": 0.38,
+      "recall_at_5": 0.55,
+      "recall_at_10": 0.72,
+      "ndcg_at_10": 0.5242761835392021
+    },
+    "embedding_4b": {
+      "case_count": 100,
+      "mrr_at_10": 0.4560476190476191,
+      "recall_at_1": 0.36,
+      "recall_at_5": 0.56,
+      "recall_at_10": 0.72,
+      "ndcg_at_10": 0.5173664468455487
+    }
+  },
+  "paired_pilot": {
+    "absolute_delta": 0,
+    "bootstrap_95_interval": [
+      -0.06,
+      0.05
+    ],
+    "bootstrap_samples": 2000,
+    "gained": 4,
+    "lost": 4
+  },
+  "pilot_candidate_coverage": {
+    "embedding_06b": 0.8,
+    "embedding_4b": 0.85
+  },
+  "source_plan_sha256": "c5a0f6d0c32c795cfcf682cee818e100b9046a1d96dd17392ff31e183473d334",
+  "scope": "New separate 4B index; retain 0.6B. Fixed dev/pilot, no frozen test, no query filtering, no gold input.",
+  "requests": {
+    "embedding_attempts": 346,
+    "embedding_successful": 345,
+    "embedding_failed_without_usage": 1,
+    "rerank_attempts": 100,
+    "total_attempts": 446,
+    "authorized_total_cap": 450,
+    "successful_embedding_input_tokens": 1157313
+  },
+  "preservation": {
+    "old_index_snapshot_verified": true,
+    "old_index": {
+      "collection": "careguide_medical_v1_6e47b0ad0159",
+      "dimension": 1024,
+      "record_count": 10015,
+      "metadata": {
+        "corpus_fingerprint": "6e47b0ad01598a3f1385abb53a9ab7189ca11eb63bd5674a4688e946f4e0f8cf",
+        "embedding_dimensions": 1024,
+        "embedding_model": "Qwen/Qwen3-Embedding-0.6B",
+        "hnsw:space": "cosine",
+        "reuse_complete": 1,
+        "reused_from": "careguide_medical_v1_1ac145b7c53a"
+      }
+    },
+    "new_index_directory": "data\\source_cache\\qwen-embedding-4b-1024-20261106\\chroma",
+    "old_index_snapshot_manifest_sha256": "77878aa404d1f73886ac37db538c2dc032a6339fd053746b761f1bbe69b696b5"
+  },
+  "published_sha256": {
+    "data\\eval\\cache\\rag-recall-scores-qwen4b-dev-20261106.json.gz": "1f9bdd9ef64599f0bc2aac109ee8ec4063568520236f518daad9869d61042ca6",
+    "data\\eval\\cache\\rag-embedding4b-rerank-dev-20261106.json.gz": "7b7fd9846fb8e922a48579f7d540c669a67aff91869f415655ec80e82c98d85b",
+    "data\\eval\\cache\\rag-embedding4b-plan-dev-20261106.json": "c5a0f6d0c32c795cfcf682cee818e100b9046a1d96dd17392ff31e183473d334"
+  },
+  "paired_validation_top40": {
+    "absolute_delta": 0.036,
+    "bootstrap_95_interval": [
+      0.01,
+      0.064
+    ],
+    "bootstrap_samples": 2000,
+    "gained": 32,
+    "lost": 14
+  }
+}

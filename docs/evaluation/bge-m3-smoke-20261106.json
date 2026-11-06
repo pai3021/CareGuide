@@ -1,0 +1,26 @@
+{
+  "model": "BAAI/bge-m3",
+  "revision": "5617a9f61b028005a4858fdac845db406aefb181",
+  "sample_count": 16,
+  "fp32_seconds": 6.1828745529055595,
+  "dynamic_int8_seconds": 1.3235650728456676,
+  "sparse_weight_cosine_mean": 0.9904079321414662,
+  "sparse_weight_cosine_min": 0.9793856617834406,
+  "reference_parity_fp32": {
+    "reference_version": "FlagEmbedding 1.2.11",
+    "case_count": 16,
+    "maximum_absolute_weight_error": 0.0,
+    "modeling_sha256": "cd8c89ade8282c972dab016e28fab4dbd0313c71eb2dbf65881dae5e70b094c8",
+    "wrapper_sha256": "dbed85fbd8159e1de72075fcab7ee681e418a7500a439c0840b282cf7841f7a2",
+    "scope": "Same real encoder/head; independent official sparse forward and token reduction."
+  },
+  "reference_parity_dynamic_int8": {
+    "reference_version": "FlagEmbedding 1.2.11",
+    "case_count": 16,
+    "maximum_absolute_weight_error": 0.0,
+    "modeling_sha256": "cd8c89ade8282c972dab016e28fab4dbd0313c71eb2dbf65881dae5e70b094c8",
+    "wrapper_sha256": "dbed85fbd8159e1de72075fcab7ee681e418a7500a439c0840b282cf7841f7a2",
+    "scope": "Same real encoder/head; independent official sparse forward and token reduction."
+  },
+  "scope": "Numerical and implementation smoke only; not retrieval-quality or end-to-end latency proof."
+}

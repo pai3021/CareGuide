@@ -1,0 +1,2222 @@
+{
+  "date": "2026-11-05T16:29:21.706462+08:00",
+  "scope": "Six fixed synthetic development probes, once per arm and policy; planning only.",
+  "hospital_tools_executed": false,
+  "production_deployed": false,
+  "representative_accuracy_or_latency_evaluation": false,
+  "policies": {
+    "on_demand": {
+      "status": "completed",
+      "summary": {
+        "rules_classifier_embedding_llm": {
+          "cases": 6,
+          "complete": 6,
+          "errors": 0,
+          "classifier_candidate_cases": 5,
+          "embedding_candidate_cases": 1,
+          "model_requests": 7,
+          "mean_latency_ms": 5766.9,
+          "embedding_requests": 2,
+          "chat_requests": 5,
+          "forbidden_action_cases": 0,
+          "tools_executed": 0,
+          "format_repairs": 0,
+          "provider_reported_tokens": 26911,
+          "requests_without_usage": 0
+        },
+        "rules_classifier_llm": {
+          "cases": 6,
+          "complete": 6,
+          "errors": 0,
+          "classifier_candidate_cases": 5,
+          "embedding_candidate_cases": 0,
+          "model_requests": 6,
+          "mean_latency_ms": 8386.84,
+          "embedding_requests": 0,
+          "chat_requests": 6,
+          "forbidden_action_cases": 0,
+          "tools_executed": 0,
+          "format_repairs": 1,
+          "provider_reported_tokens": 31324,
+          "requests_without_usage": 0
+        },
+        "rules_llm": {
+          "cases": 6,
+          "complete": 6,
+          "errors": 0,
+          "classifier_candidate_cases": 0,
+          "embedding_candidate_cases": 0,
+          "model_requests": 5,
+          "mean_latency_ms": 4901.94,
+          "embedding_requests": 0,
+          "chat_requests": 5,
+          "forbidden_action_cases": 0,
+          "tools_executed": 0,
+          "format_repairs": 0,
+          "provider_reported_tokens": 23787,
+          "requests_without_usage": 0
+        }
+      },
+      "classifier_warmup": {
+        "status": "ready",
+        "seconds": 2.445,
+        "included_in_query_latency": false
+      },
+      "chat_usage": {
+        "calls": 16,
+        "prompt_tokens": 78915,
+        "completion_tokens": 2731,
+        "total_tokens": 81646,
+        "calls_without_usage": 0,
+        "by_model": {
+          "mimo-v2.6-flash": {
+            "calls": 16,
+            "prompt_tokens": 78915,
+            "completion_tokens": 2731,
+            "total_tokens": 81646
+          }
+        }
+      }
+    },
+    "parallel": {
+      "status": "completed",
+      "summary": {
+        "rules_classifier_embedding_llm": {
+          "cases": 6,
+          "complete": 6,
+          "errors": 0,
+          "classifier_candidate_cases": 5,
+          "embedding_candidate_cases": 5,
+          "model_requests": 11,
+          "mean_latency_ms": 6633.03,
+          "embedding_requests": 6,
+          "chat_requests": 5,
+          "forbidden_action_cases": 0,
+          "tools_executed": 0,
+          "format_repairs": 0,
+          "provider_reported_tokens": 28948,
+          "requests_without_usage": 0
+        },
+        "rules_classifier_llm": {
+          "cases": 6,
+          "complete": 6,
+          "errors": 0,
+          "classifier_candidate_cases": 5,
+          "embedding_candidate_cases": 0,
+          "model_requests": 5,
+          "mean_latency_ms": 4014.0,
+          "embedding_requests": 0,
+          "chat_requests": 5,
+          "forbidden_action_cases": 0,
+          "tools_executed": 0,
+          "format_repairs": 0,
+          "provider_reported_tokens": 25927,
+          "requests_without_usage": 0
+        },
+        "rules_llm": {
+          "cases": 6,
+          "complete": 5,
+          "errors": 1,
+          "classifier_candidate_cases": 0,
+          "embedding_candidate_cases": 0,
+          "model_requests": 6,
+          "mean_latency_ms": 10143.36,
+          "embedding_requests": 0,
+          "chat_requests": 6,
+          "forbidden_action_cases": 0,
+          "tools_executed": 0,
+          "format_repairs": 1,
+          "provider_reported_tokens": 23724,
+          "requests_without_usage": 1
+        }
+      },
+      "classifier_warmup": {
+        "status": "ready",
+        "seconds": 1.746,
+        "included_in_query_latency": false
+      },
+      "chat_usage": {
+        "calls": 15,
+        "prompt_tokens": 75678,
+        "completion_tokens": 2387,
+        "total_tokens": 78065,
+        "calls_without_usage": 0,
+        "by_model": {
+          "mimo-v2.6-flash": {
+            "calls": 15,
+            "prompt_tokens": 75678,
+            "completion_tokens": 2387,
+            "total_tokens": 78065
+          }
+        }
+      }
+    }
+  },
+  "max_provider_requests": 40,
+  "requests_reserved": 40,
+  "source_sha256": {
+    "careguide/orchestration/query_parser.py": "4f508a7ee49dbe258e15654ba9fb9013de56a03916deca3c985a68967723bd8a",
+    "careguide/orchestration/understanding.py": "65c96ceabccf01e5d3f9ecaf6733d3ab9c27ae0ba75fd196d3319c125647ec6b",
+    "careguide/orchestration/understanding_planner.py": "3c4ded89f77fb16753dee88e28711673e247ea0a1a2f7e9e0e60a2c7024239d0",
+    "scripts/evaluate_intent_ablation.py": "4b72add0b5fdf3faf234eb70500ac52be13183d207ba1be3213e8ae379febbdc",
+    "careguide/evaluation/intent_cases.json": "d11b1d7c2d9f7a8d7d9da9ecb905d75aedb21d2d47c0dd587c19f8ec68e4fdf7"
+  },
+  "protocol": "intent-policy-development-comparison-v1",
+  "protocol_details": {
+    "provider_request_cap": 40,
+    "sdk_retries": 0,
+    "request_counting": "One shared lock-protected reservation before each chat or embedding SDK request; requests rejected beyond 40.",
+    "order": "on_demand then parallel; each runs rules_llm, rules_classifier_llm, rules_classifier_embedding_llm in fixed case order.",
+    "timing": "Single sequential run per arm; includes cold business embedding index and network variation; excludes classifier warmup. Not end-to-end response latency.",
+    "scoring": "Validated plans are checked for the expected action set, annotated argument subset and forbidden actions. No answer generation or hospital tools.",
+    "isolation": "Current source snapshot in a new container temporary directory; existing classifier mounted read-only; temporary evaluation budgets; no service restart or deployment.",
+    "candidate_control": "Character-neighbour candidates removed in all arms to isolate classifier and embedding additions.",
+    "local_control": "The canonical case uses deterministic parsing and zero provider requests in every arm."
+  },
+  "runs": {
+    "on_demand": {
+      "kind": "intent_candidate_ablation",
+      "mode": "live",
+      "model": "mimo-v2.6-flash",
+      "dataset_version": "intent-ablation-v1",
+      "dataset_sha256": "d11b1d7c2d9f7a8d7d9da9ecb905d75aedb21d2d47c0dd587c19f8ec68e4fdf7",
+      "classifier_warmup": {
+        "status": "ready",
+        "seconds": 2.445,
+        "included_in_query_latency": false
+      },
+      "summary": {
+        "rules_classifier_embedding_llm": {
+          "cases": 6,
+          "complete": 6,
+          "errors": 0,
+          "classifier_candidate_cases": 5,
+          "embedding_candidate_cases": 1,
+          "model_requests": 7,
+          "mean_latency_ms": 5766.9,
+          "embedding_requests": 2,
+          "chat_requests": 5,
+          "forbidden_action_cases": 0,
+          "tools_executed": 0,
+          "format_repairs": 0,
+          "provider_reported_tokens": 26911,
+          "requests_without_usage": 0
+        },
+        "rules_classifier_llm": {
+          "cases": 6,
+          "complete": 6,
+          "errors": 0,
+          "classifier_candidate_cases": 5,
+          "embedding_candidate_cases": 0,
+          "model_requests": 6,
+          "mean_latency_ms": 8386.84,
+          "embedding_requests": 0,
+          "chat_requests": 6,
+          "forbidden_action_cases": 0,
+          "tools_executed": 0,
+          "format_repairs": 1,
+          "provider_reported_tokens": 31324,
+          "requests_without_usage": 0
+        },
+        "rules_llm": {
+          "cases": 6,
+          "complete": 6,
+          "errors": 0,
+          "classifier_candidate_cases": 0,
+          "embedding_candidate_cases": 0,
+          "model_requests": 5,
+          "mean_latency_ms": 4901.94,
+          "embedding_requests": 0,
+          "chat_requests": 5,
+          "forbidden_action_cases": 0,
+          "tools_executed": 0,
+          "format_repairs": 0,
+          "provider_reported_tokens": 23787,
+          "requests_without_usage": 0
+        }
+      },
+      "rows": [
+        {
+          "variant": "rules_llm",
+          "id": "canonical",
+          "status": "ok",
+          "plan_source": "local",
+          "candidate_sources": [],
+          "candidate_diagnostics": [],
+          "semantic_retrieval": {},
+          "action_precision": 1.0,
+          "action_recall": 1.0,
+          "action_f1": 1.0,
+          "argument_match": true,
+          "forbidden_actions": [],
+          "complete": true,
+          "budget": {
+            "limits": {
+              "model": 4,
+              "tool": 0,
+              "retry": 3,
+              "replan": 3,
+              "execution_seconds": 120.0,
+              "request_seconds": 45.0,
+              "closing_ratio": 0.8
+            },
+            "used": {
+              "model": 0,
+              "tool": 0,
+              "retry": 0,
+              "replan": 0
+            },
+            "active_execution_seconds": 0.0,
+            "tokens": {
+              "prompt_tokens": 0,
+              "completion_tokens": 0,
+              "total_tokens": 0,
+              "calls_without_usage": 0
+            },
+            "usage_accounting": "provider_reported; missing usage is counted separately",
+            "closing": false,
+            "reservations": {}
+          },
+          "elapsed_ms": 47.13
+        },
+        {
+          "variant": "rules_llm",
+          "id": "paraphrase",
+          "status": "ok",
+          "plan_source": "llm",
+          "decision": "new",
+          "candidate_sources": [],
+          "candidate_diagnostics": [],
+          "semantic_retrieval": {
+            "status": "local_ngram",
+            "remote_calls": 0,
+            "direct_acceptance": false,
+            "reason": "classifier_unavailable",
+            "policy": "on_demand"
+          },
+          "action_precision": 1.0,
+          "action_recall": 1.0,
+          "action_f1": 1.0,
+          "argument_match": true,
+          "forbidden_actions": [],
+          "complete": true,
+          "budget": {
+            "limits": {
+              "model": 4,
+              "tool": 0,
+              "retry": 3,
+              "replan": 3,
+              "execution_seconds": 120.0,
+              "request_seconds": 45.0,
+              "closing_ratio": 0.8
+            },
+            "used": {
+              "model": 1,
+              "tool": 0,
+              "retry": 0,
+              "replan": 0
+            },
+            "active_execution_seconds": 11.209851952735335,
+            "tokens": {
+              "prompt_tokens": 4588,
+              "completion_tokens": 151,
+              "total_tokens": 4739,
+              "calls_without_usage": 0
+            },
+            "usage_accounting": "provider_reported; missing usage is counted separately",
+            "closing": false,
+            "reservations": {
+              "settled": 1
+            }
+          },
+          "elapsed_ms": 11249.44
+        },
+        {
+          "variant": "rules_llm",
+          "id": "multi",
+          "status": "ok",
+          "plan_source": "llm",
+          "decision": "new",
+          "candidate_sources": [],
+          "candidate_diagnostics": [],
+          "semantic_retrieval": {
+            "status": "local_ngram",
+            "remote_calls": 0,
+            "direct_acceptance": false,
+            "reason": "classifier_unavailable",
+            "policy": "on_demand"
+          },
+          "action_precision": 1.0,
+          "action_recall": 1.0,
+          "action_f1": 1.0,
+          "argument_match": true,
+          "forbidden_actions": [],
+          "complete": true,
+          "budget": {
+            "limits": {
+              "model": 4,
+              "tool": 0,
+              "retry": 3,
+              "replan": 3,
+              "execution_seconds": 120.0,
+              "request_seconds": 45.0,
+              "closing_ratio": 0.8
+            },
+            "used": {
+              "model": 1,
+              "tool": 0,
+              "retry": 0,
+              "replan": 0
+            },
+            "active_execution_seconds": 6.663825940806419,
+            "tokens": {
+              "prompt_tokens": 4602,
+              "completion_tokens": 233,
+              "total_tokens": 4835,
+              "calls_without_usage": 0
+            },
+            "usage_accounting": "provider_reported; missing usage is counted separately",
+            "closing": false,
+            "reservations": {
+              "settled": 1
+            }
+          },
+          "elapsed_ms": 6696.1
+        },
+        {
+          "variant": "rules_llm",
+          "id": "negation",
+          "status": "ok",
+          "plan_source": "llm",
+          "decision": "new",
+          "candidate_sources": [],
+          "candidate_diagnostics": [],
+          "semantic_retrieval": {
+            "status": "local_ngram",
+            "remote_calls": 0,
+            "direct_acceptance": false,
+            "reason": "classifier_unavailable",
+            "policy": "on_demand"
+          },
+          "action_precision": 1.0,
+          "action_recall": 1.0,
+          "action_f1": 1.0,
+          "argument_match": true,
+          "forbidden_actions": [],
+          "complete": true,
+          "budget": {
+            "limits": {
+              "model": 4,
+              "tool": 0,
+              "retry": 3,
+              "replan": 3,
+              "execution_seconds": 120.0,
+              "request_seconds": 45.0,
+              "closing_ratio": 0.8
+            },
+            "used": {
+              "model": 1,
+              "tool": 0,
+              "retry": 0,
+              "replan": 0
+            },
+            "active_execution_seconds": 2.759274555835873,
+            "tokens": {
+              "prompt_tokens": 4585,
+              "completion_tokens": 126,
+              "total_tokens": 4711,
+              "calls_without_usage": 0
+            },
+            "usage_accounting": "provider_reported; missing usage is counted separately",
+            "closing": false,
+            "reservations": {
+              "settled": 1
+            }
+          },
+          "elapsed_ms": 2788.54
+        },
+        {
+          "variant": "rules_llm",
+          "id": "scope",
+          "status": "ok",
+          "plan_source": "llm",
+          "decision": "new",
+          "candidate_sources": [],
+          "candidate_diagnostics": [],
+          "semantic_retrieval": {
+            "status": "local_ngram",
+            "remote_calls": 0,
+            "direct_acceptance": false,
+            "reason": "classifier_unavailable",
+            "policy": "on_demand"
+          },
+          "action_precision": 1.0,
+          "action_recall": 1.0,
+          "action_f1": 1.0,
+          "argument_match": true,
+          "forbidden_actions": [],
+          "complete": true,
+          "budget": {
+            "limits": {
+              "model": 4,
+              "tool": 0,
+              "retry": 3,
+              "replan": 3,
+              "execution_seconds": 120.0,
+              "request_seconds": 45.0,
+              "closing_ratio": 0.8
+            },
+            "used": {
+              "model": 1,
+              "tool": 0,
+              "retry": 0,
+              "replan": 0
+            },
+            "active_execution_seconds": 3.701387411914766,
+            "tokens": {
+              "prompt_tokens": 4569,
+              "completion_tokens": 124,
+              "total_tokens": 4693,
+              "calls_without_usage": 0
+            },
+            "usage_accounting": "provider_reported; missing usage is counted separately",
+            "closing": false,
+            "reservations": {
+              "settled": 1
+            }
+          },
+          "elapsed_ms": 3734.09
+        },
+        {
+          "variant": "rules_llm",
+          "id": "history",
+          "status": "ok",
+          "plan_source": "llm",
+          "decision": "new",
+          "candidate_sources": [],
+          "candidate_diagnostics": [],
+          "semantic_retrieval": {
+            "status": "local_ngram",
+            "remote_calls": 0,
+            "direct_acceptance": false,
+            "reason": "classifier_unavailable",
+            "policy": "on_demand"
+          },
+          "action_precision": 1.0,
+          "action_recall": 1.0,
+          "action_f1": 1.0,
+          "argument_match": true,
+          "forbidden_actions": [],
+          "complete": true,
+          "budget": {
+            "limits": {
+              "model": 4,
+              "tool": 0,
+              "retry": 3,
+              "replan": 3,
+              "execution_seconds": 120.0,
+              "request_seconds": 45.0,
+              "closing_ratio": 0.8
+            },
+            "used": {
+              "model": 1,
+              "tool": 0,
+              "retry": 0,
+              "replan": 0
+            },
+            "active_execution_seconds": 4.865511153824627,
+            "tokens": {
+              "prompt_tokens": 4613,
+              "completion_tokens": 196,
+              "total_tokens": 4809,
+              "calls_without_usage": 0
+            },
+            "usage_accounting": "provider_reported; missing usage is counted separately",
+            "closing": false,
+            "reservations": {
+              "settled": 1
+            }
+          },
+          "elapsed_ms": 4896.35
+        },
+        {
+          "variant": "rules_classifier_llm",
+          "id": "canonical",
+          "status": "ok",
+          "plan_source": "local",
+          "candidate_sources": [],
+          "candidate_diagnostics": [],
+          "semantic_retrieval": {},
+          "action_precision": 1.0,
+          "action_recall": 1.0,
+          "action_f1": 1.0,
+          "argument_match": true,
+          "forbidden_actions": [],
+          "complete": true,
+          "budget": {
+            "limits": {
+              "model": 4,
+              "tool": 0,
+              "retry": 3,
+              "replan": 3,
+              "execution_seconds": 120.0,
+              "request_seconds": 45.0,
+              "closing_ratio": 0.8
+            },
+            "used": {
+              "model": 0,
+              "tool": 0,
+              "retry": 0,
+              "replan": 0
+            },
+            "active_execution_seconds": 0.0,
+            "tokens": {
+              "prompt_tokens": 0,
+              "completion_tokens": 0,
+              "total_tokens": 0,
+              "calls_without_usage": 0
+            },
+            "usage_accounting": "provider_reported; missing usage is counted separately",
+            "closing": false,
+            "reservations": {}
+          },
+          "elapsed_ms": 8.96
+        },
+        {
+          "variant": "rules_classifier_llm",
+          "id": "paraphrase",
+          "status": "ok",
+          "plan_source": "llm",
+          "decision": "new",
+          "candidate_sources": [
+            "classifier"
+          ],
+          "candidate_diagnostics": [],
+          "semantic_retrieval": {
+            "status": "local_ngram",
+            "remote_calls": 0,
+            "direct_acceptance": false,
+            "reason": "classifier_other",
+            "policy": "on_demand"
+          },
+          "action_precision": 1.0,
+          "action_recall": 1.0,
+          "action_f1": 1.0,
+          "argument_match": true,
+          "forbidden_actions": [],
+          "complete": true,
+          "budget": {
+            "limits": {
+              "model": 4,
+              "tool": 0,
+              "retry": 3,
+              "replan": 3,
+              "execution_seconds": 120.0,
+              "request_seconds": 45.0,
+              "closing_ratio": 0.8
+            },
+            "used": {
+              "model": 1,
+              "tool": 0,
+              "retry": 0,
+              "replan": 0
+            },
+            "active_execution_seconds": 6.146535810083151,
+            "tokens": {
+              "prompt_tokens": 5030,
+              "completion_tokens": 160,
+              "total_tokens": 5190,
+              "calls_without_usage": 0
+            },
+            "usage_accounting": "provider_reported; missing usage is counted separately",
+            "closing": false,
+            "reservations": {
+              "settled": 1
+            }
+          },
+          "elapsed_ms": 6445.0
+        },
+        {
+          "variant": "rules_classifier_llm",
+          "id": "multi",
+          "status": "ok",
+          "plan_source": "llm",
+          "decision": "new",
+          "candidate_sources": [
+            "classifier"
+          ],
+          "candidate_diagnostics": [],
+          "semantic_retrieval": {
+            "status": "local_ngram",
+            "remote_calls": 0,
+            "direct_acceptance": false,
+            "reason": "local_ngram",
+            "policy": "on_demand"
+          },
+          "action_precision": 1.0,
+          "action_recall": 1.0,
+          "action_f1": 1.0,
+          "argument_match": true,
+          "forbidden_actions": [],
+          "complete": true,
+          "budget": {
+            "limits": {
+              "model": 4,
+              "tool": 0,
+              "retry": 3,
+              "replan": 3,
+              "execution_seconds": 120.0,
+              "request_seconds": 45.0,
+              "closing_ratio": 0.8
+            },
+            "used": {
+              "model": 2,
+              "tool": 0,
+              "retry": 1,
+              "replan": 0
+            },
+            "active_execution_seconds": 16.812838640064,
+            "tokens": {
+              "prompt_tokens": 10144,
+              "completion_tokens": 454,
+              "total_tokens": 10598,
+              "calls_without_usage": 0
+            },
+            "usage_accounting": "provider_reported; missing usage is counted separately",
+            "closing": false,
+            "reservations": {
+              "settled": 3
+            }
+          },
+          "elapsed_ms": 17098.43
+        },
+        {
+          "variant": "rules_classifier_llm",
+          "id": "negation",
+          "status": "ok",
+          "plan_source": "llm",
+          "decision": "new",
+          "candidate_sources": [
+            "classifier"
+          ],
+          "candidate_diagnostics": [],
+          "semantic_retrieval": {
+            "status": "local_ngram",
+            "remote_calls": 0,
+            "direct_acceptance": false,
+            "reason": "local_ngram",
+            "policy": "on_demand"
+          },
+          "action_precision": 1.0,
+          "action_recall": 1.0,
+          "action_f1": 1.0,
+          "argument_match": true,
+          "forbidden_actions": [],
+          "complete": true,
+          "budget": {
+            "limits": {
+              "model": 4,
+              "tool": 0,
+              "retry": 3,
+              "replan": 3,
+              "execution_seconds": 120.0,
+              "request_seconds": 45.0,
+              "closing_ratio": 0.8
+            },
+            "used": {
+              "model": 1,
+              "tool": 0,
+              "retry": 0,
+              "replan": 0
+            },
+            "active_execution_seconds": 3.3407076010480523,
+            "tokens": {
+              "prompt_tokens": 5036,
+              "completion_tokens": 122,
+              "total_tokens": 5158,
+              "calls_without_usage": 0
+            },
+            "usage_accounting": "provider_reported; missing usage is counted separately",
+            "closing": false,
+            "reservations": {
+              "settled": 1
+            }
+          },
+          "elapsed_ms": 3515.8
+        },
+        {
+          "variant": "rules_classifier_llm",
+          "id": "scope",
+          "status": "ok",
+          "plan_source": "llm",
+          "decision": "new",
+          "candidate_sources": [
+            "classifier"
+          ],
+          "candidate_diagnostics": [],
+          "semantic_retrieval": {
+            "status": "local_ngram",
+            "remote_calls": 0,
+            "direct_acceptance": false,
+            "reason": "local_ngram",
+            "policy": "on_demand"
+          },
+          "action_precision": 1.0,
+          "action_recall": 1.0,
+          "action_f1": 1.0,
+          "argument_match": true,
+          "forbidden_actions": [],
+          "complete": true,
+          "budget": {
+            "limits": {
+              "model": 4,
+              "tool": 0,
+              "retry": 3,
+              "replan": 3,
+              "execution_seconds": 120.0,
+              "request_seconds": 45.0,
+              "closing_ratio": 0.8
+            },
+            "used": {
+              "model": 1,
+              "tool": 0,
+              "retry": 0,
+              "replan": 0
+            },
+            "active_execution_seconds": 11.811340272892267,
+            "tokens": {
+              "prompt_tokens": 5016,
+              "completion_tokens": 135,
+              "total_tokens": 5151,
+              "calls_without_usage": 0
+            },
+            "usage_accounting": "provider_reported; missing usage is counted separately",
+            "closing": false,
+            "reservations": {
+              "settled": 1
+            }
+          },
+          "elapsed_ms": 11969.89
+        },
+        {
+          "variant": "rules_classifier_llm",
+          "id": "history",
+          "status": "ok",
+          "plan_source": "llm",
+          "decision": "new",
+          "candidate_sources": [
+            "classifier"
+          ],
+          "candidate_diagnostics": [],
+          "semantic_retrieval": {
+            "status": "local_ngram",
+            "remote_calls": 0,
+            "direct_acceptance": false,
+            "reason": "local_ngram",
+            "policy": "on_demand"
+          },
+          "action_precision": 1.0,
+          "action_recall": 1.0,
+          "action_f1": 1.0,
+          "argument_match": true,
+          "forbidden_actions": [],
+          "complete": true,
+          "budget": {
+            "limits": {
+              "model": 4,
+              "tool": 0,
+              "retry": 3,
+              "replan": 3,
+              "execution_seconds": 120.0,
+              "request_seconds": 45.0,
+              "closing_ratio": 0.8
+            },
+            "used": {
+              "model": 1,
+              "tool": 0,
+              "retry": 0,
+              "replan": 0
+            },
+            "active_execution_seconds": 11.14936290634796,
+            "tokens": {
+              "prompt_tokens": 5063,
+              "completion_tokens": 164,
+              "total_tokens": 5227,
+              "calls_without_usage": 0
+            },
+            "usage_accounting": "provider_reported; missing usage is counted separately",
+            "closing": false,
+            "reservations": {
+              "settled": 1
+            }
+          },
+          "elapsed_ms": 11282.98
+        },
+        {
+          "variant": "rules_classifier_embedding_llm",
+          "id": "canonical",
+          "status": "ok",
+          "plan_source": "local",
+          "candidate_sources": [],
+          "candidate_diagnostics": [],
+          "semantic_retrieval": {},
+          "action_precision": 1.0,
+          "action_recall": 1.0,
+          "action_f1": 1.0,
+          "argument_match": true,
+          "forbidden_actions": [],
+          "complete": true,
+          "budget": {
+            "limits": {
+              "model": 4,
+              "tool": 0,
+              "retry": 3,
+              "replan": 3,
+              "execution_seconds": 120.0,
+              "request_seconds": 45.0,
+              "closing_ratio": 0.8
+            },
+            "used": {
+              "model": 0,
+              "tool": 0,
+              "retry": 0,
+              "replan": 0
+            },
+            "active_execution_seconds": 0.0,
+            "tokens": {
+              "prompt_tokens": 0,
+              "completion_tokens": 0,
+              "total_tokens": 0,
+              "calls_without_usage": 0
+            },
+            "usage_accounting": "provider_reported; missing usage is counted separately",
+            "closing": false,
+            "reservations": {}
+          },
+          "elapsed_ms": 8.87
+        },
+        {
+          "variant": "rules_classifier_embedding_llm",
+          "id": "paraphrase",
+          "status": "ok",
+          "plan_source": "llm",
+          "decision": "new",
+          "candidate_sources": [
+            "classifier",
+            "semantic_embedding"
+          ],
+          "candidate_diagnostics": [],
+          "semantic_retrieval": {
+            "source": "semantic_embedding",
+            "model": "Qwen/Qwen3-Embedding-0.6B",
+            "bank_version": "business-intents-v1",
+            "fingerprint": "bf330c6a72a14131f981e636a8b853c6eed16a1ab14137f5cf73af5421b307e0",
+            "direct_acceptance": false,
+            "remote_calls": 2,
+            "status": "retrieved",
+            "reason": "classifier_other",
+            "policy": "on_demand"
+          },
+          "action_precision": 1.0,
+          "action_recall": 1.0,
+          "action_f1": 1.0,
+          "argument_match": true,
+          "forbidden_actions": [],
+          "complete": true,
+          "budget": {
+            "limits": {
+              "model": 4,
+              "tool": 0,
+              "retry": 3,
+              "replan": 3,
+              "execution_seconds": 120.0,
+              "request_seconds": 45.0,
+              "closing_ratio": 0.8
+            },
+            "used": {
+              "model": 3,
+              "tool": 0,
+              "retry": 0,
+              "replan": 0
+            },
+            "active_execution_seconds": 6.036434301640838,
+            "tokens": {
+              "prompt_tokens": 5876,
+              "completion_tokens": 146,
+              "total_tokens": 6022,
+              "calls_without_usage": 0
+            },
+            "usage_accounting": "provider_reported; missing usage is counted separately",
+            "closing": false,
+            "reservations": {
+              "settled": 3
+            }
+          },
+          "elapsed_ms": 6239.55
+        },
+        {
+          "variant": "rules_classifier_embedding_llm",
+          "id": "multi",
+          "status": "ok",
+          "plan_source": "llm",
+          "decision": "new",
+          "candidate_sources": [
+            "classifier"
+          ],
+          "candidate_diagnostics": [],
+          "semantic_retrieval": {
+            "status": "skipped_local_candidate",
+            "reason": "classifier_majority",
+            "remote_calls": 0,
+            "direct_acceptance": false,
+            "policy": "on_demand"
+          },
+          "action_precision": 1.0,
+          "action_recall": 1.0,
+          "action_f1": 1.0,
+          "argument_match": true,
+          "forbidden_actions": [],
+          "complete": true,
+          "budget": {
+            "limits": {
+              "model": 4,
+              "tool": 0,
+              "retry": 3,
+              "replan": 3,
+              "execution_seconds": 120.0,
+              "request_seconds": 45.0,
+              "closing_ratio": 0.8
+            },
+            "used": {
+              "model": 1,
+              "tool": 0,
+              "retry": 0,
+              "replan": 0
+            },
+            "active_execution_seconds": 8.290209605824202,
+            "tokens": {
+              "prompt_tokens": 5051,
+              "completion_tokens": 268,
+              "total_tokens": 5319,
+              "calls_without_usage": 0
+            },
+            "usage_accounting": "provider_reported; missing usage is counted separately",
+            "closing": false,
+            "reservations": {
+              "settled": 1
+            }
+          },
+          "elapsed_ms": 8447.78
+        },
+        {
+          "variant": "rules_classifier_embedding_llm",
+          "id": "negation",
+          "status": "ok",
+          "plan_source": "llm",
+          "decision": "new",
+          "candidate_sources": [
+            "classifier"
+          ],
+          "candidate_diagnostics": [],
+          "semantic_retrieval": {
+            "status": "skipped_local_candidate",
+            "reason": "classifier_majority",
+            "remote_calls": 0,
+            "direct_acceptance": false,
+            "policy": "on_demand"
+          },
+          "action_precision": 1.0,
+          "action_recall": 1.0,
+          "action_f1": 1.0,
+          "argument_match": true,
+          "forbidden_actions": [],
+          "complete": true,
+          "budget": {
+            "limits": {
+              "model": 4,
+              "tool": 0,
+              "retry": 3,
+              "replan": 3,
+              "execution_seconds": 120.0,
+              "request_seconds": 45.0,
+              "closing_ratio": 0.8
+            },
+            "used": {
+              "model": 1,
+              "tool": 0,
+              "retry": 0,
+              "replan": 0
+            },
+            "active_execution_seconds": 6.8290068986825645,
+            "tokens": {
+              "prompt_tokens": 5037,
+              "completion_tokens": 122,
+              "total_tokens": 5159,
+              "calls_without_usage": 0
+            },
+            "usage_accounting": "provider_reported; missing usage is counted separately",
+            "closing": false,
+            "reservations": {
+              "settled": 1
+            }
+          },
+          "elapsed_ms": 6956.36
+        },
+        {
+          "variant": "rules_classifier_embedding_llm",
+          "id": "scope",
+          "status": "ok",
+          "plan_source": "llm",
+          "decision": "new",
+          "candidate_sources": [
+            "classifier"
+          ],
+          "candidate_diagnostics": [],
+          "semantic_retrieval": {
+            "status": "skipped_local_candidate",
+            "reason": "classifier_majority",
+            "remote_calls": 0,
+            "direct_acceptance": false,
+            "policy": "on_demand"
+          },
+          "action_precision": 1.0,
+          "action_recall": 1.0,
+          "action_f1": 1.0,
+          "argument_match": true,
+          "forbidden_actions": [],
+          "complete": true,
+          "budget": {
+            "limits": {
+              "model": 4,
+              "tool": 0,
+              "retry": 3,
+              "replan": 3,
+              "execution_seconds": 120.0,
+              "request_seconds": 45.0,
+              "closing_ratio": 0.8
+            },
+            "used": {
+              "model": 1,
+              "tool": 0,
+              "retry": 0,
+              "replan": 0
+            },
+            "active_execution_seconds": 7.16965516237542,
+            "tokens": {
+              "prompt_tokens": 5017,
+              "completion_tokens": 135,
+              "total_tokens": 5152,
+              "calls_without_usage": 0
+            },
+            "usage_accounting": "provider_reported; missing usage is counted separately",
+            "closing": false,
+            "reservations": {
+              "settled": 1
+            }
+          },
+          "elapsed_ms": 7296.8
+        },
+        {
+          "variant": "rules_classifier_embedding_llm",
+          "id": "history",
+          "status": "ok",
+          "plan_source": "llm",
+          "decision": "new",
+          "candidate_sources": [
+            "classifier"
+          ],
+          "candidate_diagnostics": [],
+          "semantic_retrieval": {
+            "status": "skipped_local_candidate",
+            "reason": "classifier_majority",
+            "remote_calls": 0,
+            "direct_acceptance": false,
+            "policy": "on_demand"
+          },
+          "action_precision": 1.0,
+          "action_recall": 1.0,
+          "action_f1": 1.0,
+          "argument_match": true,
+          "forbidden_actions": [],
+          "complete": true,
+          "budget": {
+            "limits": {
+              "model": 4,
+              "tool": 0,
+              "retry": 3,
+              "replan": 3,
+              "execution_seconds": 120.0,
+              "request_seconds": 45.0,
+              "closing_ratio": 0.8
+            },
+            "used": {
+              "model": 1,
+              "tool": 0,
+              "retry": 0,
+              "replan": 0
+            },
+            "active_execution_seconds": 5.529956343118101,
+            "tokens": {
+              "prompt_tokens": 5064,
+              "completion_tokens": 195,
+              "total_tokens": 5259,
+              "calls_without_usage": 0
+            },
+            "usage_accounting": "provider_reported; missing usage is counted separately",
+            "closing": false,
+            "reservations": {
+              "settled": 1
+            }
+          },
+          "elapsed_ms": 5652.07
+        }
+      ],
+      "chat_usage": {
+        "calls": 16,
+        "prompt_tokens": 78915,
+        "completion_tokens": 2731,
+        "total_tokens": 81646,
+        "calls_without_usage": 0,
+        "by_model": {
+          "mimo-v2.6-flash": {
+            "calls": 16,
+            "prompt_tokens": 78915,
+            "completion_tokens": 2731,
+            "total_tokens": 81646
+          }
+        }
+      },
+      "interpretation": "Six selected annotated cases, one run per arm. Canonical case is a local control. Character candidates removed equally. No tools executed. Cold embedding index cost included; classifier warmup excluded. Not a representative accuracy estimate or proof of improvement.",
+      "policy": "on_demand",
+      "elapsed_seconds": 116.931
+    },
+    "parallel": {
+      "kind": "intent_candidate_ablation",
+      "mode": "live",
+      "model": "mimo-v2.6-flash",
+      "dataset_version": "intent-ablation-v1",
+      "dataset_sha256": "d11b1d7c2d9f7a8d7d9da9ecb905d75aedb21d2d47c0dd587c19f8ec68e4fdf7",
+      "classifier_warmup": {
+        "status": "ready",
+        "seconds": 1.746,
+        "included_in_query_latency": false
+      },
+      "summary": {
+        "rules_classifier_embedding_llm": {
+          "cases": 6,
+          "complete": 6,
+          "errors": 0,
+          "classifier_candidate_cases": 5,
+          "embedding_candidate_cases": 5,
+          "model_requests": 11,
+          "mean_latency_ms": 6633.03,
+          "embedding_requests": 6,
+          "chat_requests": 5,
+          "forbidden_action_cases": 0,
+          "tools_executed": 0,
+          "format_repairs": 0,
+          "provider_reported_tokens": 28948,
+          "requests_without_usage": 0
+        },
+        "rules_classifier_llm": {
+          "cases": 6,
+          "complete": 6,
+          "errors": 0,
+          "classifier_candidate_cases": 5,
+          "embedding_candidate_cases": 0,
+          "model_requests": 5,
+          "mean_latency_ms": 4014.0,
+          "embedding_requests": 0,
+          "chat_requests": 5,
+          "forbidden_action_cases": 0,
+          "tools_executed": 0,
+          "format_repairs": 0,
+          "provider_reported_tokens": 25927,
+          "requests_without_usage": 0
+        },
+        "rules_llm": {
+          "cases": 6,
+          "complete": 5,
+          "errors": 1,
+          "classifier_candidate_cases": 0,
+          "embedding_candidate_cases": 0,
+          "model_requests": 6,
+          "mean_latency_ms": 10143.36,
+          "embedding_requests": 0,
+          "chat_requests": 6,
+          "forbidden_action_cases": 0,
+          "tools_executed": 0,
+          "format_repairs": 1,
+          "provider_reported_tokens": 23724,
+          "requests_without_usage": 1
+        }
+      },
+      "rows": [
+        {
+          "variant": "rules_llm",
+          "id": "canonical",
+          "status": "ok",
+          "plan_source": "local",
+          "candidate_sources": [],
+          "candidate_diagnostics": [],
+          "semantic_retrieval": {},
+          "action_precision": 1.0,
+          "action_recall": 1.0,
+          "action_f1": 1.0,
+          "argument_match": true,
+          "forbidden_actions": [],
+          "complete": true,
+          "budget": {
+            "limits": {
+              "model": 4,
+              "tool": 0,
+              "retry": 3,
+              "replan": 3,
+              "execution_seconds": 120.0,
+              "request_seconds": 45.0,
+              "closing_ratio": 0.8
+            },
+            "used": {
+              "model": 0,
+              "tool": 0,
+              "retry": 0,
+              "replan": 0
+            },
+            "active_execution_seconds": 0.0,
+            "tokens": {
+              "prompt_tokens": 0,
+              "completion_tokens": 0,
+              "total_tokens": 0,
+              "calls_without_usage": 0
+            },
+            "usage_accounting": "provider_reported; missing usage is counted separately",
+            "closing": false,
+            "reservations": {}
+          },
+          "elapsed_ms": 25.56
+        },
+        {
+          "variant": "rules_llm",
+          "id": "paraphrase",
+          "status": "ok",
+          "plan_source": "llm",
+          "decision": "new",
+          "candidate_sources": [],
+          "candidate_diagnostics": [],
+          "semantic_retrieval": {
+            "status": "local_ngram",
+            "remote_calls": 0,
+            "direct_acceptance": false,
+            "policy": "parallel"
+          },
+          "action_precision": 1.0,
+          "action_recall": 1.0,
+          "action_f1": 1.0,
+          "argument_match": true,
+          "forbidden_actions": [],
+          "complete": true,
+          "budget": {
+            "limits": {
+              "model": 4,
+              "tool": 0,
+              "retry": 3,
+              "replan": 3,
+              "execution_seconds": 120.0,
+              "request_seconds": 45.0,
+              "closing_ratio": 0.8
+            },
+            "used": {
+              "model": 1,
+              "tool": 0,
+              "retry": 0,
+              "replan": 0
+            },
+            "active_execution_seconds": 5.082754199858755,
+            "tokens": {
+              "prompt_tokens": 4579,
+              "completion_tokens": 123,
+              "total_tokens": 4702,
+              "calls_without_usage": 0
+            },
+            "usage_accounting": "provider_reported; missing usage is counted separately",
+            "closing": false,
+            "reservations": {
+              "settled": 1
+            }
+          },
+          "elapsed_ms": 5117.41
+        },
+        {
+          "variant": "rules_llm",
+          "id": "multi",
+          "status": "ok",
+          "plan_source": "llm",
+          "decision": "new",
+          "candidate_sources": [],
+          "candidate_diagnostics": [],
+          "semantic_retrieval": {
+            "status": "local_ngram",
+            "remote_calls": 0,
+            "direct_acceptance": false,
+            "policy": "parallel"
+          },
+          "action_precision": 1.0,
+          "action_recall": 1.0,
+          "action_f1": 1.0,
+          "argument_match": true,
+          "forbidden_actions": [],
+          "complete": true,
+          "budget": {
+            "limits": {
+              "model": 4,
+              "tool": 0,
+              "retry": 3,
+              "replan": 3,
+              "execution_seconds": 120.0,
+              "request_seconds": 45.0,
+              "closing_ratio": 0.8
+            },
+            "used": {
+              "model": 2,
+              "tool": 0,
+              "retry": 1,
+              "replan": 0
+            },
+            "active_execution_seconds": 23.224851824808866,
+            "tokens": {
+              "prompt_tokens": 9215,
+              "completion_tokens": 426,
+              "total_tokens": 9641,
+              "calls_without_usage": 0
+            },
+            "usage_accounting": "provider_reported; missing usage is counted separately",
+            "closing": false,
+            "reservations": {
+              "settled": 3
+            }
+          },
+          "elapsed_ms": 23282.91
+        },
+        {
+          "variant": "rules_llm",
+          "id": "negation",
+          "status": "ok",
+          "plan_source": "llm",
+          "decision": "new",
+          "candidate_sources": [],
+          "candidate_diagnostics": [],
+          "semantic_retrieval": {
+            "status": "local_ngram",
+            "remote_calls": 0,
+            "direct_acceptance": false,
+            "policy": "parallel"
+          },
+          "action_precision": 1.0,
+          "action_recall": 1.0,
+          "action_f1": 1.0,
+          "argument_match": true,
+          "forbidden_actions": [],
+          "complete": true,
+          "budget": {
+            "limits": {
+              "model": 4,
+              "tool": 0,
+              "retry": 3,
+              "replan": 3,
+              "execution_seconds": 120.0,
+              "request_seconds": 45.0,
+              "closing_ratio": 0.8
+            },
+            "used": {
+              "model": 1,
+              "tool": 0,
+              "retry": 0,
+              "replan": 0
+            },
+            "active_execution_seconds": 3.8507131040096283,
+            "tokens": {
+              "prompt_tokens": 4576,
+              "completion_tokens": 121,
+              "total_tokens": 4697,
+              "calls_without_usage": 0
+            },
+            "usage_accounting": "provider_reported; missing usage is counted separately",
+            "closing": false,
+            "reservations": {
+              "settled": 1
+            }
+          },
+          "elapsed_ms": 3888.75
+        },
+        {
+          "variant": "rules_llm",
+          "id": "scope",
+          "status": "ok",
+          "plan_source": "llm",
+          "decision": "new",
+          "candidate_sources": [],
+          "candidate_diagnostics": [],
+          "semantic_retrieval": {
+            "status": "local_ngram",
+            "remote_calls": 0,
+            "direct_acceptance": false,
+            "policy": "parallel"
+          },
+          "action_precision": 1.0,
+          "action_recall": 1.0,
+          "action_f1": 1.0,
+          "argument_match": true,
+          "forbidden_actions": [],
+          "complete": true,
+          "budget": {
+            "limits": {
+              "model": 4,
+              "tool": 0,
+              "retry": 3,
+              "replan": 3,
+              "execution_seconds": 120.0,
+              "request_seconds": 45.0,
+              "closing_ratio": 0.8
+            },
+            "used": {
+              "model": 1,
+              "tool": 0,
+              "retry": 0,
+              "replan": 0
+            },
+            "active_execution_seconds": 3.4758096733130515,
+            "tokens": {
+              "prompt_tokens": 4560,
+              "completion_tokens": 124,
+              "total_tokens": 4684,
+              "calls_without_usage": 0
+            },
+            "usage_accounting": "provider_reported; missing usage is counted separately",
+            "closing": false,
+            "reservations": {
+              "settled": 1
+            }
+          },
+          "elapsed_ms": 3508.95
+        },
+        {
+          "variant": "rules_llm",
+          "id": "history",
+          "status": "error",
+          "plan_source": "unresolved",
+          "diagnostic_type": "PlanningFailure",
+          "action_precision": 0,
+          "action_recall": 0.0,
+          "action_f1": 0,
+          "argument_match": false,
+          "forbidden_actions": [],
+          "complete": false,
+          "budget": {
+            "limits": {
+              "model": 4,
+              "tool": 0,
+              "retry": 3,
+              "replan": 3,
+              "execution_seconds": 120.0,
+              "request_seconds": 45.0,
+              "closing_ratio": 0.8
+            },
+            "used": {
+              "model": 1,
+              "tool": 0,
+              "retry": 0,
+              "replan": 0
+            },
+            "active_execution_seconds": 25.0,
+            "tokens": {
+              "prompt_tokens": 0,
+              "completion_tokens": 0,
+              "total_tokens": 0,
+              "calls_without_usage": 1
+            },
+            "usage_accounting": "provider_reported; missing usage is counted separately",
+            "closing": false,
+            "reservations": {
+              "unknown": 1
+            }
+          },
+          "elapsed_ms": 25036.61
+        },
+        {
+          "variant": "rules_classifier_llm",
+          "id": "canonical",
+          "status": "ok",
+          "plan_source": "local",
+          "candidate_sources": [],
+          "candidate_diagnostics": [],
+          "semantic_retrieval": {},
+          "action_precision": 1.0,
+          "action_recall": 1.0,
+          "action_f1": 1.0,
+          "argument_match": true,
+          "forbidden_actions": [],
+          "complete": true,
+          "budget": {
+            "limits": {
+              "model": 4,
+              "tool": 0,
+              "retry": 3,
+              "replan": 3,
+              "execution_seconds": 120.0,
+              "request_seconds": 45.0,
+              "closing_ratio": 0.8
+            },
+            "used": {
+              "model": 0,
+              "tool": 0,
+              "retry": 0,
+              "replan": 0
+            },
+            "active_execution_seconds": 0.0,
+            "tokens": {
+              "prompt_tokens": 0,
+              "completion_tokens": 0,
+              "total_tokens": 0,
+              "calls_without_usage": 0
+            },
+            "usage_accounting": "provider_reported; missing usage is counted separately",
+            "closing": false,
+            "reservations": {}
+          },
+          "elapsed_ms": 8.52
+        },
+        {
+          "variant": "rules_classifier_llm",
+          "id": "paraphrase",
+          "status": "ok",
+          "plan_source": "llm",
+          "decision": "new",
+          "candidate_sources": [
+            "classifier"
+          ],
+          "candidate_diagnostics": [],
+          "semantic_retrieval": {
+            "status": "local_ngram",
+            "remote_calls": 0,
+            "direct_acceptance": false,
+            "policy": "parallel"
+          },
+          "action_precision": 1.0,
+          "action_recall": 1.0,
+          "action_f1": 1.0,
+          "argument_match": true,
+          "forbidden_actions": [],
+          "complete": true,
+          "budget": {
+            "limits": {
+              "model": 4,
+              "tool": 0,
+              "retry": 3,
+              "replan": 3,
+              "execution_seconds": 120.0,
+              "request_seconds": 45.0,
+              "closing_ratio": 0.8
+            },
+            "used": {
+              "model": 1,
+              "tool": 0,
+              "retry": 0,
+              "replan": 0
+            },
+            "active_execution_seconds": 4.942054911982268,
+            "tokens": {
+              "prompt_tokens": 5022,
+              "completion_tokens": 145,
+              "total_tokens": 5167,
+              "calls_without_usage": 0
+            },
+            "usage_accounting": "provider_reported; missing usage is counted separately",
+            "closing": false,
+            "reservations": {
+              "settled": 1
+            }
+          },
+          "elapsed_ms": 5155.72
+        },
+        {
+          "variant": "rules_classifier_llm",
+          "id": "multi",
+          "status": "ok",
+          "plan_source": "llm",
+          "decision": "new",
+          "candidate_sources": [
+            "classifier"
+          ],
+          "candidate_diagnostics": [],
+          "semantic_retrieval": {
+            "status": "local_ngram",
+            "remote_calls": 0,
+            "direct_acceptance": false,
+            "policy": "parallel"
+          },
+          "action_precision": 1.0,
+          "action_recall": 1.0,
+          "action_f1": 1.0,
+          "argument_match": true,
+          "forbidden_actions": [],
+          "complete": true,
+          "budget": {
+            "limits": {
+              "model": 4,
+              "tool": 0,
+              "retry": 3,
+              "replan": 3,
+              "execution_seconds": 120.0,
+              "request_seconds": 45.0,
+              "closing_ratio": 0.8
+            },
+            "used": {
+              "model": 1,
+              "tool": 0,
+              "retry": 0,
+              "replan": 0
+            },
+            "active_execution_seconds": 4.687650336883962,
+            "tokens": {
+              "prompt_tokens": 5041,
+              "completion_tokens": 189,
+              "total_tokens": 5230,
+              "calls_without_usage": 0
+            },
+            "usage_accounting": "provider_reported; missing usage is counted separately",
+            "closing": false,
+            "reservations": {
+              "settled": 1
+            }
+          },
+          "elapsed_ms": 4845.54
+        },
+        {
+          "variant": "rules_classifier_llm",
+          "id": "negation",
+          "status": "ok",
+          "plan_source": "llm",
+          "decision": "new",
+          "candidate_sources": [
+            "classifier"
+          ],
+          "candidate_diagnostics": [],
+          "semantic_retrieval": {
+            "status": "local_ngram",
+            "remote_calls": 0,
+            "direct_acceptance": false,
+            "policy": "parallel"
+          },
+          "action_precision": 1.0,
+          "action_recall": 1.0,
+          "action_f1": 1.0,
+          "argument_match": true,
+          "forbidden_actions": [],
+          "complete": true,
+          "budget": {
+            "limits": {
+              "model": 4,
+              "tool": 0,
+              "retry": 3,
+              "replan": 3,
+              "execution_seconds": 120.0,
+              "request_seconds": 45.0,
+              "closing_ratio": 0.8
+            },
+            "used": {
+              "model": 1,
+              "tool": 0,
+              "retry": 0,
+              "replan": 0
+            },
+            "active_execution_seconds": 4.290979342069477,
+            "tokens": {
+              "prompt_tokens": 5027,
+              "completion_tokens": 121,
+              "total_tokens": 5148,
+              "calls_without_usage": 0
+            },
+            "usage_accounting": "provider_reported; missing usage is counted separately",
+            "closing": false,
+            "reservations": {
+              "settled": 1
+            }
+          },
+          "elapsed_ms": 4419.64
+        },
+        {
+          "variant": "rules_classifier_llm",
+          "id": "scope",
+          "status": "ok",
+          "plan_source": "llm",
+          "decision": "new",
+          "candidate_sources": [
+            "classifier"
+          ],
+          "candidate_diagnostics": [],
+          "semantic_retrieval": {
+            "status": "local_ngram",
+            "remote_calls": 0,
+            "direct_acceptance": false,
+            "policy": "parallel"
+          },
+          "action_precision": 1.0,
+          "action_recall": 1.0,
+          "action_f1": 1.0,
+          "argument_match": true,
+          "forbidden_actions": [],
+          "complete": true,
+          "budget": {
+            "limits": {
+              "model": 4,
+              "tool": 0,
+              "retry": 3,
+              "replan": 3,
+              "execution_seconds": 120.0,
+              "request_seconds": 45.0,
+              "closing_ratio": 0.8
+            },
+            "used": {
+              "model": 1,
+              "tool": 0,
+              "retry": 0,
+              "replan": 0
+            },
+            "active_execution_seconds": 3.330765257589519,
+            "tokens": {
+              "prompt_tokens": 5007,
+              "completion_tokens": 125,
+              "total_tokens": 5132,
+              "calls_without_usage": 0
+            },
+            "usage_accounting": "provider_reported; missing usage is counted separately",
+            "closing": false,
+            "reservations": {
+              "settled": 1
+            }
+          },
+          "elapsed_ms": 3494.61
+        },
+        {
+          "variant": "rules_classifier_llm",
+          "id": "history",
+          "status": "ok",
+          "plan_source": "llm",
+          "decision": "new",
+          "candidate_sources": [
+            "classifier"
+          ],
+          "candidate_diagnostics": [],
+          "semantic_retrieval": {
+            "status": "local_ngram",
+            "remote_calls": 0,
+            "direct_acceptance": false,
+            "policy": "parallel"
+          },
+          "action_precision": 1.0,
+          "action_recall": 1.0,
+          "action_f1": 1.0,
+          "argument_match": true,
+          "forbidden_actions": [],
+          "complete": true,
+          "budget": {
+            "limits": {
+              "model": 4,
+              "tool": 0,
+              "retry": 3,
+              "replan": 3,
+              "execution_seconds": 120.0,
+              "request_seconds": 45.0,
+              "closing_ratio": 0.8
+            },
+            "used": {
+              "model": 1,
+              "tool": 0,
+              "retry": 0,
+              "replan": 0
+            },
+            "active_execution_seconds": 6.065155863761902,
+            "tokens": {
+              "prompt_tokens": 5054,
+              "completion_tokens": 196,
+              "total_tokens": 5250,
+              "calls_without_usage": 0
+            },
+            "usage_accounting": "provider_reported; missing usage is counted separately",
+            "closing": false,
+            "reservations": {
+              "settled": 1
+            }
+          },
+          "elapsed_ms": 6159.99
+        },
+        {
+          "variant": "rules_classifier_embedding_llm",
+          "id": "canonical",
+          "status": "ok",
+          "plan_source": "local",
+          "candidate_sources": [],
+          "candidate_diagnostics": [],
+          "semantic_retrieval": {},
+          "action_precision": 1.0,
+          "action_recall": 1.0,
+          "action_f1": 1.0,
+          "argument_match": true,
+          "forbidden_actions": [],
+          "complete": true,
+          "budget": {
+            "limits": {
+              "model": 4,
+              "tool": 0,
+              "retry": 3,
+              "replan": 3,
+              "execution_seconds": 120.0,
+              "request_seconds": 45.0,
+              "closing_ratio": 0.8
+            },
+            "used": {
+              "model": 0,
+              "tool": 0,
+              "retry": 0,
+              "replan": 0
+            },
+            "active_execution_seconds": 0.0,
+            "tokens": {
+              "prompt_tokens": 0,
+              "completion_tokens": 0,
+              "total_tokens": 0,
+              "calls_without_usage": 0
+            },
+            "usage_accounting": "provider_reported; missing usage is counted separately",
+            "closing": false,
+            "reservations": {}
+          },
+          "elapsed_ms": 7.51
+        },
+        {
+          "variant": "rules_classifier_embedding_llm",
+          "id": "paraphrase",
+          "status": "ok",
+          "plan_source": "llm",
+          "decision": "new",
+          "candidate_sources": [
+            "classifier",
+            "semantic_embedding"
+          ],
+          "candidate_diagnostics": [],
+          "semantic_retrieval": {
+            "source": "semantic_embedding",
+            "model": "Qwen/Qwen3-Embedding-0.6B",
+            "bank_version": "business-intents-v1",
+            "fingerprint": "bf330c6a72a14131f981e636a8b853c6eed16a1ab14137f5cf73af5421b307e0",
+            "direct_acceptance": false,
+            "remote_calls": 2,
+            "status": "retrieved",
+            "policy": "parallel"
+          },
+          "action_precision": 1.0,
+          "action_recall": 1.0,
+          "action_f1": 1.0,
+          "argument_match": true,
+          "forbidden_actions": [],
+          "complete": true,
+          "budget": {
+            "limits": {
+              "model": 4,
+              "tool": 0,
+              "retry": 3,
+              "replan": 3,
+              "execution_seconds": 120.0,
+              "request_seconds": 45.0,
+              "closing_ratio": 0.8
+            },
+            "used": {
+              "model": 3,
+              "tool": 0,
+              "retry": 0,
+              "replan": 0
+            },
+            "active_execution_seconds": 18.131467985454947,
+            "tokens": {
+              "prompt_tokens": 5868,
+              "completion_tokens": 136,
+              "total_tokens": 6004,
+              "calls_without_usage": 0
+            },
+            "usage_accounting": "provider_reported; missing usage is counted separately",
+            "closing": false,
+            "reservations": {
+              "settled": 3
+            }
+          },
+          "elapsed_ms": 18205.86
+        },
+        {
+          "variant": "rules_classifier_embedding_llm",
+          "id": "multi",
+          "status": "ok",
+          "plan_source": "llm",
+          "decision": "new",
+          "candidate_sources": [
+            "classifier",
+            "semantic_embedding"
+          ],
+          "candidate_diagnostics": [],
+          "semantic_retrieval": {
+            "source": "semantic_embedding",
+            "model": "Qwen/Qwen3-Embedding-0.6B",
+            "bank_version": "business-intents-v1",
+            "fingerprint": "bf330c6a72a14131f981e636a8b853c6eed16a1ab14137f5cf73af5421b307e0",
+            "direct_acceptance": false,
+            "remote_calls": 1,
+            "status": "retrieved",
+            "policy": "parallel"
+          },
+          "action_precision": 1.0,
+          "action_recall": 1.0,
+          "action_f1": 1.0,
+          "argument_match": true,
+          "forbidden_actions": [],
+          "complete": true,
+          "budget": {
+            "limits": {
+              "model": 4,
+              "tool": 0,
+              "retry": 3,
+              "replan": 3,
+              "execution_seconds": 120.0,
+              "request_seconds": 45.0,
+              "closing_ratio": 0.8
+            },
+            "used": {
+              "model": 2,
+              "tool": 0,
+              "retry": 0,
+              "replan": 0
+            },
+            "active_execution_seconds": 9.997491627465934,
+            "tokens": {
+              "prompt_tokens": 5620,
+              "completion_tokens": 268,
+              "total_tokens": 5888,
+              "calls_without_usage": 0
+            },
+            "usage_accounting": "provider_reported; missing usage is counted separately",
+            "closing": false,
+            "reservations": {
+              "settled": 2
+            }
+          },
+          "elapsed_ms": 10044.89
+        },
+        {
+          "variant": "rules_classifier_embedding_llm",
+          "id": "negation",
+          "status": "ok",
+          "plan_source": "llm",
+          "decision": "new",
+          "candidate_sources": [
+            "classifier",
+            "semantic_embedding"
+          ],
+          "candidate_diagnostics": [],
+          "semantic_retrieval": {
+            "source": "semantic_embedding",
+            "model": "Qwen/Qwen3-Embedding-0.6B",
+            "bank_version": "business-intents-v1",
+            "fingerprint": "bf330c6a72a14131f981e636a8b853c6eed16a1ab14137f5cf73af5421b307e0",
+            "direct_acceptance": false,
+            "remote_calls": 1,
+            "status": "retrieved",
+            "policy": "parallel"
+          },
+          "action_precision": 1.0,
+          "action_recall": 1.0,
+          "action_f1": 1.0,
+          "argument_match": true,
+          "forbidden_actions": [],
+          "complete": true,
+          "budget": {
+            "limits": {
+              "model": 4,
+              "tool": 0,
+              "retry": 3,
+              "replan": 3,
+              "execution_seconds": 120.0,
+              "request_seconds": 45.0,
+              "closing_ratio": 0.8
+            },
+            "used": {
+              "model": 2,
+              "tool": 0,
+              "retry": 0,
+              "replan": 0
+            },
+            "active_execution_seconds": 3.2926188758574426,
+            "tokens": {
+              "prompt_tokens": 5541,
+              "completion_tokens": 123,
+              "total_tokens": 5664,
+              "calls_without_usage": 0
+            },
+            "usage_accounting": "provider_reported; missing usage is counted separately",
+            "closing": false,
+            "reservations": {
+              "settled": 2
+            }
+          },
+          "elapsed_ms": 3338.94
+        },
+        {
+          "variant": "rules_classifier_embedding_llm",
+          "id": "scope",
+          "status": "ok",
+          "plan_source": "llm",
+          "decision": "new",
+          "candidate_sources": [
+            "classifier",
+            "semantic_embedding"
+          ],
+          "candidate_diagnostics": [],
+          "semantic_retrieval": {
+            "source": "semantic_embedding",
+            "model": "Qwen/Qwen3-Embedding-0.6B",
+            "bank_version": "business-intents-v1",
+            "fingerprint": "bf330c6a72a14131f981e636a8b853c6eed16a1ab14137f5cf73af5421b307e0",
+            "direct_acceptance": false,
+            "remote_calls": 1,
+            "status": "retrieved",
+            "policy": "parallel"
+          },
+          "action_precision": 1.0,
+          "action_recall": 1.0,
+          "action_f1": 1.0,
+          "argument_match": true,
+          "forbidden_actions": [],
+          "complete": true,
+          "budget": {
+            "limits": {
+              "model": 4,
+              "tool": 0,
+              "retry": 3,
+              "replan": 3,
+              "execution_seconds": 120.0,
+              "request_seconds": 45.0,
+              "closing_ratio": 0.8
+            },
+            "used": {
+              "model": 2,
+              "tool": 0,
+              "retry": 0,
+              "replan": 0
+            },
+            "active_execution_seconds": 4.131885111797601,
+            "tokens": {
+              "prompt_tokens": 5518,
+              "completion_tokens": 125,
+              "total_tokens": 5643,
+              "calls_without_usage": 0
+            },
+            "usage_accounting": "provider_reported; missing usage is counted separately",
+            "closing": false,
+            "reservations": {
+              "settled": 2
+            }
+          },
+          "elapsed_ms": 4182.08
+        },
+        {
+          "variant": "rules_classifier_embedding_llm",
+          "id": "history",
+          "status": "ok",
+          "plan_source": "llm",
+          "decision": "new",
+          "candidate_sources": [
+            "classifier",
+            "semantic_embedding"
+          ],
+          "candidate_diagnostics": [],
+          "semantic_retrieval": {
+            "source": "semantic_embedding",
+            "model": "Qwen/Qwen3-Embedding-0.6B",
+            "bank_version": "business-intents-v1",
+            "fingerprint": "bf330c6a72a14131f981e636a8b853c6eed16a1ab14137f5cf73af5421b307e0",
+            "direct_acceptance": false,
+            "remote_calls": 1,
+            "status": "retrieved",
+            "policy": "parallel"
+          },
+          "action_precision": 1.0,
+          "action_recall": 1.0,
+          "action_f1": 1.0,
+          "argument_match": true,
+          "forbidden_actions": [],
+          "complete": true,
+          "budget": {
+            "limits": {
+              "model": 4,
+              "tool": 0,
+              "retry": 3,
+              "replan": 3,
+              "execution_seconds": 120.0,
+              "request_seconds": 45.0,
+              "closing_ratio": 0.8
+            },
+            "used": {
+              "model": 2,
+              "tool": 0,
+              "retry": 0,
+              "replan": 0
+            },
+            "active_execution_seconds": 3.971782078035176,
+            "tokens": {
+              "prompt_tokens": 5584,
+              "completion_tokens": 165,
+              "total_tokens": 5749,
+              "calls_without_usage": 0
+            },
+            "usage_accounting": "provider_reported; missing usage is counted separately",
+            "closing": false,
+            "reservations": {
+              "settled": 2
+            }
+          },
+          "elapsed_ms": 4018.88
+        }
+      ],
+      "chat_usage": {
+        "calls": 15,
+        "prompt_tokens": 75678,
+        "completion_tokens": 2387,
+        "total_tokens": 78065,
+        "calls_without_usage": 0,
+        "by_model": {
+          "mimo-v2.6-flash": {
+            "calls": 15,
+            "prompt_tokens": 75678,
+            "completion_tokens": 2387,
+            "total_tokens": 78065
+          }
+        }
+      },
+      "interpretation": "Six selected annotated cases, one run per arm. Canonical case is a local control. Character candidates removed equally. No tools executed. Cold embedding index cost included; classifier warmup excluded. Not a representative accuracy estimate or proof of improvement.",
+      "policy": "parallel",
+      "elapsed_seconds": 126.57
+    }
+  },
+  "totals": {
+    "evaluated_plans": 36,
+    "complete": 35,
+    "chat_requests": 32,
+    "embedding_requests": 8,
+    "requests_without_usage": 1,
+    "tools_executed": 0,
+    "forbidden_action_cases": 0
+  },
+  "interpretation": [
+    "With classifier and embedding configured, both policies passed all six development probes in this run. On-demand used two embedding requests (one cold example-bank batch and one query), versus six for parallel (one bank batch and five queries). Both used five Planner requests.",
+    "The rules_llm baseline passed 6/6 in the first run and 5/6 in the second. Policies do not change the candidate-free baseline; this variation is not evidence of a policy effect.",
+    "The failed second-baseline history probe recorded PlanningFailure, 25 seconds of reserved execution and one request without usage. The evaluator retained only the exception type, so the underlying failure code is unconfirmed. No retry run was made after the 40-request cap.",
+    "No independent routing accuracy, calibrated confidence, statistically reliable latency or currency-cost benefit is established. Successful plans do not validate answer quality or clinical correctness."
+  ]
+}

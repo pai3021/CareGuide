@@ -1,0 +1,548 @@
+{
+  "evaluation": "CareGuide dev score-fusion replay",
+  "split": "dev",
+  "frozen_test_run": false,
+  "case_count": 1000,
+  "tuning_count": 500,
+  "validation_count": 500,
+  "partition_seed": "careguide-recall-fusion-dev-v1",
+  "selection_objective": [
+    "candidate_coverage_at_20",
+    "mrr_at_10"
+  ],
+  "retrieval_legs": [
+    "bge_sparse",
+    "bm25",
+    "dense"
+  ],
+  "source_metadata": {
+    "version": "careguide-rag-score-cache-v1",
+    "split": "dev",
+    "corpus_fingerprint": "6e47b0ad01598a3f1385abb53a9ab7189ca11eb63bd5674a4688e946f4e0f8cf",
+    "dev_sha256": "17e19a6df14aa2b18080ea433eb15756adfa4a4d7f4634085113c342855d4c69",
+    "query_fingerprint": "4e65f14f41342ca59e65aa711cb42e9592841113084a891e6274e8835ba7cb4d",
+    "candidate_k": 100,
+    "record_count": 10015,
+    "external_requests": 32,
+    "query_instruction": "Retrieve sourced medical information, medicine label sections, department descriptions, and hospital visit guides relevant to the query.",
+    "embedding_model": "Qwen/Qwen3-Embedding-0.6B",
+    "embedding_dimensions": 1024,
+    "bge_sparse": {
+      "model": "BAAI/bge-m3",
+      "revision": "5617a9f61b028005a4858fdac845db406aefb181",
+      "files": {
+        "colbert_linear.pt": {
+          "size": 2100674,
+          "sha256": "19bfbae397c2b7524158c919d0e9b19393c5639d098f0a66932c91ed8f5f9abb"
+        },
+        "config.json": {
+          "size": 687,
+          "sha256": "26159e7ad065073448460117eb24b7a4572f6f4e78eadff65dc0a11c052449fa"
+        },
+        "pytorch_model.bin": {
+          "size": 2271145830,
+          "sha256": "b5e0ce3470abf5ef3831aa1bd5553b486803e83251590ab7ff35a117cf6aad38"
+        },
+        "sentencepiece.bpe.model": {
+          "size": 5069051,
+          "sha256": "cfc8146abe2a0488e9e2a0c56de7952f7c11ab059eca145a0a727afce0db2865"
+        },
+        "sparse_linear.pt": {
+          "size": 3516,
+          "sha256": "45c93804d2142b8f6d7ec6914ae23a1eee9c6a1d27d83d908a20d2afb3595ad9"
+        },
+        "special_tokens_map.json": {
+          "size": 964,
+          "sha256": "8c785abebea9ae3257b61681b4e6fd8365ceafde980c21970d001e834cf10835"
+        },
+        "tokenizer.json": {
+          "size": 17098108,
+          "sha256": "21106b6d7dab2952c1d496fb21d5dc9db75c28ed361a05f5020bbba27810dd08"
+        },
+        "tokenizer_config.json": {
+          "size": 444,
+          "sha256": "a62b2b6784f990259fddef5f16388693a8043be4f69179e6a5257eeb3f9abac4"
+        }
+      },
+      "corpus_fingerprint": "6e47b0ad01598a3f1385abb53a9ab7189ca11eb63bd5674a4688e946f4e0f8cf",
+      "max_length": 512,
+      "dev_sha256": "17e19a6df14aa2b18080ea433eb15756adfa4a4d7f4634085113c342855d4c69",
+      "query_fingerprint": "4e65f14f41342ca59e65aa711cb42e9592841113084a891e6274e8835ba7cb4d",
+      "quantization": "dynamic_int8",
+      "query_instruction": null,
+      "encoder": "AutoModel+official_sparse_linear+ReLU+token_max",
+      "document_text": "MedicalKnowledgeBase.retrieval_text",
+      "processing_seconds_this_run": 53.63518848689273,
+      "document_count": 10015,
+      "query_count": 1000,
+      "query_batch_size": 1
+    },
+    "additional_embedding_api_requests": 0,
+    "base_cache_sha256": "082e47e111e19a1bb2fd529c88ac859dcd711417a205ae49b9087d494cd29ab6"
+  },
+  "cache_sha256": "0a4bc9c32ae4ee5c592c2f6e23b4c2a3410917afc5cdef28aae2ff0b5efaa558",
+  "searches": {
+    "rrf": {
+      "configuration_count": 66,
+      "weights": {
+        "bge_sparse": 0.1,
+        "bm25": 0.0,
+        "dense": 0.9
+      },
+      "tuning_metrics": {
+        "case_count": 500,
+        "mrr_at_10": 0.44820952380952384,
+        "recall_at_1": 0.366,
+        "recall_at_5": 0.566,
+        "recall_at_10": 0.664,
+        "ndcg_at_10": 0.499071462160415,
+        "candidate_coverage_at_20": 0.756,
+        "candidate_coverage_at_40": 0.816,
+        "candidate_coverage_at_100": 0.888
+      }
+    },
+    "minmax": {
+      "configuration_count": 66,
+      "weights": {
+        "bge_sparse": 0.3,
+        "bm25": 0.1,
+        "dense": 0.6
+      },
+      "tuning_metrics": {
+        "case_count": 500,
+        "mrr_at_10": 0.4771325396825397,
+        "recall_at_1": 0.398,
+        "recall_at_5": 0.588,
+        "recall_at_10": 0.678,
+        "ndcg_at_10": 0.5247439040531635,
+        "candidate_coverage_at_20": 0.764,
+        "candidate_coverage_at_40": 0.834,
+        "candidate_coverage_at_100": 0.896
+      }
+    }
+  },
+  "results": {
+    "rrf_4_1_baseline": {
+      "method": "rrf",
+      "weights": {
+        "bge_sparse": 0.0,
+        "bm25": 1.0,
+        "dense": 4.0
+      },
+      "tuning": {
+        "case_count": 500,
+        "mrr_at_10": 0.4420563492063492,
+        "recall_at_1": 0.36,
+        "recall_at_5": 0.582,
+        "recall_at_10": 0.65,
+        "ndcg_at_10": 0.4914519943923735,
+        "candidate_coverage_at_20": 0.754,
+        "candidate_coverage_at_40": 0.824,
+        "candidate_coverage_at_100": 0.888
+      },
+      "validation": {
+        "case_count": 500,
+        "mrr_at_10": 0.4122777777777778,
+        "recall_at_1": 0.324,
+        "recall_at_5": 0.526,
+        "recall_at_10": 0.642,
+        "ndcg_at_10": 0.4663971826720346,
+        "candidate_coverage_at_20": 0.702,
+        "candidate_coverage_at_40": 0.8,
+        "candidate_coverage_at_100": 0.86
+      },
+      "all_dev": {
+        "case_count": 1000,
+        "mrr_at_10": 0.4271670634920635,
+        "recall_at_1": 0.342,
+        "recall_at_5": 0.554,
+        "recall_at_10": 0.646,
+        "ndcg_at_10": 0.4789245885322041,
+        "candidate_coverage_at_20": 0.728,
+        "candidate_coverage_at_40": 0.812,
+        "candidate_coverage_at_100": 0.874
+      }
+    },
+    "bge_sparse_only": {
+      "method": "rrf",
+      "weights": {
+        "bge_sparse": 1.0,
+        "bm25": 0.0,
+        "dense": 0.0
+      },
+      "tuning": {
+        "case_count": 500,
+        "mrr_at_10": 0.4097404761904762,
+        "recall_at_1": 0.336,
+        "recall_at_5": 0.516,
+        "recall_at_10": 0.584,
+        "ndcg_at_10": 0.4511731152441798,
+        "candidate_coverage_at_20": 0.66,
+        "candidate_coverage_at_40": 0.736,
+        "candidate_coverage_at_100": 0.8
+      },
+      "validation": {
+        "case_count": 500,
+        "mrr_at_10": 0.39043333333333335,
+        "recall_at_1": 0.324,
+        "recall_at_5": 0.478,
+        "recall_at_10": 0.556,
+        "ndcg_at_10": 0.42953049366359103,
+        "candidate_coverage_at_20": 0.632,
+        "candidate_coverage_at_40": 0.686,
+        "candidate_coverage_at_100": 0.774
+      },
+      "all_dev": {
+        "case_count": 1000,
+        "mrr_at_10": 0.4000869047619047,
+        "recall_at_1": 0.33,
+        "recall_at_5": 0.497,
+        "recall_at_10": 0.57,
+        "ndcg_at_10": 0.4403518044538854,
+        "candidate_coverage_at_20": 0.646,
+        "candidate_coverage_at_40": 0.711,
+        "candidate_coverage_at_100": 0.787
+      }
+    },
+    "bm25_only": {
+      "method": "rrf",
+      "weights": {
+        "bge_sparse": 0.0,
+        "bm25": 1.0,
+        "dense": 0.0
+      },
+      "tuning": {
+        "case_count": 500,
+        "mrr_at_10": 0.30969444444444444,
+        "recall_at_1": 0.264,
+        "recall_at_5": 0.374,
+        "recall_at_10": 0.422,
+        "ndcg_at_10": 0.33628265185394396,
+        "candidate_coverage_at_20": 0.494,
+        "candidate_coverage_at_40": 0.556,
+        "candidate_coverage_at_100": 0.636
+      },
+      "validation": {
+        "case_count": 500,
+        "mrr_at_10": 0.2604238095238095,
+        "recall_at_1": 0.206,
+        "recall_at_5": 0.334,
+        "recall_at_10": 0.396,
+        "ndcg_at_10": 0.2926105680548146,
+        "candidate_coverage_at_20": 0.448,
+        "candidate_coverage_at_40": 0.516,
+        "candidate_coverage_at_100": 0.576
+      },
+      "all_dev": {
+        "case_count": 1000,
+        "mrr_at_10": 0.285059126984127,
+        "recall_at_1": 0.235,
+        "recall_at_5": 0.354,
+        "recall_at_10": 0.409,
+        "ndcg_at_10": 0.3144466099543793,
+        "candidate_coverage_at_20": 0.471,
+        "candidate_coverage_at_40": 0.536,
+        "candidate_coverage_at_100": 0.606
+      }
+    },
+    "dense_only": {
+      "method": "rrf",
+      "weights": {
+        "bge_sparse": 0.0,
+        "bm25": 0.0,
+        "dense": 1.0
+      },
+      "tuning": {
+        "case_count": 500,
+        "mrr_at_10": 0.44157698412698415,
+        "recall_at_1": 0.358,
+        "recall_at_5": 0.552,
+        "recall_at_10": 0.658,
+        "ndcg_at_10": 0.4925183196759596,
+        "candidate_coverage_at_20": 0.74,
+        "candidate_coverage_at_40": 0.812,
+        "candidate_coverage_at_100": 0.888
+      },
+      "validation": {
+        "case_count": 500,
+        "mrr_at_10": 0.43161825396825393,
+        "recall_at_1": 0.36,
+        "recall_at_5": 0.532,
+        "recall_at_10": 0.622,
+        "ndcg_at_10": 0.47643431413300763,
+        "candidate_coverage_at_20": 0.712,
+        "candidate_coverage_at_40": 0.796,
+        "candidate_coverage_at_100": 0.86
+      },
+      "all_dev": {
+        "case_count": 1000,
+        "mrr_at_10": 0.43659761904761907,
+        "recall_at_1": 0.359,
+        "recall_at_5": 0.542,
+        "recall_at_10": 0.64,
+        "ndcg_at_10": 0.4844763169044836,
+        "candidate_coverage_at_20": 0.726,
+        "candidate_coverage_at_40": 0.804,
+        "candidate_coverage_at_100": 0.874
+      }
+    },
+    "tuned_rrf": {
+      "method": "rrf",
+      "weights": {
+        "bge_sparse": 0.1,
+        "bm25": 0.0,
+        "dense": 0.9
+      },
+      "tuning": {
+        "case_count": 500,
+        "mrr_at_10": 0.44820952380952384,
+        "recall_at_1": 0.366,
+        "recall_at_5": 0.566,
+        "recall_at_10": 0.664,
+        "ndcg_at_10": 0.499071462160415,
+        "candidate_coverage_at_20": 0.756,
+        "candidate_coverage_at_40": 0.816,
+        "candidate_coverage_at_100": 0.888
+      },
+      "validation": {
+        "case_count": 500,
+        "mrr_at_10": 0.4369396825396826,
+        "recall_at_1": 0.364,
+        "recall_at_5": 0.542,
+        "recall_at_10": 0.63,
+        "ndcg_at_10": 0.48251150220617417,
+        "candidate_coverage_at_20": 0.714,
+        "candidate_coverage_at_40": 0.796,
+        "candidate_coverage_at_100": 0.86
+      },
+      "all_dev": {
+        "case_count": 1000,
+        "mrr_at_10": 0.4425746031746032,
+        "recall_at_1": 0.365,
+        "recall_at_5": 0.554,
+        "recall_at_10": 0.647,
+        "ndcg_at_10": 0.49079148218329455,
+        "candidate_coverage_at_20": 0.735,
+        "candidate_coverage_at_40": 0.806,
+        "candidate_coverage_at_100": 0.874
+      }
+    },
+    "tuned_minmax": {
+      "method": "minmax",
+      "weights": {
+        "bge_sparse": 0.3,
+        "bm25": 0.1,
+        "dense": 0.6
+      },
+      "tuning": {
+        "case_count": 500,
+        "mrr_at_10": 0.4771325396825397,
+        "recall_at_1": 0.398,
+        "recall_at_5": 0.588,
+        "recall_at_10": 0.678,
+        "ndcg_at_10": 0.5247439040531635,
+        "candidate_coverage_at_20": 0.764,
+        "candidate_coverage_at_40": 0.834,
+        "candidate_coverage_at_100": 0.896
+      },
+      "validation": {
+        "case_count": 500,
+        "mrr_at_10": 0.44948809523809524,
+        "recall_at_1": 0.374,
+        "recall_at_5": 0.552,
+        "recall_at_10": 0.634,
+        "ndcg_at_10": 0.4933433013479953,
+        "candidate_coverage_at_20": 0.722,
+        "candidate_coverage_at_40": 0.802,
+        "candidate_coverage_at_100": 0.882
+      },
+      "all_dev": {
+        "case_count": 1000,
+        "mrr_at_10": 0.4633103174603174,
+        "recall_at_1": 0.386,
+        "recall_at_5": 0.57,
+        "recall_at_10": 0.656,
+        "ndcg_at_10": 0.5090436027005795,
+        "candidate_coverage_at_20": 0.743,
+        "candidate_coverage_at_40": 0.818,
+        "candidate_coverage_at_100": 0.889
+      }
+    }
+  },
+  "candidate_recall": {
+    "tuning": {
+      "bge_sparse_top_100": 0.8,
+      "bm25_top_100": 0.636,
+      "dense_top_100": 0.888,
+      "union": 0.926
+    },
+    "validation": {
+      "bge_sparse_top_100": 0.774,
+      "bm25_top_100": 0.576,
+      "dense_top_100": 0.86,
+      "union": 0.898
+    },
+    "all_dev": {
+      "bge_sparse_top_100": 0.787,
+      "bm25_top_100": 0.606,
+      "dense_top_100": 0.874,
+      "union": 0.912
+    }
+  },
+  "paired_validation_vs_baseline": {
+    "rrf_4_1_baseline": {
+      "at_10": {
+        "gained_queries": 0,
+        "lost_queries": 0,
+        "net_queries": 0,
+        "absolute_delta": 0.0
+      },
+      "at_20": {
+        "gained_queries": 0,
+        "lost_queries": 0,
+        "net_queries": 0,
+        "absolute_delta": 0.0
+      },
+      "at_40": {
+        "gained_queries": 0,
+        "lost_queries": 0,
+        "net_queries": 0,
+        "absolute_delta": 0.0
+      }
+    },
+    "bge_sparse_only": {
+      "at_10": {
+        "gained_queries": 20,
+        "lost_queries": 63,
+        "net_queries": -43,
+        "absolute_delta": -0.086
+      },
+      "at_20": {
+        "gained_queries": 27,
+        "lost_queries": 62,
+        "net_queries": -35,
+        "absolute_delta": -0.07
+      },
+      "at_40": {
+        "gained_queries": 18,
+        "lost_queries": 75,
+        "net_queries": -57,
+        "absolute_delta": -0.114
+      }
+    },
+    "bm25_only": {
+      "at_10": {
+        "gained_queries": 7,
+        "lost_queries": 130,
+        "net_queries": -123,
+        "absolute_delta": -0.246
+      },
+      "at_20": {
+        "gained_queries": 9,
+        "lost_queries": 136,
+        "net_queries": -127,
+        "absolute_delta": -0.254
+      },
+      "at_40": {
+        "gained_queries": 13,
+        "lost_queries": 155,
+        "net_queries": -142,
+        "absolute_delta": -0.284
+      }
+    },
+    "dense_only": {
+      "at_10": {
+        "gained_queries": 6,
+        "lost_queries": 16,
+        "net_queries": -10,
+        "absolute_delta": -0.02
+      },
+      "at_20": {
+        "gained_queries": 10,
+        "lost_queries": 5,
+        "net_queries": 5,
+        "absolute_delta": 0.01
+      },
+      "at_40": {
+        "gained_queries": 3,
+        "lost_queries": 5,
+        "net_queries": -2,
+        "absolute_delta": -0.004
+      }
+    },
+    "tuned_rrf": {
+      "at_10": {
+        "gained_queries": 11,
+        "lost_queries": 17,
+        "net_queries": -6,
+        "absolute_delta": -0.012
+      },
+      "at_20": {
+        "gained_queries": 10,
+        "lost_queries": 4,
+        "net_queries": 6,
+        "absolute_delta": 0.012
+      },
+      "at_40": {
+        "gained_queries": 4,
+        "lost_queries": 6,
+        "net_queries": -2,
+        "absolute_delta": -0.004
+      }
+    },
+    "tuned_minmax": {
+      "at_10": {
+        "gained_queries": 13,
+        "lost_queries": 17,
+        "net_queries": -4,
+        "absolute_delta": -0.008
+      },
+      "at_20": {
+        "gained_queries": 19,
+        "lost_queries": 9,
+        "net_queries": 10,
+        "absolute_delta": 0.02
+      },
+      "at_40": {
+        "gained_queries": 11,
+        "lost_queries": 10,
+        "net_queries": 1,
+        "absolute_delta": 0.002
+      }
+    }
+  },
+  "exploratory_lexical_reservation": {
+    "policy": "Protect RRF Top20 and append BM25 Top3 entries missing from that pool; at most 23 candidates.",
+    "status": "Additional dev exploration prompted by per-case diagnostics; not an independent validation claim. No reranker run.",
+    "partitions": {
+      "tuning": {
+        "protected_rrf20_plus_missed_bm25_top3": 0.764,
+        "rrf20": 0.754,
+        "rrf23": 0.762,
+        "rrf_matched_per_query_pool_size": 0.756,
+        "mean_pool_size": 21.496,
+        "maximum_pool_size": 23,
+        "extra_gold_queries_vs_rrf20": 5
+      },
+      "validation": {
+        "protected_rrf20_plus_missed_bm25_top3": 0.71,
+        "rrf20": 0.702,
+        "rrf23": 0.72,
+        "rrf_matched_per_query_pool_size": 0.71,
+        "mean_pool_size": 21.576,
+        "maximum_pool_size": 23,
+        "extra_gold_queries_vs_rrf20": 4
+      },
+      "all_dev": {
+        "protected_rrf20_plus_missed_bm25_top3": 0.737,
+        "rrf20": 0.728,
+        "rrf23": 0.741,
+        "rrf_matched_per_query_pool_size": 0.733,
+        "mean_pool_size": 21.536,
+        "maximum_pool_size": 23,
+        "extra_gold_queries_vs_rrf20": 9
+      }
+    }
+  },
+  "scope": "Pre-rerank retrieval only. Dev has been used historically; internal validation is not a new frozen test. No answer-quality or end-to-end latency claim."
+}

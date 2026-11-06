@@ -51,7 +51,7 @@ def intent_semantic_retriever(mode=None):
 
 
 def semantic_reranker():
-    from careguide.retrieval.reranker import OpenAICompatibleReranker
+    from careguide.retrieval.reranker import DEFAULT_RERANK_INSTRUCTION, OpenAICompatibleReranker
     key = os.environ.get('CAREGUIDE_RERANK_API_KEY') or os.environ.get(
         'CAREGUIDE_EMBEDDING_API_KEY', '')
     if not key or key.startswith('YOUR_'):
@@ -61,13 +61,18 @@ def semantic_reranker():
         base_url=os.environ.get('CAREGUIDE_RERANK_BASE_URL') or os.environ.get(
             'CAREGUIDE_EMBEDDING_BASE_URL', 'https://api.siliconflow.cn/v1'),
         model=os.environ.get('CAREGUIDE_RERANK_MODEL', 'Qwen/Qwen3-Reranker-0.6B'),
+        instruction=os.environ.get('CAREGUIDE_RERANK_INSTRUCTION', '').strip() or DEFAULT_RERANK_INSTRUCTION,
         concurrency=int(os.environ.get('CAREGUIDE_RERANK_CONCURRENCY', '8')),
     )
 
 
 def chroma_client():
     import chromadb
-    return chromadb.PersistentClient(path=str(PROJECT_ROOT/'data'/'chroma'),
+    configured=os.environ.get('CAREGUIDE_CHROMA_PATH','').strip()
+    index_path=Path(configured) if configured else PROJECT_ROOT/'data'/'chroma'
+    if not index_path.is_absolute():
+        index_path=PROJECT_ROOT/index_path
+    return chromadb.PersistentClient(path=str(index_path.resolve()),
                                     settings=chromadb.Settings(anonymized_telemetry=False))
 
 
@@ -92,11 +97,24 @@ def get_registry():
         name = versioned_collection_name(corpus) if versioned_collection_name(corpus) in names else COLLECTION_NAME
         kwargs = {'collection': client.get_collection(name, embedding_function=None),
                   'embedding': semantic_embedding(),
+                  'dense_search': os.environ.get('CAREGUIDE_DENSE_SEARCH', 'ann').strip().casefold(),
                   'min_dense_score': float(os.environ.get('CAREGUIDE_MIN_DENSE_SCORE', '-1.0')),
                   'dense_weight': float(os.environ.get('CAREGUIDE_RRF_DENSE_WEIGHT', '4')),
                   'lexical_weight': float(os.environ.get('CAREGUIDE_RRF_BM25_WEIGHT', '1')),
+                  'rrf_constant': int(os.environ.get('CAREGUIDE_RRF_CONSTANT', '60')),
                   'hybrid_candidates': int(os.environ.get(
                       'CAREGUIDE_HYBRID_CANDIDATES', '100'))}
+        if mode == 'hybrid':
+            kwargs['hybrid_fusion'] = os.environ.get('CAREGUIDE_HYBRID_FUSION', 'rrf')
+            if os.environ.get('CAREGUIDE_HYBRID_WEIGHTS', '').strip():
+                kwargs['hybrid_weights'] = json.loads(os.environ['CAREGUIDE_HYBRID_WEIGHTS'])
+            sparse_model = os.environ.get('CAREGUIDE_BGE_SPARSE_MODEL_PATH', '').strip()
+            sparse_checkpoint = os.environ.get('CAREGUIDE_BGE_SPARSE_CHECKPOINT', '').strip()
+            if bool(sparse_model) != bool(sparse_checkpoint):
+                raise ValueError('BGE sparse model and complete document checkpoint are both required')
+            if sparse_model:
+                from careguide.retrieval.bge_sparse import LocalBGESparseRetriever
+                kwargs['sparse_retriever'] = LocalBGESparseRetriever(corpus, sparse_model, sparse_checkpoint)
         if os.environ.get('CAREGUIDE_RERANK_ENABLED', 'false').strip().casefold() == 'true':
             kwargs.update({'reranker': semantic_reranker(),
                            'rerank_candidates': int(os.environ.get(
@@ -248,11 +266,17 @@ def get_chat_runtime():
             from careguide.orchestration.understanding import LocalUnderstanding, LocalClassifier
             local_path = os.environ.get('CAREGUIDE_QIC_MODEL_PATH') or str(
                 PROJECT_ROOT.parent/'models'/'CareGuide'/'careguide-intent-roberta-v1')
-            classifier = LocalClassifier(local_path, os.environ.get('CAREGUIDE_QIC_MODEL_DEVICE', 'auto'))
+            classifier_mode = os.environ.get('CAREGUIDE_INTENT_CLASSIFIER_MODE', 'auto').strip().casefold()
+            if classifier_mode not in {'auto', 'disabled'}:
+                raise ValueError('Unknown intent classifier mode')
+            classifier = (LocalClassifier(local_path, os.environ.get('CAREGUIDE_QIC_MODEL_DEVICE', 'auto'))
+                          if classifier_mode == 'auto' else None)
             runtime_class = UnifiedRuntime
             semantic, semantic_mode = intent_semantic_retriever()
             runtime_options['understanding'] = LocalUnderstanding(registry.corpus, classifier,
-                semantic=semantic, semantic_mode=semantic_mode)
+                semantic=semantic, semantic_mode=semantic_mode,
+                semantic_policy=os.environ.get('CAREGUIDE_INTENT_SEMANTIC_POLICY', 'parallel'),
+                candidate_routing=os.environ.get('CAREGUIDE_INTENT_CANDIDATE_ROUTING', 'read_only'))
         engine = runtime_class(engine, business_path, **runtime_options, limits=BudgetLimits(
             model=int(os.environ.get('CAREGUIDE_WORKFLOW_MODEL_CALLS', '20')),
             tool=int(os.environ.get('CAREGUIDE_WORKFLOW_TOOL_CALLS', '30')),

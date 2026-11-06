@@ -1,0 +1,144 @@
+{
+  "evaluation": "cached query rewriting for lexical retrieval",
+  "external_requests": 0,
+  "frozen_test_run": false,
+  "source_sha256": {
+    "scores": "1f9bdd9ef64599f0bc2aac109ee8ec4063568520236f518daad9869d61042ca6",
+    "rewrites": "1ac83efb63c8dec989841ae1fb438cd2a519311a940c627e7e0d0f917411dd62"
+  },
+  "baseline_reproduced_queries": 1000,
+  "weights": [
+    0.0,
+    0.25,
+    0.5,
+    1.0
+  ],
+  "results": [
+    {
+      "rewrite_total_weight": 0.0,
+      "tuning500": {
+        "case_count": 500,
+        "mrr_at_10": 0.46465793650793646,
+        "recall_at_1": 0.368,
+        "recall_at_5": 0.598,
+        "recall_at_10": 0.69,
+        "ndcg_at_10": 0.5184114372285417,
+        "candidate_coverage_at_20": 0.774,
+        "candidate_coverage_at_40": 0.85,
+        "candidate_coverage_at_100": 0.916,
+        "lexical_top100": 0.636,
+        "union_top100_each": 0.934
+      },
+      "validation500": {
+        "case_count": 500,
+        "mrr_at_10": 0.46783174603174604,
+        "recall_at_1": 0.374,
+        "recall_at_5": 0.602,
+        "recall_at_10": 0.692,
+        "ndcg_at_10": 0.5213175217947403,
+        "candidate_coverage_at_20": 0.768,
+        "candidate_coverage_at_40": 0.836,
+        "candidate_coverage_at_100": 0.894,
+        "lexical_top100": 0.576,
+        "union_top100_each": 0.91
+      }
+    },
+    {
+      "rewrite_total_weight": 0.25,
+      "tuning500": {
+        "case_count": 500,
+        "mrr_at_10": 0.4714507936507936,
+        "recall_at_1": 0.374,
+        "recall_at_5": 0.612,
+        "recall_at_10": 0.696,
+        "ndcg_at_10": 0.5250860082798497,
+        "candidate_coverage_at_20": 0.776,
+        "candidate_coverage_at_40": 0.848,
+        "candidate_coverage_at_100": 0.916,
+        "lexical_top100": 0.678,
+        "union_top100_each": 0.936
+      },
+      "validation500": {
+        "case_count": 500,
+        "mrr_at_10": 0.4611722222222222,
+        "recall_at_1": 0.364,
+        "recall_at_5": 0.59,
+        "recall_at_10": 0.688,
+        "ndcg_at_10": 0.5153413301280028,
+        "candidate_coverage_at_20": 0.764,
+        "candidate_coverage_at_40": 0.836,
+        "candidate_coverage_at_100": 0.894,
+        "lexical_top100": 0.596,
+        "union_top100_each": 0.91
+      }
+    },
+    {
+      "rewrite_total_weight": 0.5,
+      "tuning500": {
+        "case_count": 500,
+        "mrr_at_10": 0.4762047619047619,
+        "recall_at_1": 0.38,
+        "recall_at_5": 0.612,
+        "recall_at_10": 0.692,
+        "ndcg_at_10": 0.5277997042011017,
+        "candidate_coverage_at_20": 0.776,
+        "candidate_coverage_at_40": 0.848,
+        "candidate_coverage_at_100": 0.916,
+        "lexical_top100": 0.68,
+        "union_top100_each": 0.936
+      },
+      "validation500": {
+        "case_count": 500,
+        "mrr_at_10": 0.4583126984126984,
+        "recall_at_1": 0.36,
+        "recall_at_5": 0.588,
+        "recall_at_10": 0.69,
+        "ndcg_at_10": 0.5135363590348514,
+        "candidate_coverage_at_20": 0.762,
+        "candidate_coverage_at_40": 0.836,
+        "candidate_coverage_at_100": 0.894,
+        "lexical_top100": 0.602,
+        "union_top100_each": 0.912
+      }
+    },
+    {
+      "rewrite_total_weight": 1.0,
+      "tuning500": {
+        "case_count": 500,
+        "mrr_at_10": 0.47748174603174603,
+        "recall_at_1": 0.384,
+        "recall_at_5": 0.614,
+        "recall_at_10": 0.69,
+        "ndcg_at_10": 0.5284047630058444,
+        "candidate_coverage_at_20": 0.778,
+        "candidate_coverage_at_40": 0.848,
+        "candidate_coverage_at_100": 0.916,
+        "lexical_top100": 0.702,
+        "union_top100_each": 0.938
+      },
+      "validation500": {
+        "case_count": 500,
+        "mrr_at_10": 0.45765476190476195,
+        "recall_at_1": 0.362,
+        "recall_at_5": 0.582,
+        "recall_at_10": 0.688,
+        "ndcg_at_10": 0.5124396034328865,
+        "candidate_coverage_at_20": 0.764,
+        "candidate_coverage_at_40": 0.832,
+        "candidate_coverage_at_100": 0.894,
+        "lexical_top100": 0.626,
+        "union_top100_each": 0.912
+      }
+    }
+  ],
+  "selected_weight": 0.0,
+  "usable_rewrites": 1892,
+  "cached_rewrites": 1998,
+  "paired_validation_at40": {
+    "gained_queries": 0,
+    "lost_queries": 0,
+    "net_queries": 0,
+    "absolute_delta": 0.0
+  },
+  "scope": "Historical model outputs reused without API calls. Numeric preservation does not prove semantic equivalence. Reused dev, pre-rerank only."
+}

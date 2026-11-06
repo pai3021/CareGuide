@@ -1,0 +1,22 @@
+{
+  "model": "BAAI/bge-m3",
+  "endpoint": "https://api.siliconflow.cn/v1/embeddings",
+  "attempted_requests": 1,
+  "sdk_retries": 0,
+  "input_kind": "one synthetic public medical retrieval query",
+  "requested_sparse": true,
+  "http_status": 200,
+  "top_level_fields": [
+    "data",
+    "model",
+    "object",
+    "usage"
+  ],
+  "item_fields": [
+    "embedding",
+    "index",
+    "object"
+  ],
+  "dense_dimensions": 1024,
+  "sparse_field_present": false
+}

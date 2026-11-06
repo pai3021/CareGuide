@@ -1,0 +1,22 @@
+{
+  "external_requests": 0,
+  "dense_search": "exact",
+  "outcomes": [
+    {
+      "id": "careguide-kuake-76772",
+      "candidate_count": 80,
+      "candidate_ids_match": true
+    },
+    {
+      "id": "careguide-kuake-50490",
+      "candidate_count": 80,
+      "candidate_ids_match": true
+    },
+    {
+      "id": "careguide-kuake-74821",
+      "candidate_count": 80,
+      "candidate_ids_match": true
+    }
+  ],
+  "scope": "Three native candidate pool checks, no extra quality samples or hypothetical reranking."
+}

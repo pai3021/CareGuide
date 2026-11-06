@@ -7,3 +7,13 @@ data/eval/medical_intent_v1/*.json -text
 data/eval/medical_intent_v1/*.jsonl -text
 data/eval/medical_intent_v2/*.json -text
 data/eval/medical_intent_v2/*.jsonl -text
+# Evaluation plans and caches are bound to hashes of their exact bytes.
+# Do not normalize CRLF/LF when staging or checking out these artifacts.
+data/**/*.json -text whitespace=blank-at-eol,blank-at-eof,space-before-tab,cr-at-eol
+data/**/*.jsonl -text whitespace=blank-at-eol,blank-at-eof,space-before-tab,cr-at-eol
+data/eval/cache/*.json -text
+data/eval/cache/*.jsonl -text
+data/eval/cache/*.gz -text
+careguide/evaluation/business_intent_cases.json -text whitespace=blank-at-eol,blank-at-eof,space-before-tab,cr-at-eol
+careguide/orchestration/intent_examples.json -text
+docs/evaluation/*.json -text whitespace=blank-at-eol,blank-at-eof,space-before-tab,cr-at-eol

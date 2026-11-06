@@ -1,0 +1,284 @@
+{
+  "evaluation": "staged pool/instruction/model reranking control",
+  "frozen_test_run": false,
+  "selected_arm": "4b80_current",
+  "selected_config": {
+    "model": "Qwen/Qwen3-Reranker-4B",
+    "instruction": "Rank the candidate passages by whether they can directly answer the Chinese medical query."
+  },
+  "pool_size": 80,
+  "selection_scope": "Tuning50 only; validation50 and aggregate100 are reused development evidence.",
+  "tuning_trials": {
+    "4b80_current": {
+      "case_count": 50,
+      "mrr_at_10": 0.4811587301587301,
+      "recall_at_1": 0.38,
+      "recall_at_5": 0.58,
+      "recall_at_10": 0.72,
+      "ndcg_at_10": 0.5374662749053049
+    },
+    "4b80_retrieval": {
+      "case_count": 50,
+      "mrr_at_10": 0.4797142857142857,
+      "recall_at_1": 0.38,
+      "recall_at_5": 0.64,
+      "recall_at_10": 0.72,
+      "ndcg_at_10": 0.5369970420389412
+    },
+    "8b80_retrieval": {
+      "case_count": 50,
+      "mrr_at_10": 0.543047619047619,
+      "recall_at_1": 0.48,
+      "recall_at_5": 0.62,
+      "recall_at_10": 0.68,
+      "ndcg_at_10": 0.5760503184344721
+    }
+  },
+  "component_controls_tuning50": {
+    "pool40_to80_same_4b_current_instruction": {
+      "count": 50,
+      "before": {
+        "case_count": 50,
+        "mrr_at_10": 0.48423809523809525,
+        "recall_at_1": 0.38,
+        "recall_at_5": 0.58,
+        "recall_at_10": 0.74,
+        "ndcg_at_10": 0.5443722449588934
+      },
+      "after": {
+        "case_count": 50,
+        "mrr_at_10": 0.4811587301587301,
+        "recall_at_1": 0.38,
+        "recall_at_5": 0.58,
+        "recall_at_10": 0.72,
+        "ndcg_at_10": 0.5374662749053049
+      },
+      "paired": {
+        "absolute_delta": -0.02,
+        "bootstrap_95_interval": [
+          -0.06,
+          0.0
+        ],
+        "bootstrap_samples": 2000,
+        "gained": 0,
+        "lost": 1
+      },
+      "relative_recall_change": -0.027027027027027084
+    },
+    "current_to_retrieval_instruction_same_4b80": {
+      "count": 50,
+      "before": {
+        "case_count": 50,
+        "mrr_at_10": 0.4811587301587301,
+        "recall_at_1": 0.38,
+        "recall_at_5": 0.58,
+        "recall_at_10": 0.72,
+        "ndcg_at_10": 0.5374662749053049
+      },
+      "after": {
+        "case_count": 50,
+        "mrr_at_10": 0.4797142857142857,
+        "recall_at_1": 0.38,
+        "recall_at_5": 0.64,
+        "recall_at_10": 0.72,
+        "ndcg_at_10": 0.5369970420389412
+      },
+      "paired": {
+        "absolute_delta": 0,
+        "bootstrap_95_interval": [
+          -0.08,
+          0.08
+        ],
+        "bootstrap_samples": 2000,
+        "gained": 2,
+        "lost": 2
+      },
+      "relative_recall_change": 0.0
+    },
+    "4b_to8b_same80_retrieval_instruction": {
+      "count": 50,
+      "before": {
+        "case_count": 50,
+        "mrr_at_10": 0.4797142857142857,
+        "recall_at_1": 0.38,
+        "recall_at_5": 0.64,
+        "recall_at_10": 0.72,
+        "ndcg_at_10": 0.5369970420389412
+      },
+      "after": {
+        "case_count": 50,
+        "mrr_at_10": 0.543047619047619,
+        "recall_at_1": 0.48,
+        "recall_at_5": 0.62,
+        "recall_at_10": 0.68,
+        "ndcg_at_10": 0.5760503184344721
+      },
+      "paired": {
+        "absolute_delta": -0.04,
+        "bootstrap_95_interval": [
+          -0.12,
+          0.04
+        ],
+        "bootstrap_samples": 2000,
+        "gained": 1,
+        "lost": 3
+      },
+      "relative_recall_change": -0.05555555555555547
+    }
+  },
+  "selected_results": {
+    "tuning50": {
+      "count": 50,
+      "before": {
+        "case_count": 50,
+        "mrr_at_10": 0.48423809523809525,
+        "recall_at_1": 0.38,
+        "recall_at_5": 0.58,
+        "recall_at_10": 0.74,
+        "ndcg_at_10": 0.5443722449588934
+      },
+      "after": {
+        "case_count": 50,
+        "mrr_at_10": 0.4811587301587301,
+        "recall_at_1": 0.38,
+        "recall_at_5": 0.58,
+        "recall_at_10": 0.72,
+        "ndcg_at_10": 0.5374662749053049
+      },
+      "paired": {
+        "absolute_delta": -0.02,
+        "bootstrap_95_interval": [
+          -0.06,
+          0.0
+        ],
+        "bootstrap_samples": 2000,
+        "gained": 0,
+        "lost": 1
+      },
+      "relative_recall_change": -0.027027027027027084
+    },
+    "validation50": {
+      "count": 50,
+      "before": {
+        "case_count": 50,
+        "mrr_at_10": 0.4278571428571428,
+        "recall_at_1": 0.34,
+        "recall_at_5": 0.54,
+        "recall_at_10": 0.7,
+        "ndcg_at_10": 0.49036064873220403
+      },
+      "after": {
+        "case_count": 50,
+        "mrr_at_10": 0.4195793650793651,
+        "recall_at_1": 0.34,
+        "recall_at_5": 0.52,
+        "recall_at_10": 0.64,
+        "ndcg_at_10": 0.4708588558085708
+      },
+      "paired": {
+        "absolute_delta": -0.06,
+        "bootstrap_95_interval": [
+          -0.14,
+          0.0
+        ],
+        "bootstrap_samples": 2000,
+        "gained": 0,
+        "lost": 3
+      },
+      "relative_recall_change": -0.08571428571428563
+    },
+    "all100": {
+      "count": 100,
+      "before": {
+        "case_count": 100,
+        "mrr_at_10": 0.4560476190476191,
+        "recall_at_1": 0.36,
+        "recall_at_5": 0.56,
+        "recall_at_10": 0.72,
+        "ndcg_at_10": 0.5173664468455487
+      },
+      "after": {
+        "case_count": 100,
+        "mrr_at_10": 0.45036904761904767,
+        "recall_at_1": 0.36,
+        "recall_at_5": 0.55,
+        "recall_at_10": 0.68,
+        "ndcg_at_10": 0.5041625653569378
+      },
+      "paired": {
+        "absolute_delta": -0.04,
+        "bootstrap_95_interval": [
+          -0.08,
+          -0.01
+        ],
+        "bootstrap_samples": 2000,
+        "gained": 0,
+        "lost": 4
+      },
+      "relative_recall_change": -0.05555555555555547
+    }
+  },
+  "stage_counts_all100": {
+    "baseline_4b40": {
+      "removed_at_pool_cutoff": 5,
+      "final10_hit": 72,
+      "absent_from_retrieval_union": 10,
+      "inside_pool_outside_final10": 13
+    },
+    "selected": {
+      "inside_pool_outside_final10": 20,
+      "final10_hit": 68,
+      "absent_from_retrieval_union": 10,
+      "removed_at_pool_cutoff": 2
+    }
+  },
+  "usage_by_arm": {
+    "4b80_current": {
+      "response_count": 100,
+      "input_tokens": 1374677,
+      "responses_with_usage": 100,
+      "api_seconds_mean": 2.3732242789957674,
+      "api_seconds_p95": 4.26088900025934
+    },
+    "4b80_retrieval": {
+      "response_count": 50,
+      "input_tokens": 775367,
+      "responses_with_usage": 50,
+      "api_seconds_mean": 2.02798692997545,
+      "api_seconds_p95": 3.708214200101793
+    },
+    "8b80_retrieval": {
+      "response_count": 50,
+      "input_tokens": 775367,
+      "responses_with_usage": 50,
+      "api_seconds_mean": 2.7487568720057607,
+      "api_seconds_p95": 6.2471719002351165
+    }
+  },
+  "baseline_usage_all100": {
+    "response_count": 100,
+    "input_tokens": 695127,
+    "responses_with_usage": 100,
+    "api_seconds_mean": 1.3133376070391387,
+    "api_seconds_p95": 2.385230300016701
+  },
+  "requests": {
+    "maximum_attempts": 205,
+    "attempted": 200,
+    "successful": 200,
+    "failed_without_saved_response": 0,
+    "successful_input_tokens": 2925411,
+    "responses_with_usage": 200
+  },
+  "source_sha256": {
+    "plan": "f1bc688553f39c6790726db0bf816050e1631548210072ec926742b037e110f1",
+    "scores": "1f9bdd9ef64599f0bc2aac109ee8ec4063568520236f518daad9869d61042ca6",
+    "responses": "4de44cb818679476dec52ef9c7d0ff55eb297947bc44d3cc8e3c228593422acc",
+    "ledger": "1432469af9e35a1fd9b44ea0d27e8e17ca59131b41bb1278c07f2650c94de1c7"
+  },
+  "scope": "Actual complete rankings over frozen pools. No query filtering, no gold model inputs. API timing is not end-to-end production P95.",
+  "published_sha256": {
+    "data\\eval\\cache\\rag-target80-rerank-responses-dev-20261106.json.gz": "b27bc4a194f5a408ecbe8dd017c22a4e5cfeb8ca4919cb5720e7905332f749b7",
+    "data\\eval\\cache\\rag-target80-rerank-requests-dev-20261106.json.gz": "f42cfc4b6a1df4c58a61a9e32d703463840c8542fd326157637c0b94e329c5dc"
+  }
+}

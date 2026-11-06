@@ -1,0 +1,144 @@
+{
+  "evaluation": "fixed dev candidate-pool real-reranker pilot",
+  "case_count": 100,
+  "arms": {
+    "baseline_rrf20": {
+      "method": "rrf",
+      "constant": 60,
+      "weights": {
+        "dense": 4.0,
+        "bm25": 1.0
+      },
+      "pool_size": 20
+    },
+    "baseline_rrf40": {
+      "method": "rrf",
+      "constant": 60,
+      "weights": {
+        "dense": 4.0,
+        "bm25": 1.0
+      },
+      "pool_size": 40
+    },
+    "tuning_selected40": {
+      "method": "rrf",
+      "constant": 60,
+      "weights": {
+        "bm25": 0.4,
+        "dense": 0.6
+      },
+      "pool_size": 40
+    }
+  },
+  "results": {
+    "baseline_rrf20": {
+      "metrics": {
+        "case_count": 100,
+        "mrr_at_10": 0.3952896825396825,
+        "recall_at_1": 0.31,
+        "recall_at_5": 0.51,
+        "recall_at_10": 0.58,
+        "ndcg_at_10": 0.4394409185357994
+      },
+      "candidate_coverage": 0.67,
+      "total_input_tokens": 358527,
+      "token_usage_returned_queries": 100,
+      "api_seconds_mean": 0.5775805110950023,
+      "api_seconds_observed_p95": 0.616894000209868
+    },
+    "baseline_rrf40": {
+      "metrics": {
+        "case_count": 100,
+        "mrr_at_10": 0.40032936507936506,
+        "recall_at_1": 0.32,
+        "recall_at_5": 0.51,
+        "recall_at_10": 0.6,
+        "ndcg_at_10": 0.4474727223350773
+      },
+      "candidate_coverage": 0.8,
+      "total_input_tokens": 710935,
+      "token_usage_returned_queries": 100,
+      "api_seconds_mean": 0.8054323850106448,
+      "api_seconds_observed_p95": 0.870383900590241
+    },
+    "tuning_selected40": {
+      "metrics": {
+        "case_count": 100,
+        "mrr_at_10": 0.3919404761904762,
+        "recall_at_1": 0.31,
+        "recall_at_5": 0.5,
+        "recall_at_10": 0.59,
+        "ndcg_at_10": 0.43886726855473734
+      },
+      "candidate_coverage": 0.79,
+      "total_input_tokens": 713638,
+      "token_usage_returned_queries": 100,
+      "api_seconds_mean": 0.8069307099469006,
+      "api_seconds_observed_p95": 0.8800298999994993
+    }
+  },
+  "paired_recall10_vs_baseline20": {
+    "baseline_rrf20": {
+      "absolute_delta": 0,
+      "bootstrap_95_interval": [
+        0.0,
+        0.0
+      ],
+      "bootstrap_samples": 2000,
+      "gained_queries": 0,
+      "lost_queries": 0
+    },
+    "baseline_rrf40": {
+      "absolute_delta": 0.02,
+      "bootstrap_95_interval": [
+        -0.02,
+        0.06
+      ],
+      "bootstrap_samples": 2000,
+      "gained_queries": 3,
+      "lost_queries": 1
+    },
+    "tuning_selected40": {
+      "absolute_delta": 0.01,
+      "bootstrap_95_interval": [
+        -0.02,
+        0.05
+      ],
+      "bootstrap_samples": 2000,
+      "gained_queries": 2,
+      "lost_queries": 1
+    }
+  },
+  "stage_transitions": {
+    "baseline_rrf20": {
+      "newly_covered_vs_baseline_pool": 0,
+      "newly_covered_reaching_final10": 0,
+      "gold_inside_pool_but_outside_final10": 9,
+      "gold_outside_pool": 33
+    },
+    "baseline_rrf40": {
+      "newly_covered_vs_baseline_pool": 13,
+      "newly_covered_reaching_final10": 3,
+      "gold_inside_pool_but_outside_final10": 20,
+      "gold_outside_pool": 20
+    },
+    "tuning_selected40": {
+      "newly_covered_vs_baseline_pool": 12,
+      "newly_covered_reaching_final10": 2,
+      "gold_inside_pool_but_outside_final10": 20,
+      "gold_outside_pool": 21
+    }
+  },
+  "frozen_test_run": false,
+  "scope": "100-case dev pilot by default; not independent test or clinical accuracy. API timing excludes retrieval/LLM and is not production P95.",
+  "identity": {
+    "plan_sha256": "33b11fce466068af3d5c9431aee3735e3d944989b63e9c7f0e0f698eb1269c2f",
+    "model": "Qwen/Qwen3-Reranker-0.6B",
+    "endpoint": "https://api.siliconflow.cn/v1/rerank",
+    "instruction": "根据中文医疗查询与候选段落能否直接回答该问题进行相关性排序。"
+  },
+  "attempted_requests": 300,
+  "raw_response_cache_sha256": "e8ec8f1aa13f67dfc64cfcfe987f573e4c3bb2684200912d823d0f769b3931af",
+  "published_response_cache_sha256": "34fdbedf6a850e921dfb5c2011b541b1c32965a00e4a0e1f48fdbfc8f31642d5",
+  "published_plan_sha256": "33b11fce466068af3d5c9431aee3735e3d944989b63e9c7f0e0f698eb1269c2f"
+}

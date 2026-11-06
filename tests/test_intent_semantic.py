@@ -252,7 +252,7 @@ def test_embedding_cost_survives_model_discovered_new_workflow(tmp_path):
     async def run():
         first = await runtime.process('查消化内科医生', 'u', 'c')
         original = runtime.store.get(first['workflow']['id'], 'u', 'c')
-        text = '帮我找一位心内科的大夫'
+        text = '想找一位能看心内科疾病的大夫'
         client = ScriptedClient([reply({'kind': 'new', 'plan': {'goal': text, 'tasks': [{
             'id': 'doctor', 'fragment': text, 'action': 'search_doctors', 'agent': 'appointment',
             'arguments': {'department': '心血管内科'}, 'completion': 'items'}]}})])

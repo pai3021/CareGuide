@@ -1,0 +1,446 @@
+{
+  "protocol": "layered-understanding-control-v1",
+  "date": "2026-11-05",
+  "scope": "20 synthetic development cases; controlled candidates; control-flow checks only",
+  "provider_requests": 0,
+  "planner_calls": 0,
+  "tools_executed": 0,
+  "semantic_accuracy_evaluated": false,
+  "latency_or_token_savings_evaluated": false,
+  "summary": {
+    "parallel": {
+      "cases": 20,
+      "local_plans": 12,
+      "planner_required": 8,
+      "fixture_classifier_calls": 7,
+      "fixture_retrieval_attempts": 8,
+      "unexpected_local_accepts": 0,
+      "mismatched_expected_actions": 0
+    },
+    "on_demand": {
+      "cases": 20,
+      "local_plans": 12,
+      "planner_required": 8,
+      "fixture_classifier_calls": 7,
+      "fixture_retrieval_attempts": 5,
+      "unexpected_local_accepts": 0,
+      "mismatched_expected_actions": 0
+    }
+  },
+  "rows": [
+    {
+      "case": 1,
+      "policy": "parallel",
+      "text": "查消化内科医生",
+      "expected_action": "search_doctors",
+      "actual_action": "search_doctors",
+      "retrieval": {}
+    },
+    {
+      "case": 2,
+      "policy": "parallel",
+      "text": "想找一位看消化内科的医生",
+      "expected_action": "search_doctors",
+      "actual_action": "search_doctors",
+      "retrieval": {}
+    },
+    {
+      "case": 3,
+      "policy": "parallel",
+      "text": "帮我找一位心内科的大夫",
+      "expected_action": "search_doctors",
+      "actual_action": "search_doctors",
+      "retrieval": {}
+    },
+    {
+      "case": 4,
+      "policy": "parallel",
+      "text": "我想看看消化内科有哪些医生",
+      "expected_action": "search_doctors",
+      "actual_action": "search_doctors",
+      "retrieval": {}
+    },
+    {
+      "case": 5,
+      "policy": "parallel",
+      "text": "消化内科有哪些医生可以选择",
+      "expected_action": "search_doctors",
+      "actual_action": "search_doctors",
+      "retrieval": {}
+    },
+    {
+      "case": 6,
+      "policy": "parallel",
+      "text": "能帮我查一下消化内科的医生名单吗",
+      "expected_action": "search_doctors",
+      "actual_action": "search_doctors",
+      "retrieval": {}
+    },
+    {
+      "case": 7,
+      "policy": "parallel",
+      "text": "我想看看明天下午还有哪些号源",
+      "expected_action": "list_available_slots",
+      "actual_action": "list_available_slots",
+      "retrieval": {}
+    },
+    {
+      "case": 8,
+      "policy": "parallel",
+      "text": "帮我看看消化内科后天上午有没有号源",
+      "expected_action": "list_available_slots",
+      "actual_action": "list_available_slots",
+      "retrieval": {}
+    },
+    {
+      "case": 9,
+      "policy": "parallel",
+      "text": "我想查一下2026年11月10日下午的可约时间",
+      "expected_action": "list_available_slots",
+      "actual_action": "list_available_slots",
+      "retrieval": {}
+    },
+    {
+      "case": 10,
+      "policy": "parallel",
+      "text": "我想看看还有没有能约的时间",
+      "expected_action": "list_available_slots",
+      "actual_action": "list_available_slots",
+      "retrieval": {}
+    },
+    {
+      "case": 11,
+      "policy": "parallel",
+      "text": "我想看看精氨酸布洛芬片0.2g的说明书",
+      "expected_action": "lookup_drug_label",
+      "actual_action": "lookup_drug_label",
+      "retrieval": {}
+    },
+    {
+      "case": 12,
+      "policy": "parallel",
+      "text": "我想了解一下精氨酸布洛芬片的注意事项",
+      "expected_action": "lookup_drug_label",
+      "actual_action": "lookup_drug_label",
+      "retrieval": {}
+    },
+    {
+      "case": 13,
+      "policy": "parallel",
+      "text": "想找看胃病的大夫",
+      "expected_action": null,
+      "actual_action": null,
+      "retrieval": {
+        "status": "fixture_reference",
+        "remote_calls": 0,
+        "direct_acceptance": false,
+        "policy": "parallel"
+      }
+    },
+    {
+      "case": 14,
+      "policy": "parallel",
+      "text": "把刚才的医生换成下午的",
+      "expected_action": null,
+      "actual_action": null,
+      "retrieval": {
+        "status": "fixture_reference",
+        "remote_calls": 0,
+        "direct_acceptance": false,
+        "policy": "parallel"
+      }
+    },
+    {
+      "case": 15,
+      "policy": "parallel",
+      "text": "我想看看这盒药的说明书",
+      "expected_action": null,
+      "actual_action": null,
+      "retrieval": {
+        "status": "fixture_reference",
+        "remote_calls": 0,
+        "direct_acceptance": false,
+        "policy": "parallel"
+      }
+    },
+    {
+      "case": 16,
+      "policy": "parallel",
+      "text": "查消化内科医生，预算不要超过200元",
+      "expected_action": null,
+      "actual_action": null,
+      "retrieval": {
+        "status": "fixture_reference",
+        "remote_calls": 0,
+        "direct_acceptance": false,
+        "policy": "parallel"
+      }
+    },
+    {
+      "case": 17,
+      "policy": "parallel",
+      "text": "我想看看2026年2月30日的可约时间",
+      "expected_action": null,
+      "actual_action": null,
+      "retrieval": {
+        "status": "fixture_reference",
+        "remote_calls": 0,
+        "direct_acceptance": false,
+        "policy": "parallel"
+      }
+    },
+    {
+      "case": 18,
+      "policy": "parallel",
+      "text": "我想看看精氨酸布洛芬片0.2g说明书，用英文回答",
+      "expected_action": null,
+      "actual_action": null,
+      "retrieval": {
+        "status": "fixture_reference",
+        "remote_calls": 0,
+        "direct_acceptance": false,
+        "policy": "parallel"
+      }
+    },
+    {
+      "case": 19,
+      "policy": "parallel",
+      "text": "我想看看消化内科明天上午和后天下午的号源",
+      "expected_action": null,
+      "actual_action": null,
+      "retrieval": {
+        "status": "fixture_reference",
+        "remote_calls": 0,
+        "direct_acceptance": false,
+        "policy": "parallel"
+      }
+    },
+    {
+      "case": 20,
+      "policy": "parallel",
+      "text": "那个改一下",
+      "expected_action": null,
+      "actual_action": null,
+      "retrieval": {
+        "status": "fixture_reference",
+        "remote_calls": 0,
+        "direct_acceptance": false,
+        "policy": "parallel"
+      }
+    },
+    {
+      "case": 1,
+      "policy": "on_demand",
+      "text": "查消化内科医生",
+      "expected_action": "search_doctors",
+      "actual_action": "search_doctors",
+      "retrieval": {}
+    },
+    {
+      "case": 2,
+      "policy": "on_demand",
+      "text": "想找一位看消化内科的医生",
+      "expected_action": "search_doctors",
+      "actual_action": "search_doctors",
+      "retrieval": {}
+    },
+    {
+      "case": 3,
+      "policy": "on_demand",
+      "text": "帮我找一位心内科的大夫",
+      "expected_action": "search_doctors",
+      "actual_action": "search_doctors",
+      "retrieval": {}
+    },
+    {
+      "case": 4,
+      "policy": "on_demand",
+      "text": "我想看看消化内科有哪些医生",
+      "expected_action": "search_doctors",
+      "actual_action": "search_doctors",
+      "retrieval": {}
+    },
+    {
+      "case": 5,
+      "policy": "on_demand",
+      "text": "消化内科有哪些医生可以选择",
+      "expected_action": "search_doctors",
+      "actual_action": "search_doctors",
+      "retrieval": {}
+    },
+    {
+      "case": 6,
+      "policy": "on_demand",
+      "text": "能帮我查一下消化内科的医生名单吗",
+      "expected_action": "search_doctors",
+      "actual_action": "search_doctors",
+      "retrieval": {}
+    },
+    {
+      "case": 7,
+      "policy": "on_demand",
+      "text": "我想看看明天下午还有哪些号源",
+      "expected_action": "list_available_slots",
+      "actual_action": "list_available_slots",
+      "retrieval": {}
+    },
+    {
+      "case": 8,
+      "policy": "on_demand",
+      "text": "帮我看看消化内科后天上午有没有号源",
+      "expected_action": "list_available_slots",
+      "actual_action": "list_available_slots",
+      "retrieval": {}
+    },
+    {
+      "case": 9,
+      "policy": "on_demand",
+      "text": "我想查一下2026年11月10日下午的可约时间",
+      "expected_action": "list_available_slots",
+      "actual_action": "list_available_slots",
+      "retrieval": {}
+    },
+    {
+      "case": 10,
+      "policy": "on_demand",
+      "text": "我想看看还有没有能约的时间",
+      "expected_action": "list_available_slots",
+      "actual_action": "list_available_slots",
+      "retrieval": {}
+    },
+    {
+      "case": 11,
+      "policy": "on_demand",
+      "text": "我想看看精氨酸布洛芬片0.2g的说明书",
+      "expected_action": "lookup_drug_label",
+      "actual_action": "lookup_drug_label",
+      "retrieval": {}
+    },
+    {
+      "case": 12,
+      "policy": "on_demand",
+      "text": "我想了解一下精氨酸布洛芬片的注意事项",
+      "expected_action": "lookup_drug_label",
+      "actual_action": "lookup_drug_label",
+      "retrieval": {}
+    },
+    {
+      "case": 13,
+      "policy": "on_demand",
+      "text": "想找看胃病的大夫",
+      "expected_action": null,
+      "actual_action": null,
+      "retrieval": {
+        "status": "skipped_local_candidate",
+        "reason": "classifier_majority",
+        "remote_calls": 0,
+        "direct_acceptance": false,
+        "policy": "on_demand"
+      }
+    },
+    {
+      "case": 14,
+      "policy": "on_demand",
+      "text": "把刚才的医生换成下午的",
+      "expected_action": null,
+      "actual_action": null,
+      "retrieval": {
+        "status": "skipped_local_candidate",
+        "reason": "classifier_majority",
+        "remote_calls": 0,
+        "direct_acceptance": false,
+        "policy": "on_demand"
+      }
+    },
+    {
+      "case": 15,
+      "policy": "on_demand",
+      "text": "我想看看这盒药的说明书",
+      "expected_action": null,
+      "actual_action": null,
+      "retrieval": {
+        "status": "skipped_local_candidate",
+        "reason": "classifier_majority",
+        "remote_calls": 0,
+        "direct_acceptance": false,
+        "policy": "on_demand"
+      }
+    },
+    {
+      "case": 16,
+      "policy": "on_demand",
+      "text": "查消化内科医生，预算不要超过200元",
+      "expected_action": null,
+      "actual_action": null,
+      "retrieval": {
+        "status": "fixture_reference",
+        "remote_calls": 0,
+        "direct_acceptance": false,
+        "reason": "classifier_uncertain",
+        "policy": "on_demand"
+      }
+    },
+    {
+      "case": 17,
+      "policy": "on_demand",
+      "text": "我想看看2026年2月30日的可约时间",
+      "expected_action": null,
+      "actual_action": null,
+      "retrieval": {
+        "status": "fixture_reference",
+        "remote_calls": 0,
+        "direct_acceptance": false,
+        "reason": "classifier_uncertain",
+        "policy": "on_demand"
+      }
+    },
+    {
+      "case": 18,
+      "policy": "on_demand",
+      "text": "我想看看精氨酸布洛芬片0.2g说明书，用英文回答",
+      "expected_action": null,
+      "actual_action": null,
+      "retrieval": {
+        "status": "fixture_reference",
+        "remote_calls": 0,
+        "direct_acceptance": false,
+        "reason": "classifier_truncated",
+        "policy": "on_demand"
+      }
+    },
+    {
+      "case": 19,
+      "policy": "on_demand",
+      "text": "我想看看消化内科明天上午和后天下午的号源",
+      "expected_action": null,
+      "actual_action": null,
+      "retrieval": {
+        "status": "fixture_reference",
+        "remote_calls": 0,
+        "direct_acceptance": false,
+        "reason": "classifier_other",
+        "policy": "on_demand"
+      }
+    },
+    {
+      "case": 20,
+      "policy": "on_demand",
+      "text": "那个改一下",
+      "expected_action": null,
+      "actual_action": null,
+      "retrieval": {
+        "status": "fixture_reference",
+        "remote_calls": 0,
+        "direct_acceptance": false,
+        "reason": "classifier_unavailable",
+        "policy": "on_demand"
+      }
+    }
+  ],
+  "source_sha256": {
+    "careguide/orchestration/query_parser.py": "4f508a7ee49dbe258e15654ba9fb9013de56a03916deca3c985a68967723bd8a",
+    "careguide/orchestration/understanding.py": "65c96ceabccf01e5d3f9ecaf6733d3ab9c27ae0ba75fd196d3319c125647ec6b",
+    "careguide/orchestration/unified.py": "98a0212546113239f0cc442e20f5b7ad0556a21b40702f051290c94a39733064",
+    "scripts/evaluate_understanding_layers.py": "f609fbc04820eac58b5652564a89a62c039cbfc8cf71b0ee955f43f1b100228b"
+  }
+}

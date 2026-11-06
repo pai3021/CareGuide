@@ -2,7 +2,8 @@
 
 Offline mode scores strict local understanding only. Live mode compares rules+
 LLM, adding the existing RoBERTa, then adding business embedding references.
-No .env loading, hospital calls, writes, or automatic score-based routing.
+Uses the production parser and candidate acquisition policy. No .env loading,
+hospital calls, writes, or score-based execution.
 """
 import argparse
 import asyncio
@@ -25,7 +26,7 @@ from careguide.orchestration.understanding_planner import UnderstandingPlanner, 
 from careguide.runtime import intent_semantic_retriever
 
 CASES = ROOT/'careguide'/'evaluation'/'intent_cases.json'
-VARIANTS = ('rules_llm', 'rules_classifier_llm', 'rules_classifier_embedding_llm')
+VARIANTS = ('rules_llm', 'rules_classifier_llm', 'rules_embedding_llm', 'rules_classifier_embedding_llm')
 
 
 def score(case, plan):
@@ -77,7 +78,8 @@ async def evaluate(mode, limit=6):
                     rows.append({'variant': variant, 'status': 'not_run_embedding_unavailable'})
                     continue
                 understanding = LocalUnderstanding(corpus, classifier if 'classifier' in variant else None,
-                    semantic=semantic if 'embedding' in variant else None)
+                    semantic=semantic if 'embedding' in variant else None,
+                    semantic_policy=os.environ.get('CAREGUIDE_INTENT_SEMANTIC_POLICY', 'parallel'))
                 for case in dataset['cases'][:limit]:
                     started, at = time.monotonic(), datetime.now(timezone.utc).isoformat()
                     budget = BudgetLedger(Path(folder)/'budget.sqlite3', variant+'-'+case['id'], 'eval', 'eval',
@@ -90,16 +92,22 @@ async def evaluate(mode, limit=6):
                         result.candidates = []
                         result.recognition_source = ['rules']
                         plan, _ = compose_plan(case['text'], result)
+                        row['plan_source'] = 'local' if plan is not None else 'unresolved'
                         if plan is None and client:
-                            await understanding.enrich(case['text'], result, budget=budget, scope=('eval', variant+'-'+case['id']))
-                            context = build_context(case['text'], 'eval-message', at, case.get('history', []), understanding=result)
-                            decision, events = await UnderstandingPlanner(client, model).decide(context, budget=budget)
-                            plan = decision.plan
-                            row['decision'] = decision.kind
-                        row['plan_source'] = 'local' if not events else 'llm'
+                            await understanding.enrich(case['text'], result, budget=budget,
+                                scope=('eval', variant+'-'+case['id']), message_id='eval-message', at=at)
+                            plan, _ = compose_plan(case['text'], result)
+                            if plan is not None:
+                                row['plan_source'] = 'candidate_template'
+                            else:
+                                context = build_context(case['text'], 'eval-message', at, case.get('history', []), understanding=result)
+                                decision, events = await UnderstandingPlanner(client, model).decide(context, budget=budget)
+                                plan = decision.plan
+                                row['decision'], row['plan_source'] = decision.kind, 'llm'
                         row['candidate_sources'] = sorted({candidate['source'] for candidate in result.candidates})
                         row['candidate_diagnostics'] = result.diagnostics
                         row['semantic_retrieval'] = result.semantic_retrieval
+                        row['candidate_admission'] = result.candidate_admission
                     except Exception as exc:
                         row.update(status='error', diagnostic_type=type(exc).__name__)
                     row.update(score(case, plan))

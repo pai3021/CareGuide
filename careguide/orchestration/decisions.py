@@ -34,6 +34,7 @@ class IntentUnderstanding(Contract):
     recognition_source: list[str] = Field(default_factory=list)
     diagnostics: list[str] = Field(default_factory=list)
     semantic_retrieval: dict = Field(default_factory=dict)
+    candidate_admission: dict = Field(default_factory=dict)
 
 
 class TaskAnswer(Contract):

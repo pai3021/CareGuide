@@ -1,0 +1,5834 @@
+{
+  "protocol": "business-intent-local-replay-v1",
+  "at": "2026-11-05T09:24:17.500539+00:00",
+  "dataset_version": "business-intent-eval-v1",
+  "dataset_sha256": "9da79f4e7d8bb58b52f4c3bcc3591e5c5a43c4b97fe43f28422a3eeb101320c9",
+  "dataset_split": "evaluation_only",
+  "group_counts": {
+    "doctor": 8,
+    "slots": 8,
+    "label": 8,
+    "other_read": 8,
+    "transactions": 8,
+    "composition": 8,
+    "conversation": 8,
+    "boundary_and_direct": 8
+  },
+  "operation_counts": {
+    "new": 46,
+    "clarify": 4,
+    "change": 3,
+    "answer": 2,
+    "cancel": 1,
+    "direct": 2,
+    "boundary": 6
+  },
+  "provider_requests": 0,
+  "planner_calls": 0,
+  "tools_executed": 0,
+  "native_classifier_predictions": 64,
+  "native_classifier_errors": {},
+  "summary": {
+    "rules_only": {
+      "status": "completed",
+      "cases": 64,
+      "local_plans": 9,
+      "raw_annotation_matches": 7,
+      "raw_annotation_mismatches": 2,
+      "raw_annotation_match_rate": 0.7777777777777778,
+      "action_set_matches": 9,
+      "unsafe_local_plans": 0,
+      "single_read_eligible_cases": 14,
+      "correct_eligible_local_plans": 5,
+      "eligible_local_coverage": 0.35714285714285715,
+      "unresolved_by_lightweight": 55,
+      "candidate_plans": 0,
+      "forbidden_action_cases": 0,
+      "classifier_replay_acquisitions": 0
+    },
+    "rules_classifier": {
+      "status": "completed",
+      "cases": 64,
+      "local_plans": 9,
+      "raw_annotation_matches": 7,
+      "raw_annotation_mismatches": 2,
+      "raw_annotation_match_rate": 0.7777777777777778,
+      "action_set_matches": 9,
+      "unsafe_local_plans": 0,
+      "single_read_eligible_cases": 14,
+      "correct_eligible_local_plans": 5,
+      "eligible_local_coverage": 0.35714285714285715,
+      "unresolved_by_lightweight": 55,
+      "candidate_plans": 0,
+      "forbidden_action_cases": 0,
+      "classifier_replay_acquisitions": 55
+    },
+    "rules_semantic": {
+      "status": "not_run_embedding_unavailable"
+    },
+    "rules_classifier_semantic_on_demand": {
+      "status": "not_run_embedding_unavailable"
+    },
+    "rules_classifier_semantic_parallel": {
+      "status": "not_run_embedding_unavailable"
+    }
+  },
+  "incremental_correct_case_ids": [],
+  "classifier_diagnostic": {
+    "eligible_cases": 14,
+    "raw_family_target_covered": 4,
+    "strong_family_target_covered": 0,
+    "top_label_counts": {
+      "其他": 33,
+      "就医建议": 1,
+      "appointment_action": 25,
+      "注意事项": 3,
+      "emergency": 2
+    },
+    "rows": [
+      {
+        "id": "doctor-01",
+        "group": "doctor",
+        "label": "其他",
+        "confidence": 0.9701337814331055,
+        "margin": 0.9606065703555942,
+        "truncated": false,
+        "scores": {
+          "疾病表述": 0.001094033825211227,
+          "指标解读": 0.0011553256772458553,
+          "医疗费用": 0.001141152111813426,
+          "治疗方案": 0.001373259350657463,
+          "功效作用": 0.0008542180876247585,
+          "病情诊断": 0.001774629927240312,
+          "其他": 0.9701337814331055,
+          "注意事项": 0.003725229762494564,
+          "病因分析": 0.001207792549394071,
+          "就医建议": 0.00952721107751131,
+          "后果表述": 0.001548750908114016,
+          "appointment_action": 0.004814276937395334,
+          "emergency": 0.0016503261867910624
+        },
+        "mapped_action_family": [],
+        "strong_mapped_family": null,
+        "target_in_raw_family": false,
+        "target_in_strong_family": false,
+        "error": null
+      },
+      {
+        "id": "doctor-02",
+        "group": "doctor",
+        "label": "就医建议",
+        "confidence": 0.9729207158088684,
+        "margin": 0.9623978147283196,
+        "truncated": false,
+        "scores": {
+          "疾病表述": 0.0007926813559606671,
+          "指标解读": 0.0011689069215208292,
+          "医疗费用": 0.00221747113391757,
+          "治疗方案": 0.0014462119434028864,
+          "功效作用": 0.0009529050439596176,
+          "病情诊断": 0.0007434304570779204,
+          "其他": 0.010522901080548763,
+          "注意事项": 0.0017911395989358425,
+          "病因分析": 0.0015242722583934665,
+          "就医建议": 0.9729207158088684,
+          "后果表述": 0.001406024326570332,
+          "appointment_action": 0.0023318473249673843,
+          "emergency": 0.0021815760992467403
+        },
+        "mapped_action_family": [],
+        "strong_mapped_family": [],
+        "target_in_raw_family": false,
+        "target_in_strong_family": false,
+        "error": null
+      },
+      {
+        "id": "doctor-03",
+        "group": "doctor",
+        "label": "其他",
+        "confidence": 0.9126770496368408,
+        "margin": 0.8766016364097595,
+        "truncated": false,
+        "scores": {
+          "疾病表述": 0.0021244247909635305,
+          "指标解读": 0.0031892808619886637,
+          "医疗费用": 0.002760975854471326,
+          "治疗方案": 0.005111072678118944,
+          "功效作用": 0.003914785571396351,
+          "病情诊断": 0.0039525264874100685,
+          "其他": 0.9126770496368408,
+          "注意事项": 0.006770622450858355,
+          "病因分析": 0.0024089054204523563,
+          "就医建议": 0.006323273293673992,
+          "后果表述": 0.0035806498490273952,
+          "appointment_action": 0.0360754132270813,
+          "emergency": 0.011111097410321236
+        },
+        "mapped_action_family": [],
+        "strong_mapped_family": null,
+        "target_in_raw_family": false,
+        "target_in_strong_family": false,
+        "error": null
+      },
+      {
+        "id": "doctor-04",
+        "group": "doctor",
+        "label": "appointment_action",
+        "confidence": 0.7472954392433167,
+        "margin": 0.5831390023231506,
+        "truncated": false,
+        "scores": {
+          "疾病表述": 0.004601644352078438,
+          "指标解读": 0.005897749215364456,
+          "医疗费用": 0.004211656283587217,
+          "治疗方案": 0.009300285950303078,
+          "功效作用": 0.00884860660880804,
+          "病情诊断": 0.004182850476354361,
+          "其他": 0.16415643692016602,
+          "注意事项": 0.00906766764819622,
+          "病因分析": 0.0042988914065063,
+          "就医建议": 0.013620219193398952,
+          "后果表述": 0.00388507847674191,
+          "appointment_action": 0.7472954392433167,
+          "emergency": 0.020633528009057045
+        },
+        "mapped_action_family": [
+          "list_available_slots",
+          "search_doctors"
+        ],
+        "strong_mapped_family": null,
+        "target_in_raw_family": true,
+        "target_in_strong_family": false,
+        "error": null
+      },
+      {
+        "id": "doctor-05",
+        "group": "doctor",
+        "label": "其他",
+        "confidence": 0.7449700236320496,
+        "margin": 0.5750364363193512,
+        "truncated": false,
+        "scores": {
+          "疾病表述": 0.0041044349782168865,
+          "指标解读": 0.004275904037058353,
+          "医疗费用": 0.008014305494725704,
+          "治疗方案": 0.0058714705519378185,
+          "功效作用": 0.004875383339822292,
+          "病情诊断": 0.004371966235339642,
+          "其他": 0.7449700236320496,
+          "注意事项": 0.00944369938224554,
+          "病因分析": 0.0030344899278134108,
+          "就医建议": 0.02755887061357498,
+          "后果表述": 0.004240470472723246,
+          "appointment_action": 0.16993358731269836,
+          "emergency": 0.009305430576205254
+        },
+        "mapped_action_family": [],
+        "strong_mapped_family": null,
+        "target_in_raw_family": false,
+        "target_in_strong_family": false,
+        "error": null
+      },
+      {
+        "id": "doctor-06",
+        "group": "doctor",
+        "label": "appointment_action",
+        "confidence": 0.8454930782318115,
+        "margin": 0.7836044952273369,
+        "truncated": false,
+        "scores": {
+          "疾病表述": 0.003809852758422494,
+          "指标解读": 0.004068643786013126,
+          "医疗费用": 0.020103970542550087,
+          "治疗方案": 0.006859288085252047,
+          "功效作用": 0.009172625839710236,
+          "病情诊断": 0.0031878536101430655,
+          "其他": 0.06188858300447464,
+          "注意事项": 0.006590668577700853,
+          "病因分析": 0.00478615565225482,
+          "就医建议": 0.017632775008678436,
+          "后果表述": 0.0024881651625037193,
+          "appointment_action": 0.8454930782318115,
+          "emergency": 0.013918316923081875
+        },
+        "mapped_action_family": [
+          "list_available_slots",
+          "search_doctors"
+        ],
+        "strong_mapped_family": null,
+        "target_in_raw_family": true,
+        "target_in_strong_family": false,
+        "error": null
+      },
+      {
+        "id": "doctor-07",
+        "group": "doctor",
+        "label": "appointment_action",
+        "confidence": 0.8754478693008423,
+        "margin": 0.8347883224487305,
+        "truncated": false,
+        "scores": {
+          "疾病表述": 0.0030508784111589193,
+          "指标解读": 0.003285394050180912,
+          "医疗费用": 0.003168106311932206,
+          "治疗方案": 0.007121957838535309,
+          "功效作用": 0.009214665740728378,
+          "病情诊断": 0.0033069741912186146,
+          "其他": 0.029987458139657974,
+          "注意事项": 0.004938486497849226,
+          "病因分析": 0.003693494712933898,
+          "就医建议": 0.012746968306601048,
+          "后果表述": 0.0033782273530960083,
+          "appointment_action": 0.8754478693008423,
+          "emergency": 0.040659546852111816
+        },
+        "mapped_action_family": [
+          "list_available_slots",
+          "search_doctors"
+        ],
+        "strong_mapped_family": null,
+        "target_in_raw_family": true,
+        "target_in_strong_family": false,
+        "error": null
+      },
+      {
+        "id": "doctor-08",
+        "group": "doctor",
+        "label": "其他",
+        "confidence": 0.8631806373596191,
+        "margin": 0.7736651450395584,
+        "truncated": false,
+        "scores": {
+          "疾病表述": 0.002707365434616804,
+          "指标解读": 0.0018802951090037823,
+          "医疗费用": 0.002526030642911792,
+          "治疗方案": 0.0059165069833397865,
+          "功效作用": 0.0026812609285116196,
+          "病情诊断": 0.0025799614377319813,
+          "其他": 0.8631806373596191,
+          "注意事项": 0.004377501551061869,
+          "病因分析": 0.003486472414806485,
+          "就医建议": 0.08951549232006073,
+          "后果表述": 0.003180874278768897,
+          "appointment_action": 0.01145236473530531,
+          "emergency": 0.006515268236398697
+        },
+        "mapped_action_family": [],
+        "strong_mapped_family": null,
+        "target_in_raw_family": false,
+        "target_in_strong_family": false,
+        "error": null
+      },
+      {
+        "id": "slots-01",
+        "group": "slots",
+        "label": "其他",
+        "confidence": 0.832707941532135,
+        "margin": 0.7250329032540321,
+        "truncated": false,
+        "scores": {
+          "疾病表述": 0.0028576194308698177,
+          "指标解读": 0.0022560046054422855,
+          "医疗费用": 0.0035108381416648626,
+          "治疗方案": 0.004126944579184055,
+          "功效作用": 0.0033610237296670675,
+          "病情诊断": 0.003644741838797927,
+          "其他": 0.832707941532135,
+          "注意事项": 0.005295661278069019,
+          "病因分析": 0.002222601789981127,
+          "就医建议": 0.02242090180516243,
+          "后果表述": 0.003134332364425063,
+          "appointment_action": 0.10767503827810287,
+          "emergency": 0.006786331068724394
+        },
+        "mapped_action_family": [],
+        "strong_mapped_family": null,
+        "target_in_raw_family": false,
+        "target_in_strong_family": false,
+        "error": null
+      },
+      {
+        "id": "slots-02",
+        "group": "slots",
+        "label": "其他",
+        "confidence": 0.6061980128288269,
+        "margin": 0.3045690357685089,
+        "truncated": false,
+        "scores": {
+          "疾病表述": 0.005343923810869455,
+          "指标解读": 0.005295906215906143,
+          "医疗费用": 0.00875596422702074,
+          "治疗方案": 0.008848102763295174,
+          "功效作用": 0.0062445588409900665,
+          "病情诊断": 0.0030576346907764673,
+          "其他": 0.6061980128288269,
+          "注意事项": 0.00730498880147934,
+          "病因分析": 0.0034562016371637583,
+          "就医建议": 0.027353785932064056,
+          "后果表述": 0.005858770105987787,
+          "appointment_action": 0.301628977060318,
+          "emergency": 0.010653233155608177
+        },
+        "mapped_action_family": [],
+        "strong_mapped_family": null,
+        "target_in_raw_family": false,
+        "target_in_strong_family": false,
+        "error": null
+      },
+      {
+        "id": "slots-03",
+        "group": "slots",
+        "label": "其他",
+        "confidence": 0.9444599151611328,
+        "margin": 0.9251563493162394,
+        "truncated": false,
+        "scores": {
+          "疾病表述": 0.0023375560995191336,
+          "指标解读": 0.002007631817832589,
+          "医疗费用": 0.0015400388510897756,
+          "治疗方案": 0.003926443867385387,
+          "功效作用": 0.002264741575345397,
+          "病情诊断": 0.0028982223011553288,
+          "其他": 0.9444599151611328,
+          "注意事项": 0.005201340187340975,
+          "病因分析": 0.0018677981570363045,
+          "就医建议": 0.0038530449382960796,
+          "后果表述": 0.0028103087097406387,
+          "appointment_action": 0.019303565844893456,
+          "emergency": 0.0075295353308320045
+        },
+        "mapped_action_family": [],
+        "strong_mapped_family": null,
+        "target_in_raw_family": false,
+        "target_in_strong_family": false,
+        "error": null
+      },
+      {
+        "id": "slots-04",
+        "group": "slots",
+        "label": "appointment_action",
+        "confidence": 0.889647364616394,
+        "margin": 0.832370113581419,
+        "truncated": false,
+        "scores": {
+          "疾病表述": 0.004684739746153355,
+          "指标解读": 0.001890926854684949,
+          "医疗费用": 0.003579423064365983,
+          "治疗方案": 0.004792106803506613,
+          "功效作用": 0.005408046767115593,
+          "病情诊断": 0.002093435497954488,
+          "其他": 0.05727725103497505,
+          "注意事项": 0.00329382112249732,
+          "病因分析": 0.002847619354724884,
+          "就医建议": 0.012203725054860115,
+          "后果表述": 0.0025877240113914013,
+          "appointment_action": 0.889647364616394,
+          "emergency": 0.009693814441561699
+        },
+        "mapped_action_family": [
+          "list_available_slots",
+          "search_doctors"
+        ],
+        "strong_mapped_family": null,
+        "target_in_raw_family": true,
+        "target_in_strong_family": false,
+        "error": null
+      },
+      {
+        "id": "slots-05",
+        "group": "slots",
+        "label": "appointment_action",
+        "confidence": 0.5032714605331421,
+        "margin": 0.17640870809555054,
+        "truncated": false,
+        "scores": {
+          "疾病表述": 0.008654107339680195,
+          "指标解读": 0.0032999981194734573,
+          "医疗费用": 0.010595542378723621,
+          "治疗方案": 0.011265603825449944,
+          "功效作用": 0.009023327380418777,
+          "病情诊断": 0.0030987148638814688,
+          "其他": 0.32686275243759155,
+          "注意事项": 0.015406422317028046,
+          "病因分析": 0.003182320622727275,
+          "就医建议": 0.07943474501371384,
+          "后果表述": 0.004462132230401039,
+          "appointment_action": 0.5032714605331421,
+          "emergency": 0.021442821249365807
+        },
+        "mapped_action_family": [
+          "list_available_slots",
+          "search_doctors"
+        ],
+        "strong_mapped_family": null,
+        "target_in_raw_family": true,
+        "target_in_strong_family": false,
+        "error": null
+      },
+      {
+        "id": "slots-06",
+        "group": "slots",
+        "label": "其他",
+        "confidence": 0.9712800979614258,
+        "margin": 0.9605634389445186,
+        "truncated": false,
+        "scores": {
+          "疾病表述": 0.001313126995228231,
+          "指标解读": 0.0009495357517153025,
+          "医疗费用": 0.001363174756988883,
+          "治疗方案": 0.001630046172067523,
+          "功效作用": 0.001091869198717177,
+          "病情诊断": 0.0011878182413056493,
+          "其他": 0.9712800979614258,
+          "注意事项": 0.0030030356720089912,
+          "病因分析": 0.000885339395608753,
+          "就医建议": 0.010716659016907215,
+          "后果表述": 0.0010689283953979611,
+          "appointment_action": 0.0037025841884315014,
+          "emergency": 0.0018078292487189174
+        },
+        "mapped_action_family": [],
+        "strong_mapped_family": null,
+        "target_in_raw_family": false,
+        "target_in_strong_family": false,
+        "error": null
+      },
+      {
+        "id": "slots-07",
+        "group": "slots",
+        "label": "appointment_action",
+        "confidence": 0.7556861042976379,
+        "margin": 0.617351159453392,
+        "truncated": false,
+        "scores": {
+          "疾病表述": 0.008191230706870556,
+          "指标解读": 0.0053861248306930065,
+          "医疗费用": 0.0035091156605631113,
+          "治疗方案": 0.0064009130001068115,
+          "功效作用": 0.0068700071424245834,
+          "病情诊断": 0.006384288426488638,
+          "其他": 0.1383349448442459,
+          "注意事项": 0.005030726548284292,
+          "病因分析": 0.004195814486593008,
+          "就医建议": 0.014844824559986591,
+          "后果表述": 0.004169573076069355,
+          "appointment_action": 0.7556861042976379,
+          "emergency": 0.04099638760089874
+        },
+        "mapped_action_family": [
+          "list_available_slots",
+          "search_doctors"
+        ],
+        "strong_mapped_family": null,
+        "target_in_raw_family": true,
+        "target_in_strong_family": false,
+        "error": null
+      },
+      {
+        "id": "slots-08",
+        "group": "slots",
+        "label": "其他",
+        "confidence": 0.8776671886444092,
+        "margin": 0.810783177614212,
+        "truncated": false,
+        "scores": {
+          "疾病表述": 0.003974286373704672,
+          "指标解读": 0.007011627312749624,
+          "医疗费用": 0.0037538304459303617,
+          "治疗方案": 0.006778665352612734,
+          "功效作用": 0.004746374674141407,
+          "病情诊断": 0.0036913687363266945,
+          "其他": 0.8776671886444092,
+          "注意事项": 0.005240774713456631,
+          "病因分析": 0.00230795843526721,
+          "就医建议": 0.005181812681257725,
+          "后果表述": 0.004125799052417278,
+          "appointment_action": 0.06688401103019714,
+          "emergency": 0.00863629300147295
+        },
+        "mapped_action_family": [],
+        "strong_mapped_family": null,
+        "target_in_raw_family": false,
+        "target_in_strong_family": false,
+        "error": null
+      },
+      {
+        "id": "label-01",
+        "group": "label",
+        "label": "其他",
+        "confidence": 0.9338025450706482,
+        "margin": 0.9152904562652111,
+        "truncated": false,
+        "scores": {
+          "疾病表述": 0.001717030187137425,
+          "指标解读": 0.0033915850799530745,
+          "医疗费用": 0.0036815747153013945,
+          "治疗方案": 0.003560379147529602,
+          "功效作用": 0.006215810775756836,
+          "病情诊断": 0.002805942203849554,
+          "其他": 0.9338025450706482,
+          "注意事项": 0.010481315664947033,
+          "病因分析": 0.0020326690282672644,
+          "就医建议": 0.0053404164500534534,
+          "后果表述": 0.002364301821216941,
+          "appointment_action": 0.018512088805437088,
+          "emergency": 0.0060942810960114
+        },
+        "mapped_action_family": [],
+        "strong_mapped_family": null,
+        "target_in_raw_family": false,
+        "target_in_strong_family": false,
+        "error": null
+      },
+      {
+        "id": "label-02",
+        "group": "label",
+        "label": "其他",
+        "confidence": 0.9311551451683044,
+        "margin": 0.8882765211164951,
+        "truncated": false,
+        "scores": {
+          "疾病表述": 0.0013610153691843152,
+          "指标解读": 0.0016688450705260038,
+          "医疗费用": 0.0029632756486535072,
+          "治疗方案": 0.002660087076947093,
+          "功效作用": 0.0031346462201327085,
+          "病情诊断": 0.0009209700510837138,
+          "其他": 0.9311551451683044,
+          "注意事项": 0.04287862405180931,
+          "病因分析": 0.0009763955604285002,
+          "就医建议": 0.0054581910371780396,
+          "后果表述": 0.0018949595978483558,
+          "appointment_action": 0.0033073697704821825,
+          "emergency": 0.0016204019775614142
+        },
+        "mapped_action_family": [],
+        "strong_mapped_family": null,
+        "target_in_raw_family": false,
+        "target_in_strong_family": false,
+        "error": null
+      },
+      {
+        "id": "label-03",
+        "group": "label",
+        "label": "注意事项",
+        "confidence": 0.5319945216178894,
+        "margin": 0.1307460367679596,
+        "truncated": false,
+        "scores": {
+          "疾病表述": 0.002391120884567499,
+          "指标解读": 0.0046248724684119225,
+          "医疗费用": 0.007990304380655289,
+          "治疗方案": 0.003753080265596509,
+          "功效作用": 0.009842079132795334,
+          "病情诊断": 0.005091210827231407,
+          "其他": 0.4012484848499298,
+          "注意事项": 0.5319945216178894,
+          "病因分析": 0.002700181445106864,
+          "就医建议": 0.005625123158097267,
+          "后果表述": 0.005623334553092718,
+          "appointment_action": 0.00754906889051199,
+          "emergency": 0.011566504836082458
+        },
+        "mapped_action_family": [
+          "lookup_drug_label"
+        ],
+        "strong_mapped_family": null,
+        "target_in_raw_family": true,
+        "target_in_strong_family": false,
+        "error": null
+      },
+      {
+        "id": "label-04",
+        "group": "label",
+        "label": "其他",
+        "confidence": 0.7052967548370361,
+        "margin": 0.595239520072937,
+        "truncated": false,
+        "scores": {
+          "疾病表述": 0.009046892635524273,
+          "指标解读": 0.010432430543005466,
+          "医疗费用": 0.0052835517562925816,
+          "治疗方案": 0.0119473310187459,
+          "功效作用": 0.012420214712619781,
+          "病情诊断": 0.01416466198861599,
+          "其他": 0.7052967548370361,
+          "注意事项": 0.031604450196027756,
+          "病因分析": 0.004266756121069193,
+          "就医建议": 0.00763495359569788,
+          "后果表述": 0.006438719108700752,
+          "appointment_action": 0.0714060515165329,
+          "emergency": 0.11005723476409912
+        },
+        "mapped_action_family": [],
+        "strong_mapped_family": null,
+        "target_in_raw_family": false,
+        "target_in_strong_family": false,
+        "error": null
+      },
+      {
+        "id": "label-05",
+        "group": "label",
+        "label": "其他",
+        "confidence": 0.9598384499549866,
+        "margin": 0.9504171619191766,
+        "truncated": false,
+        "scores": {
+          "疾病表述": 0.0011672412510961294,
+          "指标解读": 0.0017671023961156607,
+          "医疗费用": 0.002030960749834776,
+          "治疗方案": 0.0029502897523343563,
+          "功效作用": 0.004545740783214569,
+          "病情诊断": 0.002221326809376478,
+          "其他": 0.9598384499549866,
+          "注意事项": 0.006625490728765726,
+          "病因分析": 0.0015577723970636725,
+          "就医建议": 0.002988009015098214,
+          "后果表述": 0.0015373392961919308,
+          "appointment_action": 0.009421288035809994,
+          "emergency": 0.003348970552906394
+        },
+        "mapped_action_family": [],
+        "strong_mapped_family": null,
+        "target_in_raw_family": false,
+        "target_in_strong_family": false,
+        "error": null
+      },
+      {
+        "id": "label-06",
+        "group": "label",
+        "label": "其他",
+        "confidence": 0.9427461624145508,
+        "margin": 0.9323001252487302,
+        "truncated": false,
+        "scores": {
+          "疾病表述": 0.0015784382121637464,
+          "指标解读": 0.0046976287849247456,
+          "医疗费用": 0.004233139101415873,
+          "治疗方案": 0.0038597441744059324,
+          "功效作用": 0.005099062342196703,
+          "病情诊断": 0.003567937295883894,
+          "其他": 0.9427461624145508,
+          "注意事项": 0.010446037165820599,
+          "病因分析": 0.0019822593312710524,
+          "就医建议": 0.0036416950169950724,
+          "后果表述": 0.002435249276459217,
+          "appointment_action": 0.008378110826015472,
+          "emergency": 0.007334478665143251
+        },
+        "mapped_action_family": [],
+        "strong_mapped_family": null,
+        "target_in_raw_family": false,
+        "target_in_strong_family": false,
+        "error": null
+      },
+      {
+        "id": "label-07",
+        "group": "label",
+        "label": "其他",
+        "confidence": 0.9751620292663574,
+        "margin": 0.9703699834644794,
+        "truncated": false,
+        "scores": {
+          "疾病表述": 0.0007741762674413621,
+          "指标解读": 0.0025082125794142485,
+          "医疗费用": 0.0021515788976103067,
+          "治疗方案": 0.0020251988898962736,
+          "功效作用": 0.0018572807312011719,
+          "病情诊断": 0.0022197281941771507,
+          "其他": 0.9751620292663574,
+          "注意事项": 0.0047920458018779755,
+          "病因分析": 0.0008964297012425959,
+          "就医建议": 0.0017154373927041888,
+          "后果表述": 0.0013501951470971107,
+          "appointment_action": 0.002778267953544855,
+          "emergency": 0.001769379829056561
+        },
+        "mapped_action_family": [],
+        "strong_mapped_family": null,
+        "target_in_raw_family": false,
+        "target_in_strong_family": false,
+        "error": null
+      },
+      {
+        "id": "label-08",
+        "group": "label",
+        "label": "其他",
+        "confidence": 0.49271807074546814,
+        "margin": 0.2185274064540863,
+        "truncated": false,
+        "scores": {
+          "疾病表述": 0.006117118988186121,
+          "指标解读": 0.009442451409995556,
+          "医疗费用": 0.00576145201921463,
+          "治疗方案": 0.006496690679341555,
+          "功效作用": 0.008812125772237778,
+          "病情诊断": 0.025542989373207092,
+          "其他": 0.49271807074546814,
+          "注意事项": 0.27419066429138184,
+          "病因分析": 0.004693891853094101,
+          "就医建议": 0.007554581388831139,
+          "后果表述": 0.009123573079705238,
+          "appointment_action": 0.04407816380262375,
+          "emergency": 0.1054682806134224
+        },
+        "mapped_action_family": [],
+        "strong_mapped_family": null,
+        "target_in_raw_family": false,
+        "target_in_strong_family": false,
+        "error": null
+      },
+      {
+        "id": "other-01",
+        "group": "other_read",
+        "label": "其他",
+        "confidence": 0.8878459930419922,
+        "margin": 0.833726305514574,
+        "truncated": false,
+        "scores": {
+          "疾病表述": 0.003388493787497282,
+          "指标解读": 0.0018125672359019518,
+          "医疗费用": 0.003487170673906803,
+          "治疗方案": 0.004793492611497641,
+          "功效作用": 0.002832559170201421,
+          "病情诊断": 0.0015943070175126195,
+          "其他": 0.8878459930419922,
+          "注意事项": 0.010742496699094772,
+          "病因分析": 0.0015676748007535934,
+          "就医建议": 0.02199951931834221,
+          "后果表述": 0.002095279283821583,
+          "appointment_action": 0.05411968752741814,
+          "emergency": 0.003720805048942566
+        },
+        "mapped_action_family": [],
+        "strong_mapped_family": null,
+        "target_in_raw_family": false,
+        "target_in_strong_family": false,
+        "error": null
+      },
+      {
+        "id": "other-02",
+        "group": "other_read",
+        "label": "其他",
+        "confidence": 0.87489914894104,
+        "margin": 0.8014497309923172,
+        "truncated": false,
+        "scores": {
+          "疾病表述": 0.0024837006349116564,
+          "指标解读": 0.0023794472217559814,
+          "医疗费用": 0.002761441981419921,
+          "治疗方案": 0.0047785136848688126,
+          "功效作用": 0.003010102780535817,
+          "病情诊断": 0.0037140308413654566,
+          "其他": 0.87489914894104,
+          "注意事项": 0.005530429072678089,
+          "病因分析": 0.0038460406940430403,
+          "就医建议": 0.012450795620679855,
+          "后果表述": 0.0036240171175450087,
+          "appointment_action": 0.07344941794872284,
+          "emergency": 0.007073030341416597
+        },
+        "mapped_action_family": [],
+        "strong_mapped_family": null,
+        "target_in_raw_family": false,
+        "target_in_strong_family": false,
+        "error": null
+      },
+      {
+        "id": "other-03",
+        "group": "other_read",
+        "label": "appointment_action",
+        "confidence": 0.9736214876174927,
+        "margin": 0.9698278997093439,
+        "truncated": false,
+        "scores": {
+          "疾病表述": 0.0016833895351737738,
+          "指标解读": 0.0010787566425278783,
+          "医疗费用": 0.001478957594372332,
+          "治疗方案": 0.0022006561048328876,
+          "功效作用": 0.003147543640807271,
+          "病情诊断": 0.0009197973995469511,
+          "其他": 0.003697473555803299,
+          "注意事项": 0.0017489180900156498,
+          "病因分析": 0.0019034469733014703,
+          "就医建议": 0.003703146241605282,
+          "后果表述": 0.0010228820610791445,
+          "appointment_action": 0.9736214876174927,
+          "emergency": 0.0037935879081487656
+        },
+        "mapped_action_family": [
+          "list_available_slots",
+          "search_doctors"
+        ],
+        "strong_mapped_family": [
+          "list_available_slots",
+          "search_doctors"
+        ],
+        "target_in_raw_family": false,
+        "target_in_strong_family": false,
+        "error": null
+      },
+      {
+        "id": "other-04",
+        "group": "other_read",
+        "label": "appointment_action",
+        "confidence": 0.9752071499824524,
+        "margin": 0.9713089917786419,
+        "truncated": false,
+        "scores": {
+          "疾病表述": 0.0015540331369265914,
+          "指标解读": 0.0009198231855407357,
+          "医疗费用": 0.0014421032974496484,
+          "治疗方案": 0.0019735300447791815,
+          "功效作用": 0.002449313411489129,
+          "病情诊断": 0.0010509996209293604,
+          "其他": 0.0038981582038104534,
+          "注意事项": 0.0016387335490435362,
+          "病因分析": 0.0021029578056186438,
+          "就医建议": 0.0034899020101875067,
+          "后果表述": 0.001031176303513348,
+          "appointment_action": 0.9752071499824524,
+          "emergency": 0.00324224098585546
+        },
+        "mapped_action_family": [
+          "list_available_slots",
+          "search_doctors"
+        ],
+        "strong_mapped_family": [
+          "list_available_slots",
+          "search_doctors"
+        ],
+        "target_in_raw_family": false,
+        "target_in_strong_family": false,
+        "error": null
+      },
+      {
+        "id": "other-05",
+        "group": "other_read",
+        "label": "appointment_action",
+        "confidence": 0.8300628662109375,
+        "margin": 0.7551358789205551,
+        "truncated": false,
+        "scores": {
+          "疾病表述": 0.007969331927597523,
+          "指标解读": 0.005114431958645582,
+          "医疗费用": 0.0034631681628525257,
+          "治疗方案": 0.00926057156175375,
+          "功效作用": 0.005826927721500397,
+          "病情诊断": 0.0046352786011993885,
+          "其他": 0.03361881896853447,
+          "注意事项": 0.006927608046680689,
+          "病因分析": 0.004038516897708178,
+          "就医建议": 0.01000224705785513,
+          "后果表述": 0.0041532935574650764,
+          "appointment_action": 0.8300628662109375,
+          "emergency": 0.07492698729038239
+        },
+        "mapped_action_family": [
+          "list_available_slots",
+          "search_doctors"
+        ],
+        "strong_mapped_family": null,
+        "target_in_raw_family": false,
+        "target_in_strong_family": false,
+        "error": null
+      },
+      {
+        "id": "other-06",
+        "group": "other_read",
+        "label": "appointment_action",
+        "confidence": 0.9518579244613647,
+        "margin": 0.9399496661499143,
+        "truncated": false,
+        "scores": {
+          "疾病表述": 0.003470019903033972,
+          "指标解读": 0.0021015747915953398,
+          "医疗费用": 0.0016722162254154682,
+          "治疗方案": 0.0034432129468768835,
+          "功效作用": 0.0034963537473231554,
+          "病情诊断": 0.0017642948077991605,
+          "其他": 0.008216729387640953,
+          "注意事项": 0.002635069191455841,
+          "病因分析": 0.00260343961417675,
+          "就医建议": 0.00524692889302969,
+          "后果表述": 0.0015838703839108348,
+          "appointment_action": 0.9518579244613647,
+          "emergency": 0.011908258311450481
+        },
+        "mapped_action_family": [
+          "list_available_slots",
+          "search_doctors"
+        ],
+        "strong_mapped_family": [
+          "list_available_slots",
+          "search_doctors"
+        ],
+        "target_in_raw_family": false,
+        "target_in_strong_family": false,
+        "error": null
+      },
+      {
+        "id": "other-07",
+        "group": "other_read",
+        "label": "其他",
+        "confidence": 0.8289141654968262,
+        "margin": 0.7310745120048523,
+        "truncated": false,
+        "scores": {
+          "疾病表述": 0.004000812768936157,
+          "指标解读": 0.006334302481263876,
+          "医疗费用": 0.00430667819455266,
+          "治疗方案": 0.010622365400195122,
+          "功效作用": 0.09783965349197388,
+          "病情诊断": 0.0036808387376368046,
+          "其他": 0.8289141654968262,
+          "注意事项": 0.015418771654367447,
+          "病因分析": 0.002985345898196101,
+          "就医建议": 0.005077048670500517,
+          "后果表述": 0.005546892061829567,
+          "appointment_action": 0.008212678134441376,
+          "emergency": 0.007060500327497721
+        },
+        "mapped_action_family": [],
+        "strong_mapped_family": null,
+        "target_in_raw_family": false,
+        "target_in_strong_family": false,
+        "error": null
+      },
+      {
+        "id": "other-08",
+        "group": "other_read",
+        "label": "其他",
+        "confidence": 0.9187614321708679,
+        "margin": 0.8844481632113457,
+        "truncated": false,
+        "scores": {
+          "疾病表述": 0.0034783617593348026,
+          "指标解读": 0.00557373883202672,
+          "医疗费用": 0.002906442154198885,
+          "治疗方案": 0.004477541893720627,
+          "功效作用": 0.03431326895952225,
+          "病情诊断": 0.003321984549984336,
+          "其他": 0.9187614321708679,
+          "注意事项": 0.009494011290371418,
+          "病因分析": 0.0021417795214802027,
+          "就医建议": 0.0026208930648863316,
+          "后果表述": 0.004816029220819473,
+          "appointment_action": 0.004085041116923094,
+          "emergency": 0.0040094139985740185
+        },
+        "mapped_action_family": [],
+        "strong_mapped_family": null,
+        "target_in_raw_family": false,
+        "target_in_strong_family": false,
+        "error": null
+      },
+      {
+        "id": "transaction-01",
+        "group": "transactions",
+        "label": "appointment_action",
+        "confidence": 0.9414181113243103,
+        "margin": 0.9297934491187334,
+        "truncated": false,
+        "scores": {
+          "疾病表述": 0.003556245705112815,
+          "指标解读": 0.003936523571610451,
+          "医疗费用": 0.0036288080736994743,
+          "治疗方案": 0.003979282919317484,
+          "功效作用": 0.008065213449299335,
+          "病情诊断": 0.002060605911538005,
+          "其他": 0.008275985717773438,
+          "注意事项": 0.002586964750662446,
+          "病因分析": 0.0029400663916021585,
+          "就医建议": 0.006065318826586008,
+          "后果表述": 0.0018621342023834586,
+          "appointment_action": 0.9414181113243103,
+          "emergency": 0.011624662205576897
+        },
+        "mapped_action_family": [
+          "list_available_slots",
+          "search_doctors"
+        ],
+        "strong_mapped_family": [
+          "list_available_slots",
+          "search_doctors"
+        ],
+        "target_in_raw_family": false,
+        "target_in_strong_family": false,
+        "error": null
+      },
+      {
+        "id": "transaction-02",
+        "group": "transactions",
+        "label": "appointment_action",
+        "confidence": 0.9510634541511536,
+        "margin": 0.9423924526199698,
+        "truncated": false,
+        "scores": {
+          "疾病表述": 0.002844506874680519,
+          "指标解读": 0.0029583200812339783,
+          "医疗费用": 0.003174740355461836,
+          "治疗方案": 0.003061287570744753,
+          "功效作用": 0.007365266792476177,
+          "病情诊断": 0.0017305200453847647,
+          "其他": 0.00867100153118372,
+          "注意事项": 0.002508214209228754,
+          "病因分析": 0.0023593937512487173,
+          "就医建议": 0.005632967222481966,
+          "后果表述": 0.0014831179287284613,
+          "appointment_action": 0.9510634541511536,
+          "emergency": 0.007147189695388079
+        },
+        "mapped_action_family": [
+          "list_available_slots",
+          "search_doctors"
+        ],
+        "strong_mapped_family": [
+          "list_available_slots",
+          "search_doctors"
+        ],
+        "target_in_raw_family": false,
+        "target_in_strong_family": false,
+        "error": null
+      },
+      {
+        "id": "transaction-03",
+        "group": "transactions",
+        "label": "appointment_action",
+        "confidence": 0.9656552076339722,
+        "margin": 0.960171899292618,
+        "truncated": false,
+        "scores": {
+          "疾病表述": 0.0028283772990107536,
+          "指标解读": 0.001796795055270195,
+          "医疗费用": 0.0019914491567760706,
+          "治疗方案": 0.0023172188084572554,
+          "功效作用": 0.004643263295292854,
+          "病情诊断": 0.0015658487100154161,
+          "其他": 0.003474076511338353,
+          "注意事项": 0.002067074179649353,
+          "病因分析": 0.0027406723238527775,
+          "就医建议": 0.003907178994268179,
+          "后果表述": 0.0015294154873117805,
+          "appointment_action": 0.9656552076339722,
+          "emergency": 0.005483308341354132
+        },
+        "mapped_action_family": [
+          "list_available_slots",
+          "search_doctors"
+        ],
+        "strong_mapped_family": [
+          "list_available_slots",
+          "search_doctors"
+        ],
+        "target_in_raw_family": false,
+        "target_in_strong_family": false,
+        "error": null
+      },
+      {
+        "id": "transaction-04",
+        "group": "transactions",
+        "label": "appointment_action",
+        "confidence": 0.9713507294654846,
+        "margin": 0.9675209252163768,
+        "truncated": false,
+        "scores": {
+          "疾病表述": 0.0024078283458948135,
+          "指标解读": 0.0013957726769149303,
+          "医疗费用": 0.001647626981139183,
+          "治疗方案": 0.0020451019518077374,
+          "功效作用": 0.003297804854810238,
+          "病情诊断": 0.0012878961861133575,
+          "其他": 0.003294464899227023,
+          "注意事项": 0.0018614544533193111,
+          "病因分析": 0.0026103637646883726,
+          "就医建议": 0.0037469409871846437,
+          "后果表述": 0.0012241029180586338,
+          "appointment_action": 0.9713507294654846,
+          "emergency": 0.0038298042491078377
+        },
+        "mapped_action_family": [
+          "list_available_slots",
+          "search_doctors"
+        ],
+        "strong_mapped_family": [
+          "list_available_slots",
+          "search_doctors"
+        ],
+        "target_in_raw_family": false,
+        "target_in_strong_family": false,
+        "error": null
+      },
+      {
+        "id": "transaction-05",
+        "group": "transactions",
+        "label": "appointment_action",
+        "confidence": 0.9594125151634216,
+        "margin": 0.951237291097641,
+        "truncated": false,
+        "scores": {
+          "疾病表述": 0.002529336605221033,
+          "指标解读": 0.0022580816876143217,
+          "医疗费用": 0.0024219003971666098,
+          "治疗方案": 0.002809330355376005,
+          "功效作用": 0.004604239948093891,
+          "病情诊断": 0.001625297823920846,
+          "其他": 0.00817522406578064,
+          "注意事项": 0.0020161736756563187,
+          "病因分析": 0.0024175746366381645,
+          "就医建议": 0.004933757241815329,
+          "后果表述": 0.0016417094739153981,
+          "appointment_action": 0.9594125151634216,
+          "emergency": 0.0051549626514315605
+        },
+        "mapped_action_family": [
+          "list_available_slots",
+          "search_doctors"
+        ],
+        "strong_mapped_family": [
+          "list_available_slots",
+          "search_doctors"
+        ],
+        "target_in_raw_family": false,
+        "target_in_strong_family": false,
+        "error": null
+      },
+      {
+        "id": "transaction-06",
+        "group": "transactions",
+        "label": "appointment_action",
+        "confidence": 0.96686190366745,
+        "margin": 0.9614449478685856,
+        "truncated": false,
+        "scores": {
+          "疾病表述": 0.002211789833381772,
+          "指标解读": 0.0015481360023841262,
+          "医疗费用": 0.0020908250007778406,
+          "治疗方案": 0.0022826786153018475,
+          "功效作用": 0.004475804511457682,
+          "病情诊断": 0.0012321651447564363,
+          "其他": 0.004447645042091608,
+          "注意事项": 0.0017062023980543017,
+          "病因分析": 0.001988860545679927,
+          "就医建议": 0.004316284321248531,
+          "后果表述": 0.0014207293279469013,
+          "appointment_action": 0.96686190366745,
+          "emergency": 0.005416955798864365
+        },
+        "mapped_action_family": [
+          "list_available_slots",
+          "search_doctors"
+        ],
+        "strong_mapped_family": [
+          "list_available_slots",
+          "search_doctors"
+        ],
+        "target_in_raw_family": false,
+        "target_in_strong_family": false,
+        "error": null
+      },
+      {
+        "id": "transaction-07",
+        "group": "transactions",
+        "label": "appointment_action",
+        "confidence": 0.9697021245956421,
+        "margin": 0.9653403731063008,
+        "truncated": false,
+        "scores": {
+          "疾病表述": 0.0027669472619891167,
+          "指标解读": 0.001595635898411274,
+          "医疗费用": 0.001959871267899871,
+          "治疗方案": 0.0021360297687351704,
+          "功效作用": 0.0034706764854490757,
+          "病情诊断": 0.0013542391825467348,
+          "其他": 0.003401645924896002,
+          "注意事项": 0.0016995209734886885,
+          "病因分析": 0.002611875766888261,
+          "就医建议": 0.003567952197045088,
+          "后果表述": 0.001371682621538639,
+          "appointment_action": 0.9697021245956421,
+          "emergency": 0.004361751489341259
+        },
+        "mapped_action_family": [
+          "list_available_slots",
+          "search_doctors"
+        ],
+        "strong_mapped_family": [
+          "list_available_slots",
+          "search_doctors"
+        ],
+        "target_in_raw_family": false,
+        "target_in_strong_family": false,
+        "error": null
+      },
+      {
+        "id": "transaction-08",
+        "group": "transactions",
+        "label": "appointment_action",
+        "confidence": 0.9590414762496948,
+        "margin": 0.9505621790885925,
+        "truncated": false,
+        "scores": {
+          "疾病表述": 0.0029238653369247913,
+          "指标解读": 0.002189659746363759,
+          "医疗费用": 0.0024154717102646828,
+          "治疗方案": 0.002779800910502672,
+          "功效作用": 0.00558453518897295,
+          "病情诊断": 0.0012969191884621978,
+          "其他": 0.004201707895845175,
+          "注意事项": 0.002328478032723069,
+          "病因分析": 0.0025699506513774395,
+          "就医建议": 0.004509171936661005,
+          "后果表述": 0.0016795750707387924,
+          "appointment_action": 0.9590414762496948,
+          "emergency": 0.008479297161102295
+        },
+        "mapped_action_family": [
+          "list_available_slots",
+          "search_doctors"
+        ],
+        "strong_mapped_family": [
+          "list_available_slots",
+          "search_doctors"
+        ],
+        "target_in_raw_family": false,
+        "target_in_strong_family": false,
+        "error": null
+      },
+      {
+        "id": "compose-01",
+        "group": "composition",
+        "label": "其他",
+        "confidence": 0.728019654750824,
+        "margin": 0.567234680056572,
+        "truncated": false,
+        "scores": {
+          "疾病表述": 0.0047424896620213985,
+          "指标解读": 0.007124919909983873,
+          "医疗费用": 0.007169097661972046,
+          "治疗方案": 0.009519261308014393,
+          "功效作用": 0.014478533528745174,
+          "病情诊断": 0.004779585171490908,
+          "其他": 0.728019654750824,
+          "注意事项": 0.014057645574212074,
+          "病因分析": 0.003806046675890684,
+          "就医建议": 0.014576307497918606,
+          "后果表述": 0.005163278896361589,
+          "appointment_action": 0.16078497469425201,
+          "emergency": 0.025778090581297874
+        },
+        "mapped_action_family": [],
+        "strong_mapped_family": null,
+        "target_in_raw_family": false,
+        "target_in_strong_family": false,
+        "error": null
+      },
+      {
+        "id": "compose-02",
+        "group": "composition",
+        "label": "注意事项",
+        "confidence": 0.8192742466926575,
+        "margin": 0.6697334349155426,
+        "truncated": false,
+        "scores": {
+          "疾病表述": 0.002172619802877307,
+          "指标解读": 0.003458044258877635,
+          "医疗费用": 0.004494557622820139,
+          "治疗方案": 0.002412277739495039,
+          "功效作用": 0.00405418174341321,
+          "病情诊断": 0.001590442261658609,
+          "其他": 0.14954081177711487,
+          "注意事项": 0.8192742466926575,
+          "病因分析": 0.0015229787677526474,
+          "就医建议": 0.0036958286073058844,
+          "后果表述": 0.00204418133944273,
+          "appointment_action": 0.0027243599761277437,
+          "emergency": 0.00301549956202507
+        },
+        "mapped_action_family": [
+          "lookup_drug_label"
+        ],
+        "strong_mapped_family": null,
+        "target_in_raw_family": false,
+        "target_in_strong_family": false,
+        "error": null
+      },
+      {
+        "id": "compose-03",
+        "group": "composition",
+        "label": "其他",
+        "confidence": 0.9533030390739441,
+        "margin": 0.9326300472021103,
+        "truncated": false,
+        "scores": {
+          "疾病表述": 0.0017139491392299533,
+          "指标解读": 0.0015281661180779338,
+          "医疗费用": 0.0017293839482590556,
+          "治疗方案": 0.0016847928054630756,
+          "功效作用": 0.0014658046420663595,
+          "病情诊断": 0.001964609371498227,
+          "其他": 0.9533030390739441,
+          "注意事项": 0.00285593094304204,
+          "病因分析": 0.0010226662270724773,
+          "就医建议": 0.006783540826290846,
+          "后果表述": 0.0020887095015496016,
+          "appointment_action": 0.0206729918718338,
+          "emergency": 0.0031864726915955544
+        },
+        "mapped_action_family": [],
+        "strong_mapped_family": null,
+        "target_in_raw_family": false,
+        "target_in_strong_family": false,
+        "error": null
+      },
+      {
+        "id": "compose-04",
+        "group": "composition",
+        "label": "其他",
+        "confidence": 0.9547369480133057,
+        "margin": 0.9346396084874868,
+        "truncated": false,
+        "scores": {
+          "疾病表述": 0.0015330056194216013,
+          "指标解读": 0.0014172631781548262,
+          "医疗费用": 0.0014768714318051934,
+          "治疗方案": 0.0019515983294695616,
+          "功效作用": 0.0019236699445173144,
+          "病情诊断": 0.002171088242903352,
+          "其他": 0.9547369480133057,
+          "注意事项": 0.0036392915062606335,
+          "病因分析": 0.00115860509686172,
+          "就医建议": 0.004853363148868084,
+          "后果表述": 0.0017991212662309408,
+          "appointment_action": 0.020097339525818825,
+          "emergency": 0.0032418081536889076
+        },
+        "mapped_action_family": [],
+        "strong_mapped_family": null,
+        "target_in_raw_family": false,
+        "target_in_strong_family": false,
+        "error": null
+      },
+      {
+        "id": "compose-05",
+        "group": "composition",
+        "label": "appointment_action",
+        "confidence": 0.9683446288108826,
+        "margin": 0.962265020236373,
+        "truncated": false,
+        "scores": {
+          "疾病表述": 0.0020097466185688972,
+          "指标解读": 0.0010199553798884153,
+          "医疗费用": 0.0013453149003908038,
+          "治疗方案": 0.002235869877040386,
+          "功效作用": 0.0032119732350111008,
+          "病情诊断": 0.0012704338878393173,
+          "其他": 0.004884844180196524,
+          "注意事项": 0.001947303069755435,
+          "病因分析": 0.0023982569109648466,
+          "就医建议": 0.003920537419617176,
+          "后果表述": 0.0013315340038388968,
+          "appointment_action": 0.9683446288108826,
+          "emergency": 0.006079608574509621
+        },
+        "mapped_action_family": [
+          "list_available_slots",
+          "search_doctors"
+        ],
+        "strong_mapped_family": [
+          "list_available_slots",
+          "search_doctors"
+        ],
+        "target_in_raw_family": false,
+        "target_in_strong_family": false,
+        "error": null
+      },
+      {
+        "id": "compose-06",
+        "group": "composition",
+        "label": "appointment_action",
+        "confidence": 0.8378846049308777,
+        "margin": 0.7545305043458939,
+        "truncated": false,
+        "scores": {
+          "疾病表述": 0.003594952169805765,
+          "指标解读": 0.002856383565813303,
+          "医疗费用": 0.0032437739428132772,
+          "治疗方案": 0.007155472878366709,
+          "功效作用": 0.007577673066407442,
+          "病情诊断": 0.003841468831524253,
+          "其他": 0.08335410058498383,
+          "注意事项": 0.006603023502975702,
+          "病因分析": 0.0036943594459444284,
+          "就医建议": 0.0141188008710742,
+          "后果表述": 0.003435486927628517,
+          "appointment_action": 0.8378846049308777,
+          "emergency": 0.022639933973550797
+        },
+        "mapped_action_family": [
+          "list_available_slots",
+          "search_doctors"
+        ],
+        "strong_mapped_family": null,
+        "target_in_raw_family": true,
+        "target_in_strong_family": false,
+        "error": null
+      },
+      {
+        "id": "compose-07",
+        "group": "composition",
+        "label": "其他",
+        "confidence": 0.9188674092292786,
+        "margin": 0.884875200688839,
+        "truncated": false,
+        "scores": {
+          "疾病表述": 0.0018667218973860145,
+          "指标解读": 0.00415097177028656,
+          "医疗费用": 0.0052085984498262405,
+          "治疗方案": 0.00329353054985404,
+          "功效作用": 0.004738712217658758,
+          "病情诊断": 0.0037414045073091984,
+          "其他": 0.9188674092292786,
+          "注意事项": 0.006097205448895693,
+          "病因分析": 0.0020020061638206244,
+          "就医建议": 0.006069954950362444,
+          "后果表述": 0.0028341880533844233,
+          "appointment_action": 0.033992208540439606,
+          "emergency": 0.007137089967727661
+        },
+        "mapped_action_family": [],
+        "strong_mapped_family": null,
+        "target_in_raw_family": false,
+        "target_in_strong_family": false,
+        "error": null
+      },
+      {
+        "id": "compose-08",
+        "group": "composition",
+        "label": "注意事项",
+        "confidence": 0.6641902923583984,
+        "margin": 0.3797566592693329,
+        "truncated": false,
+        "scores": {
+          "疾病表述": 0.002297962550073862,
+          "指标解读": 0.0032229230273514986,
+          "医疗费用": 0.004158099181950092,
+          "治疗方案": 0.0036038856487721205,
+          "功效作用": 0.006145439110696316,
+          "病情诊断": 0.0047173574566841125,
+          "其他": 0.28443363308906555,
+          "注意事项": 0.6641902923583984,
+          "病因分析": 0.002505144802853465,
+          "就医建议": 0.0039384071715176105,
+          "后果表述": 0.0039810314774513245,
+          "appointment_action": 0.007099593058228493,
+          "emergency": 0.009706209413707256
+        },
+        "mapped_action_family": [
+          "lookup_drug_label"
+        ],
+        "strong_mapped_family": null,
+        "target_in_raw_family": false,
+        "target_in_strong_family": false,
+        "error": null
+      },
+      {
+        "id": "context-01",
+        "group": "conversation",
+        "label": "appointment_action",
+        "confidence": 0.9082973003387451,
+        "margin": 0.8786116875708103,
+        "truncated": false,
+        "scores": {
+          "疾病表述": 0.002634339267387986,
+          "指标解读": 0.00240179430693388,
+          "医疗费用": 0.002545857336372137,
+          "治疗方案": 0.005581615958362818,
+          "功效作用": 0.006497327703982592,
+          "病情诊断": 0.003085975768044591,
+          "其他": 0.0296856127679348,
+          "注意事项": 0.003734919475391507,
+          "病因分析": 0.002920918632298708,
+          "就医建议": 0.008101755753159523,
+          "后果表述": 0.0023946629371494055,
+          "appointment_action": 0.9082973003387451,
+          "emergency": 0.022117948159575462
+        },
+        "mapped_action_family": [
+          "list_available_slots",
+          "search_doctors"
+        ],
+        "strong_mapped_family": [
+          "list_available_slots",
+          "search_doctors"
+        ],
+        "target_in_raw_family": true,
+        "target_in_strong_family": true,
+        "error": null
+      },
+      {
+        "id": "context-02",
+        "group": "conversation",
+        "label": "appointment_action",
+        "confidence": 0.8578377366065979,
+        "margin": 0.8166319690644741,
+        "truncated": false,
+        "scores": {
+          "疾病表述": 0.005456332117319107,
+          "指标解读": 0.010094205848872662,
+          "医疗费用": 0.006235196720808744,
+          "治疗方案": 0.009917122311890125,
+          "功效作用": 0.01318618468940258,
+          "病情诊断": 0.004810221027582884,
+          "其他": 0.041205767542123795,
+          "注意事项": 0.006213503424078226,
+          "病因分析": 0.004128423985093832,
+          "就医建议": 0.010455766692757607,
+          "后果表述": 0.004178116098046303,
+          "appointment_action": 0.8578377366065979,
+          "emergency": 0.026281556114554405
+        },
+        "mapped_action_family": [
+          "list_available_slots",
+          "search_doctors"
+        ],
+        "strong_mapped_family": null,
+        "target_in_raw_family": false,
+        "target_in_strong_family": false,
+        "error": null
+      },
+      {
+        "id": "context-03",
+        "group": "conversation",
+        "label": "其他",
+        "confidence": 0.9230478405952454,
+        "margin": 0.8874119855463505,
+        "truncated": false,
+        "scores": {
+          "疾病表述": 0.0023784064687788486,
+          "指标解读": 0.002173913177102804,
+          "医疗费用": 0.0019580337684601545,
+          "治疗方案": 0.00336949760094285,
+          "功效作用": 0.003051333362236619,
+          "病情诊断": 0.0036916981916874647,
+          "其他": 0.9230478405952454,
+          "注意事项": 0.00597147224470973,
+          "病因分析": 0.002282127272337675,
+          "就医建议": 0.00517681147903204,
+          "后果表述": 0.0028064448852092028,
+          "appointment_action": 0.03563585504889488,
+          "emergency": 0.008456620387732983
+        },
+        "mapped_action_family": [],
+        "strong_mapped_family": null,
+        "target_in_raw_family": false,
+        "target_in_strong_family": false,
+        "error": null
+      },
+      {
+        "id": "context-04",
+        "group": "conversation",
+        "label": "其他",
+        "confidence": 0.8168246150016785,
+        "margin": 0.7471199110150337,
+        "truncated": false,
+        "scores": {
+          "疾病表述": 0.005188959185034037,
+          "指标解读": 0.06970470398664474,
+          "医疗费用": 0.009933831170201302,
+          "治疗方案": 0.004836565349251032,
+          "功效作用": 0.004580402281135321,
+          "病情诊断": 0.009633067063987255,
+          "其他": 0.8168246150016785,
+          "注意事项": 0.014738023281097412,
+          "病因分析": 0.004671228118240833,
+          "就医建议": 0.006636310834437609,
+          "后果表述": 0.008714922703802586,
+          "appointment_action": 0.033818092197179794,
+          "emergency": 0.010719282552599907
+        },
+        "mapped_action_family": [],
+        "strong_mapped_family": null,
+        "target_in_raw_family": false,
+        "target_in_strong_family": false,
+        "error": null
+      },
+      {
+        "id": "context-05",
+        "group": "conversation",
+        "label": "其他",
+        "confidence": 0.46494004130363464,
+        "margin": 0.06971767544746399,
+        "truncated": false,
+        "scores": {
+          "疾病表述": 0.007520217914134264,
+          "指标解读": 0.011582447215914726,
+          "医疗费用": 0.00607727374881506,
+          "治疗方案": 0.020222578197717667,
+          "功效作用": 0.008014954626560211,
+          "病情诊断": 0.006860767025500536,
+          "其他": 0.46494004130363464,
+          "注意事项": 0.008847104385495186,
+          "病因分析": 0.006985109765082598,
+          "就医建议": 0.01979704387485981,
+          "后果表述": 0.00806556548923254,
+          "appointment_action": 0.39522236585617065,
+          "emergency": 0.03586457669734955
+        },
+        "mapped_action_family": [],
+        "strong_mapped_family": null,
+        "target_in_raw_family": false,
+        "target_in_strong_family": false,
+        "error": null
+      },
+      {
+        "id": "context-06",
+        "group": "conversation",
+        "label": "appointment_action",
+        "confidence": 0.9402509927749634,
+        "margin": 0.925756610929966,
+        "truncated": false,
+        "scores": {
+          "疾病表述": 0.0021040586289018393,
+          "指标解读": 0.0019382877508178353,
+          "医疗费用": 0.002632013987749815,
+          "治疗方案": 0.004536967258900404,
+          "功效作用": 0.008828305639326572,
+          "病情诊断": 0.001602895325049758,
+          "其他": 0.007934559136629105,
+          "注意事项": 0.0034817017149180174,
+          "病因分析": 0.0022957283072173595,
+          "就医建议": 0.008288606069982052,
+          "后果表述": 0.0016115554608404636,
+          "appointment_action": 0.9402509927749634,
+          "emergency": 0.014494381844997406
+        },
+        "mapped_action_family": [
+          "list_available_slots",
+          "search_doctors"
+        ],
+        "strong_mapped_family": [
+          "list_available_slots",
+          "search_doctors"
+        ],
+        "target_in_raw_family": false,
+        "target_in_strong_family": false,
+        "error": null
+      },
+      {
+        "id": "context-07",
+        "group": "conversation",
+        "label": "其他",
+        "confidence": 0.5909711718559265,
+        "margin": 0.27719590067863464,
+        "truncated": false,
+        "scores": {
+          "疾病表述": 0.0046445634216070175,
+          "指标解读": 0.0045926375314593315,
+          "医疗费用": 0.004040999338030815,
+          "治疗方案": 0.006299770437180996,
+          "功效作用": 0.011112104170024395,
+          "病情诊断": 0.004993238486349583,
+          "其他": 0.5909711718559265,
+          "注意事项": 0.31377527117729187,
+          "病因分析": 0.003496222896501422,
+          "就医建议": 0.007510403171181679,
+          "后果表述": 0.006008598022162914,
+          "appointment_action": 0.026926014572381973,
+          "emergency": 0.015628976747393608
+        },
+        "mapped_action_family": [],
+        "strong_mapped_family": null,
+        "target_in_raw_family": false,
+        "target_in_strong_family": false,
+        "error": null
+      },
+      {
+        "id": "context-08",
+        "group": "conversation",
+        "label": "appointment_action",
+        "confidence": 0.4329371750354767,
+        "margin": 0.0677584707736969,
+        "truncated": false,
+        "scores": {
+          "疾病表述": 0.020543744787573814,
+          "指标解读": 0.008001829497516155,
+          "医疗费用": 0.006454402580857277,
+          "治疗方案": 0.02168741077184677,
+          "功效作用": 0.018247157335281372,
+          "病情诊断": 0.010584114119410515,
+          "其他": 0.3651787042617798,
+          "注意事项": 0.031029492616653442,
+          "病因分析": 0.007477572653442621,
+          "就医建议": 0.01606876216828823,
+          "后果表述": 0.012834591791033745,
+          "appointment_action": 0.4329371750354767,
+          "emergency": 0.04895506054162979
+        },
+        "mapped_action_family": [
+          "list_available_slots",
+          "search_doctors"
+        ],
+        "strong_mapped_family": null,
+        "target_in_raw_family": false,
+        "target_in_strong_family": false,
+        "error": null
+      },
+      {
+        "id": "boundary-01",
+        "group": "boundary_and_direct",
+        "label": "其他",
+        "confidence": 0.5411190390586853,
+        "margin": 0.21685504913330078,
+        "truncated": false,
+        "scores": {
+          "疾病表述": 0.00988299772143364,
+          "指标解读": 0.009471744298934937,
+          "医疗费用": 0.004742106422781944,
+          "治疗方案": 0.010740271769464016,
+          "功效作用": 0.011867868714034557,
+          "病情诊断": 0.010910101234912872,
+          "其他": 0.5411190390586853,
+          "注意事项": 0.010376986116170883,
+          "病因分析": 0.006455704569816589,
+          "就医建议": 0.015146095305681229,
+          "后果表述": 0.004286044742912054,
+          "appointment_action": 0.3242639899253845,
+          "emergency": 0.040737103670835495
+        },
+        "mapped_action_family": [],
+        "strong_mapped_family": null,
+        "target_in_raw_family": false,
+        "target_in_strong_family": false,
+        "error": null
+      },
+      {
+        "id": "boundary-02",
+        "group": "boundary_and_direct",
+        "label": "appointment_action",
+        "confidence": 0.7981833219528198,
+        "margin": 0.7128671929240227,
+        "truncated": false,
+        "scores": {
+          "疾病表述": 0.005218991544097662,
+          "指标解读": 0.006003826856613159,
+          "医疗费用": 0.004664846230298281,
+          "治疗方案": 0.015627944841980934,
+          "功效作用": 0.008846288546919823,
+          "病情诊断": 0.0059294733218848705,
+          "其他": 0.08531612902879715,
+          "注意事项": 0.01175763551145792,
+          "病因分析": 0.006181476172059774,
+          "就医建议": 0.010681243613362312,
+          "后果表述": 0.004884480498731136,
+          "appointment_action": 0.7981833219528198,
+          "emergency": 0.03670436888933182
+        },
+        "mapped_action_family": [
+          "list_available_slots",
+          "search_doctors"
+        ],
+        "strong_mapped_family": null,
+        "target_in_raw_family": false,
+        "target_in_strong_family": false,
+        "error": null
+      },
+      {
+        "id": "boundary-03",
+        "group": "boundary_and_direct",
+        "label": "emergency",
+        "confidence": 0.9762536883354187,
+        "margin": 0.9716650051996112,
+        "truncated": false,
+        "scores": {
+          "疾病表述": 0.001542528159916401,
+          "指标解读": 0.0015306693967431784,
+          "医疗费用": 0.0012172735296189785,
+          "治疗方案": 0.001535227638669312,
+          "功效作用": 0.001697250409051776,
+          "病情诊断": 0.004588683135807514,
+          "其他": 0.0014869077131152153,
+          "注意事项": 0.00228253030218184,
+          "病因分析": 0.0012591531267389655,
+          "就医建议": 0.003251552814617753,
+          "后果表述": 0.0016252431087195873,
+          "appointment_action": 0.0017293521668761969,
+          "emergency": 0.9762536883354187
+        },
+        "mapped_action_family": [],
+        "strong_mapped_family": [],
+        "target_in_raw_family": false,
+        "target_in_strong_family": false,
+        "error": null
+      },
+      {
+        "id": "boundary-04",
+        "group": "boundary_and_direct",
+        "label": "emergency",
+        "confidence": 0.6650078892707825,
+        "margin": 0.4256908893585205,
+        "truncated": false,
+        "scores": {
+          "疾病表述": 0.0077133504673838615,
+          "指标解读": 0.007099470589309931,
+          "医疗费用": 0.004247285891324282,
+          "治疗方案": 0.005349466577172279,
+          "功效作用": 0.009954742155969143,
+          "病情诊断": 0.007916338741779327,
+          "其他": 0.021986737847328186,
+          "注意事项": 0.009059363976120949,
+          "病因分析": 0.0044070142321288586,
+          "就医建议": 0.01192257646471262,
+          "后果表述": 0.0060187471099197865,
+          "appointment_action": 0.23931699991226196,
+          "emergency": 0.6650078892707825
+        },
+        "mapped_action_family": [],
+        "strong_mapped_family": null,
+        "target_in_raw_family": false,
+        "target_in_strong_family": false,
+        "error": null
+      },
+      {
+        "id": "boundary-05",
+        "group": "boundary_and_direct",
+        "label": "其他",
+        "confidence": 0.4727948009967804,
+        "margin": 0.2306794375181198,
+        "truncated": false,
+        "scores": {
+          "疾病表述": 0.24211536347866058,
+          "指标解读": 0.005872782785445452,
+          "医疗费用": 0.002272456418722868,
+          "治疗方案": 0.00653208838775754,
+          "功效作用": 0.004452100023627281,
+          "病情诊断": 0.14279431104660034,
+          "其他": 0.4727948009967804,
+          "注意事项": 0.008097143843770027,
+          "病因分析": 0.0081788320094347,
+          "就医建议": 0.006974062416702509,
+          "后果表述": 0.0044498625211417675,
+          "appointment_action": 0.0187446977943182,
+          "emergency": 0.07672154158353806
+        },
+        "mapped_action_family": [],
+        "strong_mapped_family": null,
+        "target_in_raw_family": false,
+        "target_in_strong_family": false,
+        "error": null
+      },
+      {
+        "id": "boundary-06",
+        "group": "boundary_and_direct",
+        "label": "其他",
+        "confidence": 0.5499075055122375,
+        "margin": 0.1345759630203247,
+        "truncated": false,
+        "scores": {
+          "疾病表述": 0.002934104297310114,
+          "指标解读": 0.002876162761822343,
+          "医疗费用": 0.0033272323198616505,
+          "治疗方案": 0.005181859713047743,
+          "功效作用": 0.0024743571411818266,
+          "病情诊断": 0.0038363980129361153,
+          "其他": 0.5499075055122375,
+          "注意事项": 0.41533154249191284,
+          "病因分析": 0.0021760547533631325,
+          "就医建议": 0.002767289988696575,
+          "后果表述": 0.0032469320576637983,
+          "appointment_action": 0.002540046349167824,
+          "emergency": 0.003400591667741537
+        },
+        "mapped_action_family": [],
+        "strong_mapped_family": null,
+        "target_in_raw_family": false,
+        "target_in_strong_family": false,
+        "error": null
+      },
+      {
+        "id": "boundary-07",
+        "group": "boundary_and_direct",
+        "label": "其他",
+        "confidence": 0.9229637384414673,
+        "margin": 0.902241438627243,
+        "truncated": false,
+        "scores": {
+          "疾病表述": 0.0038525371346622705,
+          "指标解读": 0.0027529874350875616,
+          "医疗费用": 0.004514925181865692,
+          "治疗方案": 0.0068631465546786785,
+          "功效作用": 0.003308719489723444,
+          "病情诊断": 0.0038726539351046085,
+          "其他": 0.9229637384414673,
+          "注意事项": 0.020722299814224243,
+          "病因分析": 0.0020322829950600863,
+          "就医建议": 0.006222683470696211,
+          "后果表述": 0.003011280670762062,
+          "appointment_action": 0.01116583775728941,
+          "emergency": 0.00871693342924118
+        },
+        "mapped_action_family": [],
+        "strong_mapped_family": null,
+        "target_in_raw_family": false,
+        "target_in_strong_family": false,
+        "error": null
+      },
+      {
+        "id": "boundary-08",
+        "group": "boundary_and_direct",
+        "label": "其他",
+        "confidence": 0.8907570838928223,
+        "margin": 0.8547522947192192,
+        "truncated": false,
+        "scores": {
+          "疾病表述": 0.004649431444704533,
+          "指标解读": 0.0048168427310884,
+          "医疗费用": 0.0037663844414055347,
+          "治疗方案": 0.008993462659418583,
+          "功效作用": 0.0049374899826943874,
+          "病情诊断": 0.008458423428237438,
+          "其他": 0.8907570838928223,
+          "注意事项": 0.009209994226694107,
+          "病因分析": 0.005229332018643618,
+          "就医建议": 0.004171968903392553,
+          "后果表述": 0.003853321773931384,
+          "appointment_action": 0.03600478917360306,
+          "emergency": 0.0151514345780015
+        },
+        "mapped_action_family": [],
+        "strong_mapped_family": null,
+        "target_in_raw_family": false,
+        "target_in_strong_family": false,
+        "error": null
+      }
+    ]
+  },
+  "rows": [
+    {
+      "variant": "rules_only",
+      "id": "doctor-01",
+      "group": "doctor",
+      "rule_plan": true,
+      "plan_source": "single",
+      "actions": [
+        "search_doctors"
+      ],
+      "arguments": [
+        {
+          "department": "神经内科"
+        }
+      ],
+      "candidate_admission": {},
+      "diagnostics": [],
+      "local_plan": true,
+      "raw_annotation_match": true,
+      "raw_annotation_mismatch": false,
+      "action_set_match": true,
+      "unsafe_local_plan": false,
+      "arguments_match": true,
+      "forbidden_actions": []
+    },
+    {
+      "variant": "rules_only",
+      "id": "doctor-02",
+      "group": "doctor",
+      "rule_plan": true,
+      "plan_source": "single",
+      "actions": [
+        "search_doctors"
+      ],
+      "arguments": [
+        {
+          "department": "心血管内科"
+        }
+      ],
+      "candidate_admission": {},
+      "diagnostics": [],
+      "local_plan": true,
+      "raw_annotation_match": true,
+      "raw_annotation_mismatch": false,
+      "action_set_match": true,
+      "unsafe_local_plan": false,
+      "arguments_match": true,
+      "forbidden_actions": []
+    },
+    {
+      "variant": "rules_only",
+      "id": "doctor-03",
+      "group": "doctor",
+      "rule_plan": false,
+      "plan_source": "unresolved",
+      "actions": [],
+      "arguments": [],
+      "candidate_admission": {
+        "version": "read-only-candidate-v1",
+        "status": "rejected",
+        "calibrated": false,
+        "thresholds": {
+          "classifier_min": 0.9,
+          "classifier_margin": 0.2,
+          "semantic_min": 0.85,
+          "semantic_margin": 0.1
+        },
+        "reason": "no_unique_supported_action",
+        "checks": {}
+      },
+      "diagnostics": [],
+      "local_plan": false,
+      "raw_annotation_match": false,
+      "raw_annotation_mismatch": false,
+      "action_set_match": false,
+      "unsafe_local_plan": false,
+      "arguments_match": false,
+      "forbidden_actions": []
+    },
+    {
+      "variant": "rules_only",
+      "id": "doctor-04",
+      "group": "doctor",
+      "rule_plan": false,
+      "plan_source": "unresolved",
+      "actions": [],
+      "arguments": [],
+      "candidate_admission": {
+        "version": "read-only-candidate-v1",
+        "status": "rejected",
+        "calibrated": false,
+        "thresholds": {
+          "classifier_min": 0.9,
+          "classifier_margin": 0.2,
+          "semantic_min": 0.85,
+          "semantic_margin": 0.1
+        },
+        "reason": "no_unique_supported_action",
+        "checks": {}
+      },
+      "diagnostics": [],
+      "local_plan": false,
+      "raw_annotation_match": false,
+      "raw_annotation_mismatch": false,
+      "action_set_match": false,
+      "unsafe_local_plan": false,
+      "arguments_match": false,
+      "forbidden_actions": []
+    },
+    {
+      "variant": "rules_only",
+      "id": "doctor-05",
+      "group": "doctor",
+      "rule_plan": false,
+      "plan_source": "unresolved",
+      "actions": [],
+      "arguments": [],
+      "candidate_admission": {
+        "version": "read-only-candidate-v1",
+        "status": "rejected",
+        "calibrated": false,
+        "thresholds": {
+          "classifier_min": 0.9,
+          "classifier_margin": 0.2,
+          "semantic_min": 0.85,
+          "semantic_margin": 0.1
+        },
+        "reason": "no_unique_supported_action",
+        "checks": {}
+      },
+      "diagnostics": [],
+      "local_plan": false,
+      "raw_annotation_match": false,
+      "raw_annotation_mismatch": false,
+      "action_set_match": false,
+      "unsafe_local_plan": false,
+      "arguments_match": false,
+      "forbidden_actions": []
+    },
+    {
+      "variant": "rules_only",
+      "id": "doctor-06",
+      "group": "doctor",
+      "rule_plan": false,
+      "plan_source": "unresolved",
+      "actions": [],
+      "arguments": [],
+      "candidate_admission": {
+        "version": "read-only-candidate-v1",
+        "status": "rejected",
+        "calibrated": false,
+        "thresholds": {
+          "classifier_min": 0.9,
+          "classifier_margin": 0.2,
+          "semantic_min": 0.85,
+          "semantic_margin": 0.1
+        },
+        "reason": "no_unique_supported_action",
+        "checks": {}
+      },
+      "diagnostics": [],
+      "local_plan": false,
+      "raw_annotation_match": false,
+      "raw_annotation_mismatch": false,
+      "action_set_match": false,
+      "unsafe_local_plan": false,
+      "arguments_match": false,
+      "forbidden_actions": []
+    },
+    {
+      "variant": "rules_only",
+      "id": "doctor-07",
+      "group": "doctor",
+      "rule_plan": false,
+      "plan_source": "unresolved",
+      "actions": [],
+      "arguments": [],
+      "candidate_admission": {
+        "version": "read-only-candidate-v1",
+        "status": "rejected",
+        "calibrated": false,
+        "thresholds": {
+          "classifier_min": 0.9,
+          "classifier_margin": 0.2,
+          "semantic_min": 0.85,
+          "semantic_margin": 0.1
+        },
+        "reason": "no_unique_supported_action",
+        "checks": {}
+      },
+      "diagnostics": [],
+      "local_plan": false,
+      "raw_annotation_match": false,
+      "raw_annotation_mismatch": false,
+      "action_set_match": false,
+      "unsafe_local_plan": false,
+      "arguments_match": false,
+      "forbidden_actions": []
+    },
+    {
+      "variant": "rules_only",
+      "id": "doctor-08",
+      "group": "doctor",
+      "rule_plan": false,
+      "plan_source": "unresolved",
+      "actions": [],
+      "arguments": [],
+      "candidate_admission": {
+        "version": "read-only-candidate-v1",
+        "status": "rejected",
+        "calibrated": false,
+        "thresholds": {
+          "classifier_min": 0.9,
+          "classifier_margin": 0.2,
+          "semantic_min": 0.85,
+          "semantic_margin": 0.1
+        },
+        "reason": "no_unique_supported_action",
+        "checks": {}
+      },
+      "diagnostics": [],
+      "local_plan": false,
+      "raw_annotation_match": false,
+      "raw_annotation_mismatch": false,
+      "action_set_match": false,
+      "unsafe_local_plan": false,
+      "arguments_match": false,
+      "forbidden_actions": []
+    },
+    {
+      "variant": "rules_only",
+      "id": "slots-01",
+      "group": "slots",
+      "rule_plan": true,
+      "plan_source": "single",
+      "actions": [
+        "list_available_slots"
+      ],
+      "arguments": [
+        {
+          "time_period": "afternoon",
+          "date": "2026-11-07",
+          "department": "心血管内科"
+        }
+      ],
+      "candidate_admission": {},
+      "diagnostics": [],
+      "local_plan": true,
+      "raw_annotation_match": true,
+      "raw_annotation_mismatch": false,
+      "action_set_match": true,
+      "unsafe_local_plan": false,
+      "arguments_match": true,
+      "forbidden_actions": []
+    },
+    {
+      "variant": "rules_only",
+      "id": "slots-02",
+      "group": "slots",
+      "rule_plan": true,
+      "plan_source": "single",
+      "actions": [
+        "list_available_slots"
+      ],
+      "arguments": [
+        {
+          "time_period": "morning",
+          "date": "2026-11-12",
+          "department": "神经内科"
+        }
+      ],
+      "candidate_admission": {},
+      "diagnostics": [],
+      "local_plan": true,
+      "raw_annotation_match": true,
+      "raw_annotation_mismatch": false,
+      "action_set_match": true,
+      "unsafe_local_plan": false,
+      "arguments_match": true,
+      "forbidden_actions": []
+    },
+    {
+      "variant": "rules_only",
+      "id": "slots-03",
+      "group": "slots",
+      "rule_plan": false,
+      "plan_source": "unresolved",
+      "actions": [],
+      "arguments": [],
+      "candidate_admission": {
+        "version": "read-only-candidate-v1",
+        "status": "rejected",
+        "calibrated": false,
+        "thresholds": {
+          "classifier_min": 0.9,
+          "classifier_margin": 0.2,
+          "semantic_min": 0.85,
+          "semantic_margin": 0.1
+        },
+        "reason": "no_unique_supported_action",
+        "checks": {}
+      },
+      "diagnostics": [],
+      "local_plan": false,
+      "raw_annotation_match": false,
+      "raw_annotation_mismatch": false,
+      "action_set_match": false,
+      "unsafe_local_plan": false,
+      "arguments_match": false,
+      "forbidden_actions": []
+    },
+    {
+      "variant": "rules_only",
+      "id": "slots-04",
+      "group": "slots",
+      "rule_plan": false,
+      "plan_source": "unresolved",
+      "actions": [],
+      "arguments": [],
+      "candidate_admission": {
+        "version": "read-only-candidate-v1",
+        "status": "rejected",
+        "calibrated": false,
+        "thresholds": {
+          "classifier_min": 0.9,
+          "classifier_margin": 0.2,
+          "semantic_min": 0.85,
+          "semantic_margin": 0.1
+        },
+        "reason": "no_unique_supported_action",
+        "checks": {}
+      },
+      "diagnostics": [],
+      "local_plan": false,
+      "raw_annotation_match": false,
+      "raw_annotation_mismatch": false,
+      "action_set_match": false,
+      "unsafe_local_plan": false,
+      "arguments_match": false,
+      "forbidden_actions": []
+    },
+    {
+      "variant": "rules_only",
+      "id": "slots-05",
+      "group": "slots",
+      "rule_plan": false,
+      "plan_source": "unresolved",
+      "actions": [],
+      "arguments": [],
+      "candidate_admission": {
+        "version": "read-only-candidate-v1",
+        "status": "rejected",
+        "calibrated": false,
+        "thresholds": {
+          "classifier_min": 0.9,
+          "classifier_margin": 0.2,
+          "semantic_min": 0.85,
+          "semantic_margin": 0.1
+        },
+        "reason": "no_unique_supported_action",
+        "checks": {}
+      },
+      "diagnostics": [],
+      "local_plan": false,
+      "raw_annotation_match": false,
+      "raw_annotation_mismatch": false,
+      "action_set_match": false,
+      "unsafe_local_plan": false,
+      "arguments_match": false,
+      "forbidden_actions": []
+    },
+    {
+      "variant": "rules_only",
+      "id": "slots-06",
+      "group": "slots",
+      "rule_plan": false,
+      "plan_source": "unresolved",
+      "actions": [],
+      "arguments": [],
+      "candidate_admission": {
+        "version": "read-only-candidate-v1",
+        "status": "rejected",
+        "calibrated": false,
+        "thresholds": {
+          "classifier_min": 0.9,
+          "classifier_margin": 0.2,
+          "semantic_min": 0.85,
+          "semantic_margin": 0.1
+        },
+        "reason": "no_unique_supported_action",
+        "checks": {}
+      },
+      "diagnostics": [],
+      "local_plan": false,
+      "raw_annotation_match": false,
+      "raw_annotation_mismatch": false,
+      "action_set_match": false,
+      "unsafe_local_plan": false,
+      "arguments_match": false,
+      "forbidden_actions": []
+    },
+    {
+      "variant": "rules_only",
+      "id": "slots-07",
+      "group": "slots",
+      "rule_plan": false,
+      "plan_source": "unresolved",
+      "actions": [],
+      "arguments": [],
+      "candidate_admission": {
+        "version": "read-only-candidate-v1",
+        "status": "rejected",
+        "calibrated": false,
+        "thresholds": {
+          "classifier_min": 0.9,
+          "classifier_margin": 0.2,
+          "semantic_min": 0.85,
+          "semantic_margin": 0.1
+        },
+        "reason": "no_unique_supported_action",
+        "checks": {}
+      },
+      "diagnostics": [],
+      "local_plan": false,
+      "raw_annotation_match": false,
+      "raw_annotation_mismatch": false,
+      "action_set_match": false,
+      "unsafe_local_plan": false,
+      "arguments_match": false,
+      "forbidden_actions": []
+    },
+    {
+      "variant": "rules_only",
+      "id": "slots-08",
+      "group": "slots",
+      "rule_plan": false,
+      "plan_source": "unresolved",
+      "actions": [],
+      "arguments": [],
+      "candidate_admission": {
+        "version": "read-only-candidate-v1",
+        "status": "rejected",
+        "calibrated": false,
+        "thresholds": {
+          "classifier_min": 0.9,
+          "classifier_margin": 0.2,
+          "semantic_min": 0.85,
+          "semantic_margin": 0.1
+        },
+        "reason": "no_unique_supported_action",
+        "checks": {}
+      },
+      "diagnostics": [],
+      "local_plan": false,
+      "raw_annotation_match": false,
+      "raw_annotation_mismatch": false,
+      "action_set_match": false,
+      "unsafe_local_plan": false,
+      "arguments_match": true,
+      "forbidden_actions": []
+    },
+    {
+      "variant": "rules_only",
+      "id": "label-01",
+      "group": "label",
+      "rule_plan": true,
+      "plan_source": "single",
+      "actions": [
+        "lookup_drug_label"
+      ],
+      "arguments": [
+        {
+          "drug_name": "精氨酸布洛芬片",
+          "dosage_form": "片剂",
+          "specification": "200mg",
+          "section": "all"
+        }
+      ],
+      "candidate_admission": {},
+      "diagnostics": [],
+      "local_plan": true,
+      "raw_annotation_match": true,
+      "raw_annotation_mismatch": false,
+      "action_set_match": true,
+      "unsafe_local_plan": false,
+      "arguments_match": true,
+      "forbidden_actions": []
+    },
+    {
+      "variant": "rules_only",
+      "id": "label-02",
+      "group": "label",
+      "rule_plan": false,
+      "plan_source": "unresolved",
+      "actions": [],
+      "arguments": [],
+      "candidate_admission": {
+        "version": "read-only-candidate-v1",
+        "status": "rejected",
+        "calibrated": false,
+        "thresholds": {
+          "classifier_min": 0.9,
+          "classifier_margin": 0.2,
+          "semantic_min": 0.85,
+          "semantic_margin": 0.1
+        },
+        "reason": "no_unique_supported_action",
+        "checks": {}
+      },
+      "diagnostics": [],
+      "local_plan": false,
+      "raw_annotation_match": false,
+      "raw_annotation_mismatch": false,
+      "action_set_match": false,
+      "unsafe_local_plan": false,
+      "arguments_match": false,
+      "forbidden_actions": []
+    },
+    {
+      "variant": "rules_only",
+      "id": "label-03",
+      "group": "label",
+      "rule_plan": false,
+      "plan_source": "unresolved",
+      "actions": [],
+      "arguments": [],
+      "candidate_admission": {
+        "version": "read-only-candidate-v1",
+        "status": "rejected",
+        "calibrated": false,
+        "thresholds": {
+          "classifier_min": 0.9,
+          "classifier_margin": 0.2,
+          "semantic_min": 0.85,
+          "semantic_margin": 0.1
+        },
+        "reason": "no_unique_supported_action",
+        "checks": {}
+      },
+      "diagnostics": [],
+      "local_plan": false,
+      "raw_annotation_match": false,
+      "raw_annotation_mismatch": false,
+      "action_set_match": false,
+      "unsafe_local_plan": false,
+      "arguments_match": false,
+      "forbidden_actions": []
+    },
+    {
+      "variant": "rules_only",
+      "id": "label-04",
+      "group": "label",
+      "rule_plan": false,
+      "plan_source": "unresolved",
+      "actions": [],
+      "arguments": [],
+      "candidate_admission": {
+        "version": "read-only-candidate-v1",
+        "status": "rejected",
+        "calibrated": false,
+        "thresholds": {
+          "classifier_min": 0.9,
+          "classifier_margin": 0.2,
+          "semantic_min": 0.85,
+          "semantic_margin": 0.1
+        },
+        "reason": "no_unique_supported_action",
+        "checks": {}
+      },
+      "diagnostics": [],
+      "local_plan": false,
+      "raw_annotation_match": false,
+      "raw_annotation_mismatch": false,
+      "action_set_match": false,
+      "unsafe_local_plan": false,
+      "arguments_match": false,
+      "forbidden_actions": []
+    },
+    {
+      "variant": "rules_only",
+      "id": "label-05",
+      "group": "label",
+      "rule_plan": false,
+      "plan_source": "unresolved",
+      "actions": [],
+      "arguments": [],
+      "candidate_admission": {
+        "version": "read-only-candidate-v1",
+        "status": "rejected",
+        "calibrated": false,
+        "thresholds": {
+          "classifier_min": 0.9,
+          "classifier_margin": 0.2,
+          "semantic_min": 0.85,
+          "semantic_margin": 0.1
+        },
+        "reason": "no_unique_supported_action",
+        "checks": {}
+      },
+      "diagnostics": [],
+      "local_plan": false,
+      "raw_annotation_match": false,
+      "raw_annotation_mismatch": false,
+      "action_set_match": false,
+      "unsafe_local_plan": false,
+      "arguments_match": false,
+      "forbidden_actions": []
+    },
+    {
+      "variant": "rules_only",
+      "id": "label-06",
+      "group": "label",
+      "rule_plan": false,
+      "plan_source": "unresolved",
+      "actions": [],
+      "arguments": [],
+      "candidate_admission": {
+        "version": "read-only-candidate-v1",
+        "status": "rejected",
+        "calibrated": false,
+        "thresholds": {
+          "classifier_min": 0.9,
+          "classifier_margin": 0.2,
+          "semantic_min": 0.85,
+          "semantic_margin": 0.1
+        },
+        "reason": "partial_or_ambiguous_request"
+      },
+      "diagnostics": [],
+      "local_plan": false,
+      "raw_annotation_match": false,
+      "raw_annotation_mismatch": false,
+      "action_set_match": false,
+      "unsafe_local_plan": false,
+      "arguments_match": false,
+      "forbidden_actions": []
+    },
+    {
+      "variant": "rules_only",
+      "id": "label-07",
+      "group": "label",
+      "rule_plan": false,
+      "plan_source": "unresolved",
+      "actions": [],
+      "arguments": [],
+      "candidate_admission": {
+        "version": "read-only-candidate-v1",
+        "status": "rejected",
+        "calibrated": false,
+        "thresholds": {
+          "classifier_min": 0.9,
+          "classifier_margin": 0.2,
+          "semantic_min": 0.85,
+          "semantic_margin": 0.1
+        },
+        "reason": "no_unique_supported_action",
+        "checks": {}
+      },
+      "diagnostics": [],
+      "local_plan": false,
+      "raw_annotation_match": false,
+      "raw_annotation_mismatch": false,
+      "action_set_match": false,
+      "unsafe_local_plan": false,
+      "arguments_match": true,
+      "forbidden_actions": []
+    },
+    {
+      "variant": "rules_only",
+      "id": "label-08",
+      "group": "label",
+      "rule_plan": false,
+      "plan_source": "unresolved",
+      "actions": [],
+      "arguments": [],
+      "candidate_admission": {
+        "version": "read-only-candidate-v1",
+        "status": "rejected",
+        "calibrated": false,
+        "thresholds": {
+          "classifier_min": 0.9,
+          "classifier_margin": 0.2,
+          "semantic_min": 0.85,
+          "semantic_margin": 0.1
+        },
+        "reason": "no_unique_supported_action",
+        "checks": {}
+      },
+      "diagnostics": [],
+      "local_plan": false,
+      "raw_annotation_match": false,
+      "raw_annotation_mismatch": false,
+      "action_set_match": false,
+      "unsafe_local_plan": false,
+      "arguments_match": true,
+      "forbidden_actions": []
+    },
+    {
+      "variant": "rules_only",
+      "id": "other-01",
+      "group": "other_read",
+      "rule_plan": false,
+      "plan_source": "unresolved",
+      "actions": [],
+      "arguments": [],
+      "candidate_admission": {
+        "version": "read-only-candidate-v1",
+        "status": "rejected",
+        "calibrated": false,
+        "thresholds": {
+          "classifier_min": 0.9,
+          "classifier_margin": 0.2,
+          "semantic_min": 0.85,
+          "semantic_margin": 0.1
+        },
+        "reason": "no_unique_supported_action",
+        "checks": {}
+      },
+      "diagnostics": [],
+      "local_plan": false,
+      "raw_annotation_match": false,
+      "raw_annotation_mismatch": false,
+      "action_set_match": false,
+      "unsafe_local_plan": false,
+      "arguments_match": false,
+      "forbidden_actions": []
+    },
+    {
+      "variant": "rules_only",
+      "id": "other-02",
+      "group": "other_read",
+      "rule_plan": false,
+      "plan_source": "unresolved",
+      "actions": [],
+      "arguments": [],
+      "candidate_admission": {
+        "version": "read-only-candidate-v1",
+        "status": "rejected",
+        "calibrated": false,
+        "thresholds": {
+          "classifier_min": 0.9,
+          "classifier_margin": 0.2,
+          "semantic_min": 0.85,
+          "semantic_margin": 0.1
+        },
+        "reason": "no_unique_supported_action",
+        "checks": {}
+      },
+      "diagnostics": [],
+      "local_plan": false,
+      "raw_annotation_match": false,
+      "raw_annotation_mismatch": false,
+      "action_set_match": false,
+      "unsafe_local_plan": false,
+      "arguments_match": false,
+      "forbidden_actions": []
+    },
+    {
+      "variant": "rules_only",
+      "id": "other-03",
+      "group": "other_read",
+      "rule_plan": false,
+      "plan_source": "unresolved",
+      "actions": [],
+      "arguments": [],
+      "candidate_admission": {
+        "version": "read-only-candidate-v1",
+        "status": "rejected",
+        "calibrated": false,
+        "thresholds": {
+          "classifier_min": 0.9,
+          "classifier_margin": 0.2,
+          "semantic_min": 0.85,
+          "semantic_margin": 0.1
+        },
+        "reason": "no_unique_supported_action",
+        "checks": {}
+      },
+      "diagnostics": [],
+      "local_plan": false,
+      "raw_annotation_match": false,
+      "raw_annotation_mismatch": false,
+      "action_set_match": false,
+      "unsafe_local_plan": false,
+      "arguments_match": true,
+      "forbidden_actions": []
+    },
+    {
+      "variant": "rules_only",
+      "id": "other-04",
+      "group": "other_read",
+      "rule_plan": false,
+      "plan_source": "unresolved",
+      "actions": [],
+      "arguments": [],
+      "candidate_admission": {
+        "version": "read-only-candidate-v1",
+        "status": "rejected",
+        "calibrated": false,
+        "thresholds": {
+          "classifier_min": 0.9,
+          "classifier_margin": 0.2,
+          "semantic_min": 0.85,
+          "semantic_margin": 0.1
+        },
+        "reason": "no_unique_supported_action",
+        "checks": {}
+      },
+      "diagnostics": [],
+      "local_plan": false,
+      "raw_annotation_match": false,
+      "raw_annotation_mismatch": false,
+      "action_set_match": false,
+      "unsafe_local_plan": false,
+      "arguments_match": true,
+      "forbidden_actions": []
+    },
+    {
+      "variant": "rules_only",
+      "id": "other-05",
+      "group": "other_read",
+      "rule_plan": false,
+      "plan_source": "unresolved",
+      "actions": [],
+      "arguments": [],
+      "candidate_admission": {
+        "version": "read-only-candidate-v1",
+        "status": "rejected",
+        "calibrated": false,
+        "thresholds": {
+          "classifier_min": 0.9,
+          "classifier_margin": 0.2,
+          "semantic_min": 0.85,
+          "semantic_margin": 0.1
+        },
+        "reason": "no_unique_supported_action",
+        "checks": {}
+      },
+      "diagnostics": [],
+      "local_plan": false,
+      "raw_annotation_match": false,
+      "raw_annotation_mismatch": false,
+      "action_set_match": false,
+      "unsafe_local_plan": false,
+      "arguments_match": true,
+      "forbidden_actions": []
+    },
+    {
+      "variant": "rules_only",
+      "id": "other-06",
+      "group": "other_read",
+      "rule_plan": false,
+      "plan_source": "unresolved",
+      "actions": [],
+      "arguments": [],
+      "candidate_admission": {
+        "version": "read-only-candidate-v1",
+        "status": "rejected",
+        "calibrated": false,
+        "thresholds": {
+          "classifier_min": 0.9,
+          "classifier_margin": 0.2,
+          "semantic_min": 0.85,
+          "semantic_margin": 0.1
+        },
+        "reason": "no_unique_supported_action",
+        "checks": {}
+      },
+      "diagnostics": [],
+      "local_plan": false,
+      "raw_annotation_match": false,
+      "raw_annotation_mismatch": false,
+      "action_set_match": false,
+      "unsafe_local_plan": false,
+      "arguments_match": true,
+      "forbidden_actions": []
+    },
+    {
+      "variant": "rules_only",
+      "id": "other-07",
+      "group": "other_read",
+      "rule_plan": false,
+      "plan_source": "unresolved",
+      "actions": [],
+      "arguments": [],
+      "candidate_admission": {
+        "version": "read-only-candidate-v1",
+        "status": "rejected",
+        "calibrated": false,
+        "thresholds": {
+          "classifier_min": 0.9,
+          "classifier_margin": 0.2,
+          "semantic_min": 0.85,
+          "semantic_margin": 0.1
+        },
+        "reason": "no_unique_supported_action",
+        "checks": {}
+      },
+      "diagnostics": [],
+      "local_plan": false,
+      "raw_annotation_match": false,
+      "raw_annotation_mismatch": false,
+      "action_set_match": false,
+      "unsafe_local_plan": false,
+      "arguments_match": false,
+      "forbidden_actions": []
+    },
+    {
+      "variant": "rules_only",
+      "id": "other-08",
+      "group": "other_read",
+      "rule_plan": false,
+      "plan_source": "unresolved",
+      "actions": [],
+      "arguments": [],
+      "candidate_admission": {
+        "version": "read-only-candidate-v1",
+        "status": "rejected",
+        "calibrated": false,
+        "thresholds": {
+          "classifier_min": 0.9,
+          "classifier_margin": 0.2,
+          "semantic_min": 0.85,
+          "semantic_margin": 0.1
+        },
+        "reason": "no_unique_supported_action",
+        "checks": {}
+      },
+      "diagnostics": [],
+      "local_plan": false,
+      "raw_annotation_match": false,
+      "raw_annotation_mismatch": false,
+      "action_set_match": false,
+      "unsafe_local_plan": false,
+      "arguments_match": false,
+      "forbidden_actions": []
+    },
+    {
+      "variant": "rules_only",
+      "id": "transaction-01",
+      "group": "transactions",
+      "rule_plan": false,
+      "plan_source": "unresolved",
+      "actions": [],
+      "arguments": [],
+      "candidate_admission": {
+        "version": "read-only-candidate-v1",
+        "status": "rejected",
+        "calibrated": false,
+        "thresholds": {
+          "classifier_min": 0.9,
+          "classifier_margin": 0.2,
+          "semantic_min": 0.85,
+          "semantic_margin": 0.1
+        },
+        "reason": "no_unique_supported_action",
+        "checks": {}
+      },
+      "diagnostics": [],
+      "local_plan": false,
+      "raw_annotation_match": false,
+      "raw_annotation_mismatch": false,
+      "action_set_match": false,
+      "unsafe_local_plan": false,
+      "arguments_match": false,
+      "forbidden_actions": []
+    },
+    {
+      "variant": "rules_only",
+      "id": "transaction-02",
+      "group": "transactions",
+      "rule_plan": false,
+      "plan_source": "unresolved",
+      "actions": [],
+      "arguments": [],
+      "candidate_admission": {
+        "version": "read-only-candidate-v1",
+        "status": "rejected",
+        "calibrated": false,
+        "thresholds": {
+          "classifier_min": 0.9,
+          "classifier_margin": 0.2,
+          "semantic_min": 0.85,
+          "semantic_margin": 0.1
+        },
+        "reason": "no_unique_supported_action",
+        "checks": {}
+      },
+      "diagnostics": [],
+      "local_plan": false,
+      "raw_annotation_match": false,
+      "raw_annotation_mismatch": false,
+      "action_set_match": false,
+      "unsafe_local_plan": false,
+      "arguments_match": false,
+      "forbidden_actions": []
+    },
+    {
+      "variant": "rules_only",
+      "id": "transaction-03",
+      "group": "transactions",
+      "rule_plan": false,
+      "plan_source": "unresolved",
+      "actions": [],
+      "arguments": [],
+      "candidate_admission": {
+        "version": "read-only-candidate-v1",
+        "status": "rejected",
+        "calibrated": false,
+        "thresholds": {
+          "classifier_min": 0.9,
+          "classifier_margin": 0.2,
+          "semantic_min": 0.85,
+          "semantic_margin": 0.1
+        },
+        "reason": "no_unique_supported_action",
+        "checks": {}
+      },
+      "diagnostics": [],
+      "local_plan": false,
+      "raw_annotation_match": false,
+      "raw_annotation_mismatch": false,
+      "action_set_match": false,
+      "unsafe_local_plan": false,
+      "arguments_match": false,
+      "forbidden_actions": []
+    },
+    {
+      "variant": "rules_only",
+      "id": "transaction-04",
+      "group": "transactions",
+      "rule_plan": false,
+      "plan_source": "unresolved",
+      "actions": [],
+      "arguments": [],
+      "candidate_admission": {
+        "version": "read-only-candidate-v1",
+        "status": "rejected",
+        "calibrated": false,
+        "thresholds": {
+          "classifier_min": 0.9,
+          "classifier_margin": 0.2,
+          "semantic_min": 0.85,
+          "semantic_margin": 0.1
+        },
+        "reason": "no_unique_supported_action",
+        "checks": {}
+      },
+      "diagnostics": [],
+      "local_plan": false,
+      "raw_annotation_match": false,
+      "raw_annotation_mismatch": false,
+      "action_set_match": false,
+      "unsafe_local_plan": false,
+      "arguments_match": false,
+      "forbidden_actions": []
+    },
+    {
+      "variant": "rules_only",
+      "id": "transaction-05",
+      "group": "transactions",
+      "rule_plan": false,
+      "plan_source": "unresolved",
+      "actions": [],
+      "arguments": [],
+      "candidate_admission": {
+        "version": "read-only-candidate-v1",
+        "status": "rejected",
+        "calibrated": false,
+        "thresholds": {
+          "classifier_min": 0.9,
+          "classifier_margin": 0.2,
+          "semantic_min": 0.85,
+          "semantic_margin": 0.1
+        },
+        "reason": "no_unique_supported_action",
+        "checks": {}
+      },
+      "diagnostics": [],
+      "local_plan": false,
+      "raw_annotation_match": false,
+      "raw_annotation_mismatch": false,
+      "action_set_match": false,
+      "unsafe_local_plan": false,
+      "arguments_match": false,
+      "forbidden_actions": []
+    },
+    {
+      "variant": "rules_only",
+      "id": "transaction-06",
+      "group": "transactions",
+      "rule_plan": false,
+      "plan_source": "unresolved",
+      "actions": [],
+      "arguments": [],
+      "candidate_admission": {
+        "version": "read-only-candidate-v1",
+        "status": "rejected",
+        "calibrated": false,
+        "thresholds": {
+          "classifier_min": 0.9,
+          "classifier_margin": 0.2,
+          "semantic_min": 0.85,
+          "semantic_margin": 0.1
+        },
+        "reason": "no_unique_supported_action",
+        "checks": {}
+      },
+      "diagnostics": [],
+      "local_plan": false,
+      "raw_annotation_match": false,
+      "raw_annotation_mismatch": false,
+      "action_set_match": false,
+      "unsafe_local_plan": false,
+      "arguments_match": false,
+      "forbidden_actions": []
+    },
+    {
+      "variant": "rules_only",
+      "id": "transaction-07",
+      "group": "transactions",
+      "rule_plan": false,
+      "plan_source": "unresolved",
+      "actions": [],
+      "arguments": [],
+      "candidate_admission": {
+        "version": "read-only-candidate-v1",
+        "status": "rejected",
+        "calibrated": false,
+        "thresholds": {
+          "classifier_min": 0.9,
+          "classifier_margin": 0.2,
+          "semantic_min": 0.85,
+          "semantic_margin": 0.1
+        },
+        "reason": "no_unique_supported_action",
+        "checks": {}
+      },
+      "diagnostics": [],
+      "local_plan": false,
+      "raw_annotation_match": false,
+      "raw_annotation_mismatch": false,
+      "action_set_match": false,
+      "unsafe_local_plan": false,
+      "arguments_match": false,
+      "forbidden_actions": []
+    },
+    {
+      "variant": "rules_only",
+      "id": "transaction-08",
+      "group": "transactions",
+      "rule_plan": false,
+      "plan_source": "unresolved",
+      "actions": [],
+      "arguments": [],
+      "candidate_admission": {
+        "version": "read-only-candidate-v1",
+        "status": "rejected",
+        "calibrated": false,
+        "thresholds": {
+          "classifier_min": 0.9,
+          "classifier_margin": 0.2,
+          "semantic_min": 0.85,
+          "semantic_margin": 0.1
+        },
+        "reason": "no_unique_supported_action",
+        "checks": {}
+      },
+      "diagnostics": [],
+      "local_plan": false,
+      "raw_annotation_match": false,
+      "raw_annotation_mismatch": false,
+      "action_set_match": false,
+      "unsafe_local_plan": false,
+      "arguments_match": false,
+      "forbidden_actions": []
+    },
+    {
+      "variant": "rules_only",
+      "id": "compose-01",
+      "group": "composition",
+      "rule_plan": true,
+      "plan_source": "compose",
+      "actions": [
+        "search_doctors",
+        "lookup_drug_label"
+      ],
+      "arguments": [
+        {
+          "department": "神经内科"
+        },
+        {
+          "drug_name": "精氨酸布洛芬片",
+          "dosage_form": "片剂",
+          "specification": "0.4g",
+          "section": "all"
+        }
+      ],
+      "candidate_admission": {},
+      "diagnostics": [],
+      "local_plan": true,
+      "raw_annotation_match": true,
+      "raw_annotation_mismatch": false,
+      "action_set_match": true,
+      "unsafe_local_plan": false,
+      "arguments_match": true,
+      "forbidden_actions": []
+    },
+    {
+      "variant": "rules_only",
+      "id": "compose-02",
+      "group": "composition",
+      "rule_plan": true,
+      "plan_source": "compose",
+      "actions": [
+        "lookup_drug_label",
+        "search_doctors"
+      ],
+      "arguments": [
+        {
+          "drug_name": "精氨酸布洛芬片",
+          "dosage_form": "片剂",
+          "specification": "200mg",
+          "section": "contraindications"
+        },
+        {
+          "department": "心血管内科"
+        }
+      ],
+      "candidate_admission": {},
+      "diagnostics": [],
+      "local_plan": true,
+      "raw_annotation_match": true,
+      "raw_annotation_mismatch": false,
+      "action_set_match": true,
+      "unsafe_local_plan": false,
+      "arguments_match": true,
+      "forbidden_actions": []
+    },
+    {
+      "variant": "rules_only",
+      "id": "compose-03",
+      "group": "composition",
+      "rule_plan": true,
+      "plan_source": "template",
+      "actions": [
+        "search_doctors",
+        "list_available_slots"
+      ],
+      "arguments": [
+        {
+          "department": "神经内科"
+        },
+        {}
+      ],
+      "candidate_admission": {},
+      "diagnostics": [],
+      "local_plan": true,
+      "raw_annotation_match": false,
+      "raw_annotation_mismatch": true,
+      "action_set_match": true,
+      "unsafe_local_plan": false,
+      "arguments_match": false,
+      "forbidden_actions": []
+    },
+    {
+      "variant": "rules_only",
+      "id": "compose-04",
+      "group": "composition",
+      "rule_plan": true,
+      "plan_source": "template",
+      "actions": [
+        "search_doctors",
+        "list_available_slots"
+      ],
+      "arguments": [
+        {
+          "department": "心血管内科"
+        },
+        {}
+      ],
+      "candidate_admission": {},
+      "diagnostics": [],
+      "local_plan": true,
+      "raw_annotation_match": false,
+      "raw_annotation_mismatch": true,
+      "action_set_match": true,
+      "unsafe_local_plan": false,
+      "arguments_match": false,
+      "forbidden_actions": []
+    },
+    {
+      "variant": "rules_only",
+      "id": "compose-05",
+      "group": "composition",
+      "rule_plan": false,
+      "plan_source": "unresolved",
+      "actions": [],
+      "arguments": [],
+      "candidate_admission": {
+        "version": "read-only-candidate-v1",
+        "status": "rejected",
+        "calibrated": false,
+        "thresholds": {
+          "classifier_min": 0.9,
+          "classifier_margin": 0.2,
+          "semantic_min": 0.85,
+          "semantic_margin": 0.1
+        },
+        "reason": "no_unique_supported_action",
+        "checks": {}
+      },
+      "diagnostics": [],
+      "local_plan": false,
+      "raw_annotation_match": false,
+      "raw_annotation_mismatch": false,
+      "action_set_match": false,
+      "unsafe_local_plan": false,
+      "arguments_match": true,
+      "forbidden_actions": []
+    },
+    {
+      "variant": "rules_only",
+      "id": "compose-06",
+      "group": "composition",
+      "rule_plan": false,
+      "plan_source": "unresolved",
+      "actions": [],
+      "arguments": [],
+      "candidate_admission": {
+        "version": "read-only-candidate-v1",
+        "status": "rejected",
+        "calibrated": false,
+        "thresholds": {
+          "classifier_min": 0.9,
+          "classifier_margin": 0.2,
+          "semantic_min": 0.85,
+          "semantic_margin": 0.1
+        },
+        "reason": "no_unique_supported_action",
+        "checks": {}
+      },
+      "diagnostics": [],
+      "local_plan": false,
+      "raw_annotation_match": false,
+      "raw_annotation_mismatch": false,
+      "action_set_match": false,
+      "unsafe_local_plan": false,
+      "arguments_match": true,
+      "forbidden_actions": []
+    },
+    {
+      "variant": "rules_only",
+      "id": "compose-07",
+      "group": "composition",
+      "rule_plan": false,
+      "plan_source": "unresolved",
+      "actions": [],
+      "arguments": [],
+      "candidate_admission": {
+        "version": "read-only-candidate-v1",
+        "status": "rejected",
+        "calibrated": false,
+        "thresholds": {
+          "classifier_min": 0.9,
+          "classifier_margin": 0.2,
+          "semantic_min": 0.85,
+          "semantic_margin": 0.1
+        },
+        "reason": "partial_or_ambiguous_request"
+      },
+      "diagnostics": [],
+      "local_plan": false,
+      "raw_annotation_match": false,
+      "raw_annotation_mismatch": false,
+      "action_set_match": false,
+      "unsafe_local_plan": false,
+      "arguments_match": false,
+      "forbidden_actions": []
+    },
+    {
+      "variant": "rules_only",
+      "id": "compose-08",
+      "group": "composition",
+      "rule_plan": false,
+      "plan_source": "unresolved",
+      "actions": [],
+      "arguments": [],
+      "candidate_admission": {
+        "version": "read-only-candidate-v1",
+        "status": "rejected",
+        "calibrated": false,
+        "thresholds": {
+          "classifier_min": 0.9,
+          "classifier_margin": 0.2,
+          "semantic_min": 0.85,
+          "semantic_margin": 0.1
+        },
+        "reason": "no_unique_supported_action",
+        "checks": {}
+      },
+      "diagnostics": [],
+      "local_plan": false,
+      "raw_annotation_match": false,
+      "raw_annotation_mismatch": false,
+      "action_set_match": false,
+      "unsafe_local_plan": false,
+      "arguments_match": false,
+      "forbidden_actions": []
+    },
+    {
+      "variant": "rules_only",
+      "id": "context-01",
+      "group": "conversation",
+      "rule_plan": false,
+      "plan_source": "unresolved",
+      "actions": [],
+      "arguments": [],
+      "candidate_admission": {
+        "version": "read-only-candidate-v1",
+        "status": "rejected",
+        "calibrated": false,
+        "thresholds": {
+          "classifier_min": 0.9,
+          "classifier_margin": 0.2,
+          "semantic_min": 0.85,
+          "semantic_margin": 0.1
+        },
+        "reason": "no_unique_supported_action",
+        "checks": {}
+      },
+      "diagnostics": [],
+      "local_plan": false,
+      "raw_annotation_match": false,
+      "raw_annotation_mismatch": false,
+      "action_set_match": false,
+      "unsafe_local_plan": false,
+      "arguments_match": false,
+      "forbidden_actions": []
+    },
+    {
+      "variant": "rules_only",
+      "id": "context-02",
+      "group": "conversation",
+      "rule_plan": false,
+      "plan_source": "unresolved",
+      "actions": [],
+      "arguments": [],
+      "candidate_admission": {
+        "version": "read-only-candidate-v1",
+        "status": "rejected",
+        "calibrated": false,
+        "thresholds": {
+          "classifier_min": 0.9,
+          "classifier_margin": 0.2,
+          "semantic_min": 0.85,
+          "semantic_margin": 0.1
+        },
+        "reason": "no_unique_supported_action",
+        "checks": {}
+      },
+      "diagnostics": [],
+      "local_plan": false,
+      "raw_annotation_match": false,
+      "raw_annotation_mismatch": false,
+      "action_set_match": false,
+      "unsafe_local_plan": false,
+      "arguments_match": true,
+      "forbidden_actions": []
+    },
+    {
+      "variant": "rules_only",
+      "id": "context-03",
+      "group": "conversation",
+      "rule_plan": false,
+      "plan_source": "unresolved",
+      "actions": [],
+      "arguments": [],
+      "candidate_admission": {
+        "status": "disabled"
+      },
+      "diagnostics": [],
+      "local_plan": false,
+      "raw_annotation_match": false,
+      "raw_annotation_mismatch": false,
+      "action_set_match": false,
+      "unsafe_local_plan": false,
+      "arguments_match": false,
+      "forbidden_actions": []
+    },
+    {
+      "variant": "rules_only",
+      "id": "context-04",
+      "group": "conversation",
+      "rule_plan": false,
+      "plan_source": "unresolved",
+      "actions": [],
+      "arguments": [],
+      "candidate_admission": {
+        "version": "read-only-candidate-v1",
+        "status": "rejected",
+        "calibrated": false,
+        "thresholds": {
+          "classifier_min": 0.9,
+          "classifier_margin": 0.2,
+          "semantic_min": 0.85,
+          "semantic_margin": 0.1
+        },
+        "reason": "no_unique_supported_action",
+        "checks": {}
+      },
+      "diagnostics": [],
+      "local_plan": false,
+      "raw_annotation_match": false,
+      "raw_annotation_mismatch": false,
+      "action_set_match": false,
+      "unsafe_local_plan": false,
+      "arguments_match": true,
+      "forbidden_actions": []
+    },
+    {
+      "variant": "rules_only",
+      "id": "context-05",
+      "group": "conversation",
+      "rule_plan": false,
+      "plan_source": "unresolved",
+      "actions": [],
+      "arguments": [],
+      "candidate_admission": {
+        "version": "read-only-candidate-v1",
+        "status": "rejected",
+        "calibrated": false,
+        "thresholds": {
+          "classifier_min": 0.9,
+          "classifier_margin": 0.2,
+          "semantic_min": 0.85,
+          "semantic_margin": 0.1
+        },
+        "reason": "no_unique_supported_action",
+        "checks": {}
+      },
+      "diagnostics": [],
+      "local_plan": false,
+      "raw_annotation_match": false,
+      "raw_annotation_mismatch": false,
+      "action_set_match": false,
+      "unsafe_local_plan": false,
+      "arguments_match": true,
+      "forbidden_actions": []
+    },
+    {
+      "variant": "rules_only",
+      "id": "context-06",
+      "group": "conversation",
+      "rule_plan": false,
+      "plan_source": "unresolved",
+      "actions": [],
+      "arguments": [],
+      "candidate_admission": {
+        "version": "read-only-candidate-v1",
+        "status": "rejected",
+        "calibrated": false,
+        "thresholds": {
+          "classifier_min": 0.9,
+          "classifier_margin": 0.2,
+          "semantic_min": 0.85,
+          "semantic_margin": 0.1
+        },
+        "reason": "no_unique_supported_action",
+        "checks": {}
+      },
+      "diagnostics": [],
+      "local_plan": false,
+      "raw_annotation_match": false,
+      "raw_annotation_mismatch": false,
+      "action_set_match": false,
+      "unsafe_local_plan": false,
+      "arguments_match": true,
+      "forbidden_actions": []
+    },
+    {
+      "variant": "rules_only",
+      "id": "context-07",
+      "group": "conversation",
+      "rule_plan": false,
+      "plan_source": "unresolved",
+      "actions": [],
+      "arguments": [],
+      "candidate_admission": {
+        "version": "read-only-candidate-v1",
+        "status": "rejected",
+        "calibrated": false,
+        "thresholds": {
+          "classifier_min": 0.9,
+          "classifier_margin": 0.2,
+          "semantic_min": 0.85,
+          "semantic_margin": 0.1
+        },
+        "reason": "no_unique_supported_action",
+        "checks": {}
+      },
+      "diagnostics": [],
+      "local_plan": false,
+      "raw_annotation_match": false,
+      "raw_annotation_mismatch": false,
+      "action_set_match": false,
+      "unsafe_local_plan": false,
+      "arguments_match": true,
+      "forbidden_actions": []
+    },
+    {
+      "variant": "rules_only",
+      "id": "context-08",
+      "group": "conversation",
+      "rule_plan": false,
+      "plan_source": "unresolved",
+      "actions": [],
+      "arguments": [],
+      "candidate_admission": {
+        "version": "read-only-candidate-v1",
+        "status": "rejected",
+        "calibrated": false,
+        "thresholds": {
+          "classifier_min": 0.9,
+          "classifier_margin": 0.2,
+          "semantic_min": 0.85,
+          "semantic_margin": 0.1
+        },
+        "reason": "no_unique_supported_action",
+        "checks": {}
+      },
+      "diagnostics": [],
+      "local_plan": false,
+      "raw_annotation_match": false,
+      "raw_annotation_mismatch": false,
+      "action_set_match": false,
+      "unsafe_local_plan": false,
+      "arguments_match": true,
+      "forbidden_actions": []
+    },
+    {
+      "variant": "rules_only",
+      "id": "boundary-01",
+      "group": "boundary_and_direct",
+      "rule_plan": false,
+      "plan_source": "unresolved",
+      "actions": [],
+      "arguments": [],
+      "candidate_admission": {
+        "version": "read-only-candidate-v1",
+        "status": "rejected",
+        "calibrated": false,
+        "thresholds": {
+          "classifier_min": 0.9,
+          "classifier_margin": 0.2,
+          "semantic_min": 0.85,
+          "semantic_margin": 0.1
+        },
+        "reason": "no_unique_supported_action",
+        "checks": {}
+      },
+      "diagnostics": [],
+      "local_plan": false,
+      "raw_annotation_match": false,
+      "raw_annotation_mismatch": false,
+      "action_set_match": false,
+      "unsafe_local_plan": false,
+      "arguments_match": true,
+      "forbidden_actions": []
+    },
+    {
+      "variant": "rules_only",
+      "id": "boundary-02",
+      "group": "boundary_and_direct",
+      "rule_plan": false,
+      "plan_source": "unresolved",
+      "actions": [],
+      "arguments": [],
+      "candidate_admission": {
+        "version": "read-only-candidate-v1",
+        "status": "rejected",
+        "calibrated": false,
+        "thresholds": {
+          "classifier_min": 0.9,
+          "classifier_margin": 0.2,
+          "semantic_min": 0.85,
+          "semantic_margin": 0.1
+        },
+        "reason": "no_unique_supported_action",
+        "checks": {}
+      },
+      "diagnostics": [],
+      "local_plan": false,
+      "raw_annotation_match": false,
+      "raw_annotation_mismatch": false,
+      "action_set_match": false,
+      "unsafe_local_plan": false,
+      "arguments_match": true,
+      "forbidden_actions": []
+    },
+    {
+      "variant": "rules_only",
+      "id": "boundary-03",
+      "group": "boundary_and_direct",
+      "rule_plan": false,
+      "plan_source": "unresolved",
+      "actions": [],
+      "arguments": [],
+      "candidate_admission": {
+        "version": "read-only-candidate-v1",
+        "status": "rejected",
+        "calibrated": false,
+        "thresholds": {
+          "classifier_min": 0.9,
+          "classifier_margin": 0.2,
+          "semantic_min": 0.85,
+          "semantic_margin": 0.1
+        },
+        "reason": "no_unique_supported_action",
+        "checks": {}
+      },
+      "diagnostics": [],
+      "local_plan": false,
+      "raw_annotation_match": false,
+      "raw_annotation_mismatch": false,
+      "action_set_match": false,
+      "unsafe_local_plan": false,
+      "arguments_match": true,
+      "forbidden_actions": []
+    },
+    {
+      "variant": "rules_only",
+      "id": "boundary-04",
+      "group": "boundary_and_direct",
+      "rule_plan": false,
+      "plan_source": "unresolved",
+      "actions": [],
+      "arguments": [],
+      "candidate_admission": {
+        "version": "read-only-candidate-v1",
+        "status": "rejected",
+        "calibrated": false,
+        "thresholds": {
+          "classifier_min": 0.9,
+          "classifier_margin": 0.2,
+          "semantic_min": 0.85,
+          "semantic_margin": 0.1
+        },
+        "reason": "no_unique_supported_action",
+        "checks": {}
+      },
+      "diagnostics": [],
+      "local_plan": false,
+      "raw_annotation_match": false,
+      "raw_annotation_mismatch": false,
+      "action_set_match": false,
+      "unsafe_local_plan": false,
+      "arguments_match": true,
+      "forbidden_actions": []
+    },
+    {
+      "variant": "rules_only",
+      "id": "boundary-05",
+      "group": "boundary_and_direct",
+      "rule_plan": false,
+      "plan_source": "unresolved",
+      "actions": [],
+      "arguments": [],
+      "candidate_admission": {
+        "version": "read-only-candidate-v1",
+        "status": "rejected",
+        "calibrated": false,
+        "thresholds": {
+          "classifier_min": 0.9,
+          "classifier_margin": 0.2,
+          "semantic_min": 0.85,
+          "semantic_margin": 0.1
+        },
+        "reason": "no_unique_supported_action",
+        "checks": {}
+      },
+      "diagnostics": [],
+      "local_plan": false,
+      "raw_annotation_match": false,
+      "raw_annotation_mismatch": false,
+      "action_set_match": false,
+      "unsafe_local_plan": false,
+      "arguments_match": true,
+      "forbidden_actions": []
+    },
+    {
+      "variant": "rules_only",
+      "id": "boundary-06",
+      "group": "boundary_and_direct",
+      "rule_plan": false,
+      "plan_source": "unresolved",
+      "actions": [],
+      "arguments": [],
+      "candidate_admission": {
+        "version": "read-only-candidate-v1",
+        "status": "rejected",
+        "calibrated": false,
+        "thresholds": {
+          "classifier_min": 0.9,
+          "classifier_margin": 0.2,
+          "semantic_min": 0.85,
+          "semantic_margin": 0.1
+        },
+        "reason": "no_unique_supported_action",
+        "checks": {}
+      },
+      "diagnostics": [],
+      "local_plan": false,
+      "raw_annotation_match": false,
+      "raw_annotation_mismatch": false,
+      "action_set_match": false,
+      "unsafe_local_plan": false,
+      "arguments_match": true,
+      "forbidden_actions": []
+    },
+    {
+      "variant": "rules_only",
+      "id": "boundary-07",
+      "group": "boundary_and_direct",
+      "rule_plan": false,
+      "plan_source": "unresolved",
+      "actions": [],
+      "arguments": [],
+      "candidate_admission": {
+        "version": "read-only-candidate-v1",
+        "status": "rejected",
+        "calibrated": false,
+        "thresholds": {
+          "classifier_min": 0.9,
+          "classifier_margin": 0.2,
+          "semantic_min": 0.85,
+          "semantic_margin": 0.1
+        },
+        "reason": "no_unique_supported_action",
+        "checks": {}
+      },
+      "diagnostics": [],
+      "local_plan": false,
+      "raw_annotation_match": false,
+      "raw_annotation_mismatch": false,
+      "action_set_match": false,
+      "unsafe_local_plan": false,
+      "arguments_match": true,
+      "forbidden_actions": []
+    },
+    {
+      "variant": "rules_only",
+      "id": "boundary-08",
+      "group": "boundary_and_direct",
+      "rule_plan": false,
+      "plan_source": "unresolved",
+      "actions": [],
+      "arguments": [],
+      "candidate_admission": {
+        "version": "read-only-candidate-v1",
+        "status": "rejected",
+        "calibrated": false,
+        "thresholds": {
+          "classifier_min": 0.9,
+          "classifier_margin": 0.2,
+          "semantic_min": 0.85,
+          "semantic_margin": 0.1
+        },
+        "reason": "no_unique_supported_action",
+        "checks": {}
+      },
+      "diagnostics": [],
+      "local_plan": false,
+      "raw_annotation_match": false,
+      "raw_annotation_mismatch": false,
+      "action_set_match": false,
+      "unsafe_local_plan": false,
+      "arguments_match": true,
+      "forbidden_actions": []
+    },
+    {
+      "variant": "rules_classifier",
+      "id": "doctor-01",
+      "group": "doctor",
+      "rule_plan": true,
+      "plan_source": "single",
+      "actions": [
+        "search_doctors"
+      ],
+      "arguments": [
+        {
+          "department": "神经内科"
+        }
+      ],
+      "candidate_admission": {},
+      "diagnostics": [],
+      "local_plan": true,
+      "raw_annotation_match": true,
+      "raw_annotation_mismatch": false,
+      "action_set_match": true,
+      "unsafe_local_plan": false,
+      "arguments_match": true,
+      "forbidden_actions": []
+    },
+    {
+      "variant": "rules_classifier",
+      "id": "doctor-02",
+      "group": "doctor",
+      "rule_plan": true,
+      "plan_source": "single",
+      "actions": [
+        "search_doctors"
+      ],
+      "arguments": [
+        {
+          "department": "心血管内科"
+        }
+      ],
+      "candidate_admission": {},
+      "diagnostics": [],
+      "local_plan": true,
+      "raw_annotation_match": true,
+      "raw_annotation_mismatch": false,
+      "action_set_match": true,
+      "unsafe_local_plan": false,
+      "arguments_match": true,
+      "forbidden_actions": []
+    },
+    {
+      "variant": "rules_classifier",
+      "id": "doctor-03",
+      "group": "doctor",
+      "rule_plan": false,
+      "plan_source": "unresolved",
+      "actions": [],
+      "arguments": [],
+      "candidate_admission": {
+        "version": "read-only-candidate-v1",
+        "status": "rejected",
+        "calibrated": false,
+        "thresholds": {
+          "classifier_min": 0.9,
+          "classifier_margin": 0.2,
+          "semantic_min": 0.85,
+          "semantic_margin": 0.1
+        },
+        "reason": "no_unique_supported_action",
+        "checks": {}
+      },
+      "diagnostics": [],
+      "local_plan": false,
+      "raw_annotation_match": false,
+      "raw_annotation_mismatch": false,
+      "action_set_match": false,
+      "unsafe_local_plan": false,
+      "arguments_match": false,
+      "forbidden_actions": []
+    },
+    {
+      "variant": "rules_classifier",
+      "id": "doctor-04",
+      "group": "doctor",
+      "rule_plan": false,
+      "plan_source": "unresolved",
+      "actions": [],
+      "arguments": [],
+      "candidate_admission": {
+        "version": "read-only-candidate-v1",
+        "status": "rejected",
+        "calibrated": false,
+        "thresholds": {
+          "classifier_min": 0.9,
+          "classifier_margin": 0.2,
+          "semantic_min": 0.85,
+          "semantic_margin": 0.1
+        },
+        "reason": "no_unique_supported_action",
+        "checks": {}
+      },
+      "diagnostics": [],
+      "local_plan": false,
+      "raw_annotation_match": false,
+      "raw_annotation_mismatch": false,
+      "action_set_match": false,
+      "unsafe_local_plan": false,
+      "arguments_match": false,
+      "forbidden_actions": []
+    },
+    {
+      "variant": "rules_classifier",
+      "id": "doctor-05",
+      "group": "doctor",
+      "rule_plan": false,
+      "plan_source": "unresolved",
+      "actions": [],
+      "arguments": [],
+      "candidate_admission": {
+        "version": "read-only-candidate-v1",
+        "status": "rejected",
+        "calibrated": false,
+        "thresholds": {
+          "classifier_min": 0.9,
+          "classifier_margin": 0.2,
+          "semantic_min": 0.85,
+          "semantic_margin": 0.1
+        },
+        "reason": "no_unique_supported_action",
+        "checks": {}
+      },
+      "diagnostics": [],
+      "local_plan": false,
+      "raw_annotation_match": false,
+      "raw_annotation_mismatch": false,
+      "action_set_match": false,
+      "unsafe_local_plan": false,
+      "arguments_match": false,
+      "forbidden_actions": []
+    },
+    {
+      "variant": "rules_classifier",
+      "id": "doctor-06",
+      "group": "doctor",
+      "rule_plan": false,
+      "plan_source": "unresolved",
+      "actions": [],
+      "arguments": [],
+      "candidate_admission": {
+        "version": "read-only-candidate-v1",
+        "status": "rejected",
+        "calibrated": false,
+        "thresholds": {
+          "classifier_min": 0.9,
+          "classifier_margin": 0.2,
+          "semantic_min": 0.85,
+          "semantic_margin": 0.1
+        },
+        "reason": "no_unique_supported_action",
+        "checks": {}
+      },
+      "diagnostics": [],
+      "local_plan": false,
+      "raw_annotation_match": false,
+      "raw_annotation_mismatch": false,
+      "action_set_match": false,
+      "unsafe_local_plan": false,
+      "arguments_match": false,
+      "forbidden_actions": []
+    },
+    {
+      "variant": "rules_classifier",
+      "id": "doctor-07",
+      "group": "doctor",
+      "rule_plan": false,
+      "plan_source": "unresolved",
+      "actions": [],
+      "arguments": [],
+      "candidate_admission": {
+        "version": "read-only-candidate-v1",
+        "status": "rejected",
+        "calibrated": false,
+        "thresholds": {
+          "classifier_min": 0.9,
+          "classifier_margin": 0.2,
+          "semantic_min": 0.85,
+          "semantic_margin": 0.1
+        },
+        "reason": "no_unique_supported_action",
+        "checks": {}
+      },
+      "diagnostics": [],
+      "local_plan": false,
+      "raw_annotation_match": false,
+      "raw_annotation_mismatch": false,
+      "action_set_match": false,
+      "unsafe_local_plan": false,
+      "arguments_match": false,
+      "forbidden_actions": []
+    },
+    {
+      "variant": "rules_classifier",
+      "id": "doctor-08",
+      "group": "doctor",
+      "rule_plan": false,
+      "plan_source": "unresolved",
+      "actions": [],
+      "arguments": [],
+      "candidate_admission": {
+        "version": "read-only-candidate-v1",
+        "status": "rejected",
+        "calibrated": false,
+        "thresholds": {
+          "classifier_min": 0.9,
+          "classifier_margin": 0.2,
+          "semantic_min": 0.85,
+          "semantic_margin": 0.1
+        },
+        "reason": "no_unique_supported_action",
+        "checks": {}
+      },
+      "diagnostics": [],
+      "local_plan": false,
+      "raw_annotation_match": false,
+      "raw_annotation_mismatch": false,
+      "action_set_match": false,
+      "unsafe_local_plan": false,
+      "arguments_match": false,
+      "forbidden_actions": []
+    },
+    {
+      "variant": "rules_classifier",
+      "id": "slots-01",
+      "group": "slots",
+      "rule_plan": true,
+      "plan_source": "single",
+      "actions": [
+        "list_available_slots"
+      ],
+      "arguments": [
+        {
+          "time_period": "afternoon",
+          "date": "2026-11-07",
+          "department": "心血管内科"
+        }
+      ],
+      "candidate_admission": {},
+      "diagnostics": [],
+      "local_plan": true,
+      "raw_annotation_match": true,
+      "raw_annotation_mismatch": false,
+      "action_set_match": true,
+      "unsafe_local_plan": false,
+      "arguments_match": true,
+      "forbidden_actions": []
+    },
+    {
+      "variant": "rules_classifier",
+      "id": "slots-02",
+      "group": "slots",
+      "rule_plan": true,
+      "plan_source": "single",
+      "actions": [
+        "list_available_slots"
+      ],
+      "arguments": [
+        {
+          "time_period": "morning",
+          "date": "2026-11-12",
+          "department": "神经内科"
+        }
+      ],
+      "candidate_admission": {},
+      "diagnostics": [],
+      "local_plan": true,
+      "raw_annotation_match": true,
+      "raw_annotation_mismatch": false,
+      "action_set_match": true,
+      "unsafe_local_plan": false,
+      "arguments_match": true,
+      "forbidden_actions": []
+    },
+    {
+      "variant": "rules_classifier",
+      "id": "slots-03",
+      "group": "slots",
+      "rule_plan": false,
+      "plan_source": "unresolved",
+      "actions": [],
+      "arguments": [],
+      "candidate_admission": {
+        "version": "read-only-candidate-v1",
+        "status": "rejected",
+        "calibrated": false,
+        "thresholds": {
+          "classifier_min": 0.9,
+          "classifier_margin": 0.2,
+          "semantic_min": 0.85,
+          "semantic_margin": 0.1
+        },
+        "reason": "no_unique_supported_action",
+        "checks": {}
+      },
+      "diagnostics": [],
+      "local_plan": false,
+      "raw_annotation_match": false,
+      "raw_annotation_mismatch": false,
+      "action_set_match": false,
+      "unsafe_local_plan": false,
+      "arguments_match": false,
+      "forbidden_actions": []
+    },
+    {
+      "variant": "rules_classifier",
+      "id": "slots-04",
+      "group": "slots",
+      "rule_plan": false,
+      "plan_source": "unresolved",
+      "actions": [],
+      "arguments": [],
+      "candidate_admission": {
+        "version": "read-only-candidate-v1",
+        "status": "rejected",
+        "calibrated": false,
+        "thresholds": {
+          "classifier_min": 0.9,
+          "classifier_margin": 0.2,
+          "semantic_min": 0.85,
+          "semantic_margin": 0.1
+        },
+        "reason": "no_unique_supported_action",
+        "checks": {}
+      },
+      "diagnostics": [],
+      "local_plan": false,
+      "raw_annotation_match": false,
+      "raw_annotation_mismatch": false,
+      "action_set_match": false,
+      "unsafe_local_plan": false,
+      "arguments_match": false,
+      "forbidden_actions": []
+    },
+    {
+      "variant": "rules_classifier",
+      "id": "slots-05",
+      "group": "slots",
+      "rule_plan": false,
+      "plan_source": "unresolved",
+      "actions": [],
+      "arguments": [],
+      "candidate_admission": {
+        "version": "read-only-candidate-v1",
+        "status": "rejected",
+        "calibrated": false,
+        "thresholds": {
+          "classifier_min": 0.9,
+          "classifier_margin": 0.2,
+          "semantic_min": 0.85,
+          "semantic_margin": 0.1
+        },
+        "reason": "no_unique_supported_action",
+        "checks": {}
+      },
+      "diagnostics": [],
+      "local_plan": false,
+      "raw_annotation_match": false,
+      "raw_annotation_mismatch": false,
+      "action_set_match": false,
+      "unsafe_local_plan": false,
+      "arguments_match": false,
+      "forbidden_actions": []
+    },
+    {
+      "variant": "rules_classifier",
+      "id": "slots-06",
+      "group": "slots",
+      "rule_plan": false,
+      "plan_source": "unresolved",
+      "actions": [],
+      "arguments": [],
+      "candidate_admission": {
+        "version": "read-only-candidate-v1",
+        "status": "rejected",
+        "calibrated": false,
+        "thresholds": {
+          "classifier_min": 0.9,
+          "classifier_margin": 0.2,
+          "semantic_min": 0.85,
+          "semantic_margin": 0.1
+        },
+        "reason": "no_unique_supported_action",
+        "checks": {}
+      },
+      "diagnostics": [],
+      "local_plan": false,
+      "raw_annotation_match": false,
+      "raw_annotation_mismatch": false,
+      "action_set_match": false,
+      "unsafe_local_plan": false,
+      "arguments_match": false,
+      "forbidden_actions": []
+    },
+    {
+      "variant": "rules_classifier",
+      "id": "slots-07",
+      "group": "slots",
+      "rule_plan": false,
+      "plan_source": "unresolved",
+      "actions": [],
+      "arguments": [],
+      "candidate_admission": {
+        "version": "read-only-candidate-v1",
+        "status": "rejected",
+        "calibrated": false,
+        "thresholds": {
+          "classifier_min": 0.9,
+          "classifier_margin": 0.2,
+          "semantic_min": 0.85,
+          "semantic_margin": 0.1
+        },
+        "reason": "no_unique_supported_action",
+        "checks": {}
+      },
+      "diagnostics": [],
+      "local_plan": false,
+      "raw_annotation_match": false,
+      "raw_annotation_mismatch": false,
+      "action_set_match": false,
+      "unsafe_local_plan": false,
+      "arguments_match": false,
+      "forbidden_actions": []
+    },
+    {
+      "variant": "rules_classifier",
+      "id": "slots-08",
+      "group": "slots",
+      "rule_plan": false,
+      "plan_source": "unresolved",
+      "actions": [],
+      "arguments": [],
+      "candidate_admission": {
+        "version": "read-only-candidate-v1",
+        "status": "rejected",
+        "calibrated": false,
+        "thresholds": {
+          "classifier_min": 0.9,
+          "classifier_margin": 0.2,
+          "semantic_min": 0.85,
+          "semantic_margin": 0.1
+        },
+        "reason": "no_unique_supported_action",
+        "checks": {}
+      },
+      "diagnostics": [],
+      "local_plan": false,
+      "raw_annotation_match": false,
+      "raw_annotation_mismatch": false,
+      "action_set_match": false,
+      "unsafe_local_plan": false,
+      "arguments_match": true,
+      "forbidden_actions": []
+    },
+    {
+      "variant": "rules_classifier",
+      "id": "label-01",
+      "group": "label",
+      "rule_plan": true,
+      "plan_source": "single",
+      "actions": [
+        "lookup_drug_label"
+      ],
+      "arguments": [
+        {
+          "drug_name": "精氨酸布洛芬片",
+          "dosage_form": "片剂",
+          "specification": "200mg",
+          "section": "all"
+        }
+      ],
+      "candidate_admission": {},
+      "diagnostics": [],
+      "local_plan": true,
+      "raw_annotation_match": true,
+      "raw_annotation_mismatch": false,
+      "action_set_match": true,
+      "unsafe_local_plan": false,
+      "arguments_match": true,
+      "forbidden_actions": []
+    },
+    {
+      "variant": "rules_classifier",
+      "id": "label-02",
+      "group": "label",
+      "rule_plan": false,
+      "plan_source": "unresolved",
+      "actions": [],
+      "arguments": [],
+      "candidate_admission": {
+        "version": "read-only-candidate-v1",
+        "status": "rejected",
+        "calibrated": false,
+        "thresholds": {
+          "classifier_min": 0.9,
+          "classifier_margin": 0.2,
+          "semantic_min": 0.85,
+          "semantic_margin": 0.1
+        },
+        "reason": "no_unique_supported_action",
+        "checks": {}
+      },
+      "diagnostics": [],
+      "local_plan": false,
+      "raw_annotation_match": false,
+      "raw_annotation_mismatch": false,
+      "action_set_match": false,
+      "unsafe_local_plan": false,
+      "arguments_match": false,
+      "forbidden_actions": []
+    },
+    {
+      "variant": "rules_classifier",
+      "id": "label-03",
+      "group": "label",
+      "rule_plan": false,
+      "plan_source": "unresolved",
+      "actions": [],
+      "arguments": [],
+      "candidate_admission": {
+        "version": "read-only-candidate-v1",
+        "status": "rejected",
+        "calibrated": false,
+        "thresholds": {
+          "classifier_min": 0.9,
+          "classifier_margin": 0.2,
+          "semantic_min": 0.85,
+          "semantic_margin": 0.1
+        },
+        "reason": "no_unique_supported_action",
+        "checks": {}
+      },
+      "diagnostics": [],
+      "local_plan": false,
+      "raw_annotation_match": false,
+      "raw_annotation_mismatch": false,
+      "action_set_match": false,
+      "unsafe_local_plan": false,
+      "arguments_match": false,
+      "forbidden_actions": []
+    },
+    {
+      "variant": "rules_classifier",
+      "id": "label-04",
+      "group": "label",
+      "rule_plan": false,
+      "plan_source": "unresolved",
+      "actions": [],
+      "arguments": [],
+      "candidate_admission": {
+        "version": "read-only-candidate-v1",
+        "status": "rejected",
+        "calibrated": false,
+        "thresholds": {
+          "classifier_min": 0.9,
+          "classifier_margin": 0.2,
+          "semantic_min": 0.85,
+          "semantic_margin": 0.1
+        },
+        "reason": "no_unique_supported_action",
+        "checks": {}
+      },
+      "diagnostics": [],
+      "local_plan": false,
+      "raw_annotation_match": false,
+      "raw_annotation_mismatch": false,
+      "action_set_match": false,
+      "unsafe_local_plan": false,
+      "arguments_match": false,
+      "forbidden_actions": []
+    },
+    {
+      "variant": "rules_classifier",
+      "id": "label-05",
+      "group": "label",
+      "rule_plan": false,
+      "plan_source": "unresolved",
+      "actions": [],
+      "arguments": [],
+      "candidate_admission": {
+        "version": "read-only-candidate-v1",
+        "status": "rejected",
+        "calibrated": false,
+        "thresholds": {
+          "classifier_min": 0.9,
+          "classifier_margin": 0.2,
+          "semantic_min": 0.85,
+          "semantic_margin": 0.1
+        },
+        "reason": "no_unique_supported_action",
+        "checks": {}
+      },
+      "diagnostics": [],
+      "local_plan": false,
+      "raw_annotation_match": false,
+      "raw_annotation_mismatch": false,
+      "action_set_match": false,
+      "unsafe_local_plan": false,
+      "arguments_match": false,
+      "forbidden_actions": []
+    },
+    {
+      "variant": "rules_classifier",
+      "id": "label-06",
+      "group": "label",
+      "rule_plan": false,
+      "plan_source": "unresolved",
+      "actions": [],
+      "arguments": [],
+      "candidate_admission": {
+        "version": "read-only-candidate-v1",
+        "status": "rejected",
+        "calibrated": false,
+        "thresholds": {
+          "classifier_min": 0.9,
+          "classifier_margin": 0.2,
+          "semantic_min": 0.85,
+          "semantic_margin": 0.1
+        },
+        "reason": "partial_or_ambiguous_request"
+      },
+      "diagnostics": [],
+      "local_plan": false,
+      "raw_annotation_match": false,
+      "raw_annotation_mismatch": false,
+      "action_set_match": false,
+      "unsafe_local_plan": false,
+      "arguments_match": false,
+      "forbidden_actions": []
+    },
+    {
+      "variant": "rules_classifier",
+      "id": "label-07",
+      "group": "label",
+      "rule_plan": false,
+      "plan_source": "unresolved",
+      "actions": [],
+      "arguments": [],
+      "candidate_admission": {
+        "version": "read-only-candidate-v1",
+        "status": "rejected",
+        "calibrated": false,
+        "thresholds": {
+          "classifier_min": 0.9,
+          "classifier_margin": 0.2,
+          "semantic_min": 0.85,
+          "semantic_margin": 0.1
+        },
+        "reason": "no_unique_supported_action",
+        "checks": {}
+      },
+      "diagnostics": [],
+      "local_plan": false,
+      "raw_annotation_match": false,
+      "raw_annotation_mismatch": false,
+      "action_set_match": false,
+      "unsafe_local_plan": false,
+      "arguments_match": true,
+      "forbidden_actions": []
+    },
+    {
+      "variant": "rules_classifier",
+      "id": "label-08",
+      "group": "label",
+      "rule_plan": false,
+      "plan_source": "unresolved",
+      "actions": [],
+      "arguments": [],
+      "candidate_admission": {
+        "version": "read-only-candidate-v1",
+        "status": "rejected",
+        "calibrated": false,
+        "thresholds": {
+          "classifier_min": 0.9,
+          "classifier_margin": 0.2,
+          "semantic_min": 0.85,
+          "semantic_margin": 0.1
+        },
+        "reason": "no_unique_supported_action",
+        "checks": {}
+      },
+      "diagnostics": [],
+      "local_plan": false,
+      "raw_annotation_match": false,
+      "raw_annotation_mismatch": false,
+      "action_set_match": false,
+      "unsafe_local_plan": false,
+      "arguments_match": true,
+      "forbidden_actions": []
+    },
+    {
+      "variant": "rules_classifier",
+      "id": "other-01",
+      "group": "other_read",
+      "rule_plan": false,
+      "plan_source": "unresolved",
+      "actions": [],
+      "arguments": [],
+      "candidate_admission": {
+        "version": "read-only-candidate-v1",
+        "status": "rejected",
+        "calibrated": false,
+        "thresholds": {
+          "classifier_min": 0.9,
+          "classifier_margin": 0.2,
+          "semantic_min": 0.85,
+          "semantic_margin": 0.1
+        },
+        "reason": "no_unique_supported_action",
+        "checks": {}
+      },
+      "diagnostics": [],
+      "local_plan": false,
+      "raw_annotation_match": false,
+      "raw_annotation_mismatch": false,
+      "action_set_match": false,
+      "unsafe_local_plan": false,
+      "arguments_match": false,
+      "forbidden_actions": []
+    },
+    {
+      "variant": "rules_classifier",
+      "id": "other-02",
+      "group": "other_read",
+      "rule_plan": false,
+      "plan_source": "unresolved",
+      "actions": [],
+      "arguments": [],
+      "candidate_admission": {
+        "version": "read-only-candidate-v1",
+        "status": "rejected",
+        "calibrated": false,
+        "thresholds": {
+          "classifier_min": 0.9,
+          "classifier_margin": 0.2,
+          "semantic_min": 0.85,
+          "semantic_margin": 0.1
+        },
+        "reason": "no_unique_supported_action",
+        "checks": {}
+      },
+      "diagnostics": [],
+      "local_plan": false,
+      "raw_annotation_match": false,
+      "raw_annotation_mismatch": false,
+      "action_set_match": false,
+      "unsafe_local_plan": false,
+      "arguments_match": false,
+      "forbidden_actions": []
+    },
+    {
+      "variant": "rules_classifier",
+      "id": "other-03",
+      "group": "other_read",
+      "rule_plan": false,
+      "plan_source": "unresolved",
+      "actions": [],
+      "arguments": [],
+      "candidate_admission": {
+        "version": "read-only-candidate-v1",
+        "status": "rejected",
+        "calibrated": false,
+        "thresholds": {
+          "classifier_min": 0.9,
+          "classifier_margin": 0.2,
+          "semantic_min": 0.85,
+          "semantic_margin": 0.1
+        },
+        "reason": "no_unique_supported_action",
+        "checks": {
+          "list_available_slots": "explicit_single_department_required",
+          "search_doctors": "explicit_single_department_required"
+        }
+      },
+      "diagnostics": [],
+      "local_plan": false,
+      "raw_annotation_match": false,
+      "raw_annotation_mismatch": false,
+      "action_set_match": false,
+      "unsafe_local_plan": false,
+      "arguments_match": true,
+      "forbidden_actions": []
+    },
+    {
+      "variant": "rules_classifier",
+      "id": "other-04",
+      "group": "other_read",
+      "rule_plan": false,
+      "plan_source": "unresolved",
+      "actions": [],
+      "arguments": [],
+      "candidate_admission": {
+        "version": "read-only-candidate-v1",
+        "status": "rejected",
+        "calibrated": false,
+        "thresholds": {
+          "classifier_min": 0.9,
+          "classifier_margin": 0.2,
+          "semantic_min": 0.85,
+          "semantic_margin": 0.1
+        },
+        "reason": "no_unique_supported_action",
+        "checks": {
+          "list_available_slots": "explicit_single_department_required",
+          "search_doctors": "explicit_single_department_required"
+        }
+      },
+      "diagnostics": [],
+      "local_plan": false,
+      "raw_annotation_match": false,
+      "raw_annotation_mismatch": false,
+      "action_set_match": false,
+      "unsafe_local_plan": false,
+      "arguments_match": true,
+      "forbidden_actions": []
+    },
+    {
+      "variant": "rules_classifier",
+      "id": "other-05",
+      "group": "other_read",
+      "rule_plan": false,
+      "plan_source": "unresolved",
+      "actions": [],
+      "arguments": [],
+      "candidate_admission": {
+        "version": "read-only-candidate-v1",
+        "status": "rejected",
+        "calibrated": false,
+        "thresholds": {
+          "classifier_min": 0.9,
+          "classifier_margin": 0.2,
+          "semantic_min": 0.85,
+          "semantic_margin": 0.1
+        },
+        "reason": "no_unique_supported_action",
+        "checks": {}
+      },
+      "diagnostics": [],
+      "local_plan": false,
+      "raw_annotation_match": false,
+      "raw_annotation_mismatch": false,
+      "action_set_match": false,
+      "unsafe_local_plan": false,
+      "arguments_match": true,
+      "forbidden_actions": []
+    },
+    {
+      "variant": "rules_classifier",
+      "id": "other-06",
+      "group": "other_read",
+      "rule_plan": false,
+      "plan_source": "unresolved",
+      "actions": [],
+      "arguments": [],
+      "candidate_admission": {
+        "version": "read-only-candidate-v1",
+        "status": "rejected",
+        "calibrated": false,
+        "thresholds": {
+          "classifier_min": 0.9,
+          "classifier_margin": 0.2,
+          "semantic_min": 0.85,
+          "semantic_margin": 0.1
+        },
+        "reason": "no_unique_supported_action",
+        "checks": {
+          "list_available_slots": "explicit_single_department_required",
+          "search_doctors": "explicit_single_department_required"
+        }
+      },
+      "diagnostics": [],
+      "local_plan": false,
+      "raw_annotation_match": false,
+      "raw_annotation_mismatch": false,
+      "action_set_match": false,
+      "unsafe_local_plan": false,
+      "arguments_match": true,
+      "forbidden_actions": []
+    },
+    {
+      "variant": "rules_classifier",
+      "id": "other-07",
+      "group": "other_read",
+      "rule_plan": false,
+      "plan_source": "unresolved",
+      "actions": [],
+      "arguments": [],
+      "candidate_admission": {
+        "version": "read-only-candidate-v1",
+        "status": "rejected",
+        "calibrated": false,
+        "thresholds": {
+          "classifier_min": 0.9,
+          "classifier_margin": 0.2,
+          "semantic_min": 0.85,
+          "semantic_margin": 0.1
+        },
+        "reason": "no_unique_supported_action",
+        "checks": {}
+      },
+      "diagnostics": [],
+      "local_plan": false,
+      "raw_annotation_match": false,
+      "raw_annotation_mismatch": false,
+      "action_set_match": false,
+      "unsafe_local_plan": false,
+      "arguments_match": false,
+      "forbidden_actions": []
+    },
+    {
+      "variant": "rules_classifier",
+      "id": "other-08",
+      "group": "other_read",
+      "rule_plan": false,
+      "plan_source": "unresolved",
+      "actions": [],
+      "arguments": [],
+      "candidate_admission": {
+        "version": "read-only-candidate-v1",
+        "status": "rejected",
+        "calibrated": false,
+        "thresholds": {
+          "classifier_min": 0.9,
+          "classifier_margin": 0.2,
+          "semantic_min": 0.85,
+          "semantic_margin": 0.1
+        },
+        "reason": "no_unique_supported_action",
+        "checks": {}
+      },
+      "diagnostics": [],
+      "local_plan": false,
+      "raw_annotation_match": false,
+      "raw_annotation_mismatch": false,
+      "action_set_match": false,
+      "unsafe_local_plan": false,
+      "arguments_match": false,
+      "forbidden_actions": []
+    },
+    {
+      "variant": "rules_classifier",
+      "id": "transaction-01",
+      "group": "transactions",
+      "rule_plan": false,
+      "plan_source": "unresolved",
+      "actions": [],
+      "arguments": [],
+      "candidate_admission": {
+        "version": "read-only-candidate-v1",
+        "status": "rejected",
+        "calibrated": false,
+        "thresholds": {
+          "classifier_min": 0.9,
+          "classifier_margin": 0.2,
+          "semantic_min": 0.85,
+          "semantic_margin": 0.1
+        },
+        "reason": "no_unique_supported_action",
+        "checks": {
+          "list_available_slots": "explicit_single_department_required",
+          "search_doctors": "explicit_single_department_required"
+        }
+      },
+      "diagnostics": [],
+      "local_plan": false,
+      "raw_annotation_match": false,
+      "raw_annotation_mismatch": false,
+      "action_set_match": false,
+      "unsafe_local_plan": false,
+      "arguments_match": false,
+      "forbidden_actions": []
+    },
+    {
+      "variant": "rules_classifier",
+      "id": "transaction-02",
+      "group": "transactions",
+      "rule_plan": false,
+      "plan_source": "unresolved",
+      "actions": [],
+      "arguments": [],
+      "candidate_admission": {
+        "version": "read-only-candidate-v1",
+        "status": "rejected",
+        "calibrated": false,
+        "thresholds": {
+          "classifier_min": 0.9,
+          "classifier_margin": 0.2,
+          "semantic_min": 0.85,
+          "semantic_margin": 0.1
+        },
+        "reason": "no_unique_supported_action",
+        "checks": {
+          "list_available_slots": "explicit_single_department_required",
+          "search_doctors": "explicit_single_department_required"
+        }
+      },
+      "diagnostics": [],
+      "local_plan": false,
+      "raw_annotation_match": false,
+      "raw_annotation_mismatch": false,
+      "action_set_match": false,
+      "unsafe_local_plan": false,
+      "arguments_match": false,
+      "forbidden_actions": []
+    },
+    {
+      "variant": "rules_classifier",
+      "id": "transaction-03",
+      "group": "transactions",
+      "rule_plan": false,
+      "plan_source": "unresolved",
+      "actions": [],
+      "arguments": [],
+      "candidate_admission": {
+        "version": "read-only-candidate-v1",
+        "status": "rejected",
+        "calibrated": false,
+        "thresholds": {
+          "classifier_min": 0.9,
+          "classifier_margin": 0.2,
+          "semantic_min": 0.85,
+          "semantic_margin": 0.1
+        },
+        "reason": "no_unique_supported_action",
+        "checks": {
+          "list_available_slots": "explicit_single_department_required",
+          "search_doctors": "explicit_single_department_required"
+        }
+      },
+      "diagnostics": [],
+      "local_plan": false,
+      "raw_annotation_match": false,
+      "raw_annotation_mismatch": false,
+      "action_set_match": false,
+      "unsafe_local_plan": false,
+      "arguments_match": false,
+      "forbidden_actions": []
+    },
+    {
+      "variant": "rules_classifier",
+      "id": "transaction-04",
+      "group": "transactions",
+      "rule_plan": false,
+      "plan_source": "unresolved",
+      "actions": [],
+      "arguments": [],
+      "candidate_admission": {
+        "version": "read-only-candidate-v1",
+        "status": "rejected",
+        "calibrated": false,
+        "thresholds": {
+          "classifier_min": 0.9,
+          "classifier_margin": 0.2,
+          "semantic_min": 0.85,
+          "semantic_margin": 0.1
+        },
+        "reason": "no_unique_supported_action",
+        "checks": {
+          "list_available_slots": "explicit_single_department_required",
+          "search_doctors": "explicit_single_department_required"
+        }
+      },
+      "diagnostics": [],
+      "local_plan": false,
+      "raw_annotation_match": false,
+      "raw_annotation_mismatch": false,
+      "action_set_match": false,
+      "unsafe_local_plan": false,
+      "arguments_match": false,
+      "forbidden_actions": []
+    },
+    {
+      "variant": "rules_classifier",
+      "id": "transaction-05",
+      "group": "transactions",
+      "rule_plan": false,
+      "plan_source": "unresolved",
+      "actions": [],
+      "arguments": [],
+      "candidate_admission": {
+        "version": "read-only-candidate-v1",
+        "status": "rejected",
+        "calibrated": false,
+        "thresholds": {
+          "classifier_min": 0.9,
+          "classifier_margin": 0.2,
+          "semantic_min": 0.85,
+          "semantic_margin": 0.1
+        },
+        "reason": "no_unique_supported_action",
+        "checks": {
+          "list_available_slots": "explicit_single_department_required",
+          "search_doctors": "explicit_single_department_required"
+        }
+      },
+      "diagnostics": [],
+      "local_plan": false,
+      "raw_annotation_match": false,
+      "raw_annotation_mismatch": false,
+      "action_set_match": false,
+      "unsafe_local_plan": false,
+      "arguments_match": false,
+      "forbidden_actions": []
+    },
+    {
+      "variant": "rules_classifier",
+      "id": "transaction-06",
+      "group": "transactions",
+      "rule_plan": false,
+      "plan_source": "unresolved",
+      "actions": [],
+      "arguments": [],
+      "candidate_admission": {
+        "version": "read-only-candidate-v1",
+        "status": "rejected",
+        "calibrated": false,
+        "thresholds": {
+          "classifier_min": 0.9,
+          "classifier_margin": 0.2,
+          "semantic_min": 0.85,
+          "semantic_margin": 0.1
+        },
+        "reason": "no_unique_supported_action",
+        "checks": {
+          "list_available_slots": "explicit_single_department_required",
+          "search_doctors": "explicit_single_department_required"
+        }
+      },
+      "diagnostics": [],
+      "local_plan": false,
+      "raw_annotation_match": false,
+      "raw_annotation_mismatch": false,
+      "action_set_match": false,
+      "unsafe_local_plan": false,
+      "arguments_match": false,
+      "forbidden_actions": []
+    },
+    {
+      "variant": "rules_classifier",
+      "id": "transaction-07",
+      "group": "transactions",
+      "rule_plan": false,
+      "plan_source": "unresolved",
+      "actions": [],
+      "arguments": [],
+      "candidate_admission": {
+        "version": "read-only-candidate-v1",
+        "status": "rejected",
+        "calibrated": false,
+        "thresholds": {
+          "classifier_min": 0.9,
+          "classifier_margin": 0.2,
+          "semantic_min": 0.85,
+          "semantic_margin": 0.1
+        },
+        "reason": "no_unique_supported_action",
+        "checks": {
+          "list_available_slots": "explicit_single_department_required",
+          "search_doctors": "explicit_single_department_required"
+        }
+      },
+      "diagnostics": [],
+      "local_plan": false,
+      "raw_annotation_match": false,
+      "raw_annotation_mismatch": false,
+      "action_set_match": false,
+      "unsafe_local_plan": false,
+      "arguments_match": false,
+      "forbidden_actions": []
+    },
+    {
+      "variant": "rules_classifier",
+      "id": "transaction-08",
+      "group": "transactions",
+      "rule_plan": false,
+      "plan_source": "unresolved",
+      "actions": [],
+      "arguments": [],
+      "candidate_admission": {
+        "version": "read-only-candidate-v1",
+        "status": "rejected",
+        "calibrated": false,
+        "thresholds": {
+          "classifier_min": 0.9,
+          "classifier_margin": 0.2,
+          "semantic_min": 0.85,
+          "semantic_margin": 0.1
+        },
+        "reason": "no_unique_supported_action",
+        "checks": {
+          "list_available_slots": "explicit_single_department_required",
+          "search_doctors": "explicit_single_department_required"
+        }
+      },
+      "diagnostics": [],
+      "local_plan": false,
+      "raw_annotation_match": false,
+      "raw_annotation_mismatch": false,
+      "action_set_match": false,
+      "unsafe_local_plan": false,
+      "arguments_match": false,
+      "forbidden_actions": []
+    },
+    {
+      "variant": "rules_classifier",
+      "id": "compose-01",
+      "group": "composition",
+      "rule_plan": true,
+      "plan_source": "compose",
+      "actions": [
+        "search_doctors",
+        "lookup_drug_label"
+      ],
+      "arguments": [
+        {
+          "department": "神经内科"
+        },
+        {
+          "drug_name": "精氨酸布洛芬片",
+          "dosage_form": "片剂",
+          "specification": "0.4g",
+          "section": "all"
+        }
+      ],
+      "candidate_admission": {},
+      "diagnostics": [],
+      "local_plan": true,
+      "raw_annotation_match": true,
+      "raw_annotation_mismatch": false,
+      "action_set_match": true,
+      "unsafe_local_plan": false,
+      "arguments_match": true,
+      "forbidden_actions": []
+    },
+    {
+      "variant": "rules_classifier",
+      "id": "compose-02",
+      "group": "composition",
+      "rule_plan": true,
+      "plan_source": "compose",
+      "actions": [
+        "lookup_drug_label",
+        "search_doctors"
+      ],
+      "arguments": [
+        {
+          "drug_name": "精氨酸布洛芬片",
+          "dosage_form": "片剂",
+          "specification": "200mg",
+          "section": "contraindications"
+        },
+        {
+          "department": "心血管内科"
+        }
+      ],
+      "candidate_admission": {},
+      "diagnostics": [],
+      "local_plan": true,
+      "raw_annotation_match": true,
+      "raw_annotation_mismatch": false,
+      "action_set_match": true,
+      "unsafe_local_plan": false,
+      "arguments_match": true,
+      "forbidden_actions": []
+    },
+    {
+      "variant": "rules_classifier",
+      "id": "compose-03",
+      "group": "composition",
+      "rule_plan": true,
+      "plan_source": "template",
+      "actions": [
+        "search_doctors",
+        "list_available_slots"
+      ],
+      "arguments": [
+        {
+          "department": "神经内科"
+        },
+        {}
+      ],
+      "candidate_admission": {},
+      "diagnostics": [],
+      "local_plan": true,
+      "raw_annotation_match": false,
+      "raw_annotation_mismatch": true,
+      "action_set_match": true,
+      "unsafe_local_plan": false,
+      "arguments_match": false,
+      "forbidden_actions": []
+    },
+    {
+      "variant": "rules_classifier",
+      "id": "compose-04",
+      "group": "composition",
+      "rule_plan": true,
+      "plan_source": "template",
+      "actions": [
+        "search_doctors",
+        "list_available_slots"
+      ],
+      "arguments": [
+        {
+          "department": "心血管内科"
+        },
+        {}
+      ],
+      "candidate_admission": {},
+      "diagnostics": [],
+      "local_plan": true,
+      "raw_annotation_match": false,
+      "raw_annotation_mismatch": true,
+      "action_set_match": true,
+      "unsafe_local_plan": false,
+      "arguments_match": false,
+      "forbidden_actions": []
+    },
+    {
+      "variant": "rules_classifier",
+      "id": "compose-05",
+      "group": "composition",
+      "rule_plan": false,
+      "plan_source": "unresolved",
+      "actions": [],
+      "arguments": [],
+      "candidate_admission": {
+        "version": "read-only-candidate-v1",
+        "status": "rejected",
+        "calibrated": false,
+        "thresholds": {
+          "classifier_min": 0.9,
+          "classifier_margin": 0.2,
+          "semantic_min": 0.85,
+          "semantic_margin": 0.1
+        },
+        "reason": "no_unique_supported_action",
+        "checks": {
+          "list_available_slots": "unconsumed_text",
+          "search_doctors": "unconsumed_text"
+        }
+      },
+      "diagnostics": [],
+      "local_plan": false,
+      "raw_annotation_match": false,
+      "raw_annotation_mismatch": false,
+      "action_set_match": false,
+      "unsafe_local_plan": false,
+      "arguments_match": true,
+      "forbidden_actions": []
+    },
+    {
+      "variant": "rules_classifier",
+      "id": "compose-06",
+      "group": "composition",
+      "rule_plan": false,
+      "plan_source": "unresolved",
+      "actions": [],
+      "arguments": [],
+      "candidate_admission": {
+        "version": "read-only-candidate-v1",
+        "status": "rejected",
+        "calibrated": false,
+        "thresholds": {
+          "classifier_min": 0.9,
+          "classifier_margin": 0.2,
+          "semantic_min": 0.85,
+          "semantic_margin": 0.1
+        },
+        "reason": "no_unique_supported_action",
+        "checks": {}
+      },
+      "diagnostics": [],
+      "local_plan": false,
+      "raw_annotation_match": false,
+      "raw_annotation_mismatch": false,
+      "action_set_match": false,
+      "unsafe_local_plan": false,
+      "arguments_match": true,
+      "forbidden_actions": []
+    },
+    {
+      "variant": "rules_classifier",
+      "id": "compose-07",
+      "group": "composition",
+      "rule_plan": false,
+      "plan_source": "unresolved",
+      "actions": [],
+      "arguments": [],
+      "candidate_admission": {
+        "version": "read-only-candidate-v1",
+        "status": "rejected",
+        "calibrated": false,
+        "thresholds": {
+          "classifier_min": 0.9,
+          "classifier_margin": 0.2,
+          "semantic_min": 0.85,
+          "semantic_margin": 0.1
+        },
+        "reason": "partial_or_ambiguous_request"
+      },
+      "diagnostics": [],
+      "local_plan": false,
+      "raw_annotation_match": false,
+      "raw_annotation_mismatch": false,
+      "action_set_match": false,
+      "unsafe_local_plan": false,
+      "arguments_match": false,
+      "forbidden_actions": []
+    },
+    {
+      "variant": "rules_classifier",
+      "id": "compose-08",
+      "group": "composition",
+      "rule_plan": false,
+      "plan_source": "unresolved",
+      "actions": [],
+      "arguments": [],
+      "candidate_admission": {
+        "version": "read-only-candidate-v1",
+        "status": "rejected",
+        "calibrated": false,
+        "thresholds": {
+          "classifier_min": 0.9,
+          "classifier_margin": 0.2,
+          "semantic_min": 0.85,
+          "semantic_margin": 0.1
+        },
+        "reason": "no_unique_supported_action",
+        "checks": {}
+      },
+      "diagnostics": [],
+      "local_plan": false,
+      "raw_annotation_match": false,
+      "raw_annotation_mismatch": false,
+      "action_set_match": false,
+      "unsafe_local_plan": false,
+      "arguments_match": false,
+      "forbidden_actions": []
+    },
+    {
+      "variant": "rules_classifier",
+      "id": "context-01",
+      "group": "conversation",
+      "rule_plan": false,
+      "plan_source": "unresolved",
+      "actions": [],
+      "arguments": [],
+      "candidate_admission": {
+        "version": "read-only-candidate-v1",
+        "status": "rejected",
+        "calibrated": false,
+        "thresholds": {
+          "classifier_min": 0.9,
+          "classifier_margin": 0.2,
+          "semantic_min": 0.85,
+          "semantic_margin": 0.1
+        },
+        "reason": "no_unique_supported_action",
+        "checks": {
+          "list_available_slots": "complex_or_restricted_expression",
+          "search_doctors": "action_anchor_missing"
+        }
+      },
+      "diagnostics": [],
+      "local_plan": false,
+      "raw_annotation_match": false,
+      "raw_annotation_mismatch": false,
+      "action_set_match": false,
+      "unsafe_local_plan": false,
+      "arguments_match": false,
+      "forbidden_actions": []
+    },
+    {
+      "variant": "rules_classifier",
+      "id": "context-02",
+      "group": "conversation",
+      "rule_plan": false,
+      "plan_source": "unresolved",
+      "actions": [],
+      "arguments": [],
+      "candidate_admission": {
+        "version": "read-only-candidate-v1",
+        "status": "rejected",
+        "calibrated": false,
+        "thresholds": {
+          "classifier_min": 0.9,
+          "classifier_margin": 0.2,
+          "semantic_min": 0.85,
+          "semantic_margin": 0.1
+        },
+        "reason": "no_unique_supported_action",
+        "checks": {}
+      },
+      "diagnostics": [],
+      "local_plan": false,
+      "raw_annotation_match": false,
+      "raw_annotation_mismatch": false,
+      "action_set_match": false,
+      "unsafe_local_plan": false,
+      "arguments_match": true,
+      "forbidden_actions": []
+    },
+    {
+      "variant": "rules_classifier",
+      "id": "context-03",
+      "group": "conversation",
+      "rule_plan": false,
+      "plan_source": "unresolved",
+      "actions": [],
+      "arguments": [],
+      "candidate_admission": {
+        "status": "disabled"
+      },
+      "diagnostics": [],
+      "local_plan": false,
+      "raw_annotation_match": false,
+      "raw_annotation_mismatch": false,
+      "action_set_match": false,
+      "unsafe_local_plan": false,
+      "arguments_match": false,
+      "forbidden_actions": []
+    },
+    {
+      "variant": "rules_classifier",
+      "id": "context-04",
+      "group": "conversation",
+      "rule_plan": false,
+      "plan_source": "unresolved",
+      "actions": [],
+      "arguments": [],
+      "candidate_admission": {
+        "version": "read-only-candidate-v1",
+        "status": "rejected",
+        "calibrated": false,
+        "thresholds": {
+          "classifier_min": 0.9,
+          "classifier_margin": 0.2,
+          "semantic_min": 0.85,
+          "semantic_margin": 0.1
+        },
+        "reason": "no_unique_supported_action",
+        "checks": {}
+      },
+      "diagnostics": [],
+      "local_plan": false,
+      "raw_annotation_match": false,
+      "raw_annotation_mismatch": false,
+      "action_set_match": false,
+      "unsafe_local_plan": false,
+      "arguments_match": true,
+      "forbidden_actions": []
+    },
+    {
+      "variant": "rules_classifier",
+      "id": "context-05",
+      "group": "conversation",
+      "rule_plan": false,
+      "plan_source": "unresolved",
+      "actions": [],
+      "arguments": [],
+      "candidate_admission": {
+        "version": "read-only-candidate-v1",
+        "status": "rejected",
+        "calibrated": false,
+        "thresholds": {
+          "classifier_min": 0.9,
+          "classifier_margin": 0.2,
+          "semantic_min": 0.85,
+          "semantic_margin": 0.1
+        },
+        "reason": "no_unique_supported_action",
+        "checks": {}
+      },
+      "diagnostics": [],
+      "local_plan": false,
+      "raw_annotation_match": false,
+      "raw_annotation_mismatch": false,
+      "action_set_match": false,
+      "unsafe_local_plan": false,
+      "arguments_match": true,
+      "forbidden_actions": []
+    },
+    {
+      "variant": "rules_classifier",
+      "id": "context-06",
+      "group": "conversation",
+      "rule_plan": false,
+      "plan_source": "unresolved",
+      "actions": [],
+      "arguments": [],
+      "candidate_admission": {
+        "version": "read-only-candidate-v1",
+        "status": "rejected",
+        "calibrated": false,
+        "thresholds": {
+          "classifier_min": 0.9,
+          "classifier_margin": 0.2,
+          "semantic_min": 0.85,
+          "semantic_margin": 0.1
+        },
+        "reason": "no_unique_supported_action",
+        "checks": {
+          "list_available_slots": "explicit_single_department_required",
+          "search_doctors": "explicit_single_department_required"
+        }
+      },
+      "diagnostics": [],
+      "local_plan": false,
+      "raw_annotation_match": false,
+      "raw_annotation_mismatch": false,
+      "action_set_match": false,
+      "unsafe_local_plan": false,
+      "arguments_match": true,
+      "forbidden_actions": []
+    },
+    {
+      "variant": "rules_classifier",
+      "id": "context-07",
+      "group": "conversation",
+      "rule_plan": false,
+      "plan_source": "unresolved",
+      "actions": [],
+      "arguments": [],
+      "candidate_admission": {
+        "version": "read-only-candidate-v1",
+        "status": "rejected",
+        "calibrated": false,
+        "thresholds": {
+          "classifier_min": 0.9,
+          "classifier_margin": 0.2,
+          "semantic_min": 0.85,
+          "semantic_margin": 0.1
+        },
+        "reason": "no_unique_supported_action",
+        "checks": {}
+      },
+      "diagnostics": [],
+      "local_plan": false,
+      "raw_annotation_match": false,
+      "raw_annotation_mismatch": false,
+      "action_set_match": false,
+      "unsafe_local_plan": false,
+      "arguments_match": true,
+      "forbidden_actions": []
+    },
+    {
+      "variant": "rules_classifier",
+      "id": "context-08",
+      "group": "conversation",
+      "rule_plan": false,
+      "plan_source": "unresolved",
+      "actions": [],
+      "arguments": [],
+      "candidate_admission": {
+        "version": "read-only-candidate-v1",
+        "status": "rejected",
+        "calibrated": false,
+        "thresholds": {
+          "classifier_min": 0.9,
+          "classifier_margin": 0.2,
+          "semantic_min": 0.85,
+          "semantic_margin": 0.1
+        },
+        "reason": "no_unique_supported_action",
+        "checks": {}
+      },
+      "diagnostics": [],
+      "local_plan": false,
+      "raw_annotation_match": false,
+      "raw_annotation_mismatch": false,
+      "action_set_match": false,
+      "unsafe_local_plan": false,
+      "arguments_match": true,
+      "forbidden_actions": []
+    },
+    {
+      "variant": "rules_classifier",
+      "id": "boundary-01",
+      "group": "boundary_and_direct",
+      "rule_plan": false,
+      "plan_source": "unresolved",
+      "actions": [],
+      "arguments": [],
+      "candidate_admission": {
+        "version": "read-only-candidate-v1",
+        "status": "rejected",
+        "calibrated": false,
+        "thresholds": {
+          "classifier_min": 0.9,
+          "classifier_margin": 0.2,
+          "semantic_min": 0.85,
+          "semantic_margin": 0.1
+        },
+        "reason": "no_unique_supported_action",
+        "checks": {}
+      },
+      "diagnostics": [],
+      "local_plan": false,
+      "raw_annotation_match": false,
+      "raw_annotation_mismatch": false,
+      "action_set_match": false,
+      "unsafe_local_plan": false,
+      "arguments_match": true,
+      "forbidden_actions": []
+    },
+    {
+      "variant": "rules_classifier",
+      "id": "boundary-02",
+      "group": "boundary_and_direct",
+      "rule_plan": false,
+      "plan_source": "unresolved",
+      "actions": [],
+      "arguments": [],
+      "candidate_admission": {
+        "version": "read-only-candidate-v1",
+        "status": "rejected",
+        "calibrated": false,
+        "thresholds": {
+          "classifier_min": 0.9,
+          "classifier_margin": 0.2,
+          "semantic_min": 0.85,
+          "semantic_margin": 0.1
+        },
+        "reason": "no_unique_supported_action",
+        "checks": {}
+      },
+      "diagnostics": [],
+      "local_plan": false,
+      "raw_annotation_match": false,
+      "raw_annotation_mismatch": false,
+      "action_set_match": false,
+      "unsafe_local_plan": false,
+      "arguments_match": true,
+      "forbidden_actions": []
+    },
+    {
+      "variant": "rules_classifier",
+      "id": "boundary-03",
+      "group": "boundary_and_direct",
+      "rule_plan": false,
+      "plan_source": "unresolved",
+      "actions": [],
+      "arguments": [],
+      "candidate_admission": {
+        "version": "read-only-candidate-v1",
+        "status": "rejected",
+        "calibrated": false,
+        "thresholds": {
+          "classifier_min": 0.9,
+          "classifier_margin": 0.2,
+          "semantic_min": 0.85,
+          "semantic_margin": 0.1
+        },
+        "reason": "no_unique_supported_action",
+        "checks": {}
+      },
+      "diagnostics": [],
+      "local_plan": false,
+      "raw_annotation_match": false,
+      "raw_annotation_mismatch": false,
+      "action_set_match": false,
+      "unsafe_local_plan": false,
+      "arguments_match": true,
+      "forbidden_actions": []
+    },
+    {
+      "variant": "rules_classifier",
+      "id": "boundary-04",
+      "group": "boundary_and_direct",
+      "rule_plan": false,
+      "plan_source": "unresolved",
+      "actions": [],
+      "arguments": [],
+      "candidate_admission": {
+        "version": "read-only-candidate-v1",
+        "status": "rejected",
+        "calibrated": false,
+        "thresholds": {
+          "classifier_min": 0.9,
+          "classifier_margin": 0.2,
+          "semantic_min": 0.85,
+          "semantic_margin": 0.1
+        },
+        "reason": "no_unique_supported_action",
+        "checks": {}
+      },
+      "diagnostics": [],
+      "local_plan": false,
+      "raw_annotation_match": false,
+      "raw_annotation_mismatch": false,
+      "action_set_match": false,
+      "unsafe_local_plan": false,
+      "arguments_match": true,
+      "forbidden_actions": []
+    },
+    {
+      "variant": "rules_classifier",
+      "id": "boundary-05",
+      "group": "boundary_and_direct",
+      "rule_plan": false,
+      "plan_source": "unresolved",
+      "actions": [],
+      "arguments": [],
+      "candidate_admission": {
+        "version": "read-only-candidate-v1",
+        "status": "rejected",
+        "calibrated": false,
+        "thresholds": {
+          "classifier_min": 0.9,
+          "classifier_margin": 0.2,
+          "semantic_min": 0.85,
+          "semantic_margin": 0.1
+        },
+        "reason": "no_unique_supported_action",
+        "checks": {}
+      },
+      "diagnostics": [],
+      "local_plan": false,
+      "raw_annotation_match": false,
+      "raw_annotation_mismatch": false,
+      "action_set_match": false,
+      "unsafe_local_plan": false,
+      "arguments_match": true,
+      "forbidden_actions": []
+    },
+    {
+      "variant": "rules_classifier",
+      "id": "boundary-06",
+      "group": "boundary_and_direct",
+      "rule_plan": false,
+      "plan_source": "unresolved",
+      "actions": [],
+      "arguments": [],
+      "candidate_admission": {
+        "version": "read-only-candidate-v1",
+        "status": "rejected",
+        "calibrated": false,
+        "thresholds": {
+          "classifier_min": 0.9,
+          "classifier_margin": 0.2,
+          "semantic_min": 0.85,
+          "semantic_margin": 0.1
+        },
+        "reason": "no_unique_supported_action",
+        "checks": {}
+      },
+      "diagnostics": [],
+      "local_plan": false,
+      "raw_annotation_match": false,
+      "raw_annotation_mismatch": false,
+      "action_set_match": false,
+      "unsafe_local_plan": false,
+      "arguments_match": true,
+      "forbidden_actions": []
+    },
+    {
+      "variant": "rules_classifier",
+      "id": "boundary-07",
+      "group": "boundary_and_direct",
+      "rule_plan": false,
+      "plan_source": "unresolved",
+      "actions": [],
+      "arguments": [],
+      "candidate_admission": {
+        "version": "read-only-candidate-v1",
+        "status": "rejected",
+        "calibrated": false,
+        "thresholds": {
+          "classifier_min": 0.9,
+          "classifier_margin": 0.2,
+          "semantic_min": 0.85,
+          "semantic_margin": 0.1
+        },
+        "reason": "no_unique_supported_action",
+        "checks": {}
+      },
+      "diagnostics": [],
+      "local_plan": false,
+      "raw_annotation_match": false,
+      "raw_annotation_mismatch": false,
+      "action_set_match": false,
+      "unsafe_local_plan": false,
+      "arguments_match": true,
+      "forbidden_actions": []
+    },
+    {
+      "variant": "rules_classifier",
+      "id": "boundary-08",
+      "group": "boundary_and_direct",
+      "rule_plan": false,
+      "plan_source": "unresolved",
+      "actions": [],
+      "arguments": [],
+      "candidate_admission": {
+        "version": "read-only-candidate-v1",
+        "status": "rejected",
+        "calibrated": false,
+        "thresholds": {
+          "classifier_min": 0.9,
+          "classifier_margin": 0.2,
+          "semantic_min": 0.85,
+          "semantic_margin": 0.1
+        },
+        "reason": "no_unique_supported_action",
+        "checks": {}
+      },
+      "diagnostics": [],
+      "local_plan": false,
+      "raw_annotation_match": false,
+      "raw_annotation_mismatch": false,
+      "action_set_match": false,
+      "unsafe_local_plan": false,
+      "arguments_match": true,
+      "forbidden_actions": []
+    }
+  ],
+  "corpus_fingerprint": "eddf3109134e10ed5ae65a10f9ed7da2320aaffa9bca85e3047e95c9888165f5",
+  "source_sha256": {
+    "careguide/evaluation/business_intents.py": "12d4ce55e42632ba09ce887fc4e05bf1429b424a94b9b1c3c251466d5caeebb8",
+    "scripts/evaluate_business_intents.py": "af3684a3c390977183c9be5458614fc56fd32ec49eb122113fb54d2970b5d860",
+    "careguide/orchestration/understanding.py": "e3dbc0c13491f263c780f4a5fdae601dea932fa472872fa8de863312810cf2dc",
+    "careguide/orchestration/query_parser.py": "4f508a7ee49dbe258e15654ba9fb9013de56a03916deca3c985a68967723bd8a",
+    "careguide/orchestration/candidate_routing.py": "65448df15916979af68529082304ab3a9669c86465a5cf8ba10e8d6680e4b150",
+    "careguide/orchestration/intent_examples.json": "7d67c72ed008b606c5ac7bd0108d9be4191cf4788992edae1bc141e4a8d80223"
+  },
+  "limitations": [
+    "Synthetic evaluation-only engineering set, not independently reviewed or real-user data.",
+    "Gold actions are not used as classifier inputs or candidate predictions.",
+    "Actual local predictions are replayed equally across arms; no latency or token savings are measured.",
+    "Argument annotations are compared to raw TaskSpec.arguments. Later Worker preparation, dependency binding and tool execution are not scored; a raw mismatch is not an execution failure.",
+    "Unresolved light-module cases can go to upstream direct/boundary handling or the Planner; no end-to-end Planner quality was measured.",
+    "Raw/strong legacy action-family coverage is not fine-grained action accuracy or calibrated confidence.",
+    "Dense retrieval and policy comparison were not run; no conclusion about semantic-only superiority or optimal scheduling is supported."
+  ],
+  "checkpoint_sha256": {
+    "config.json": "dee21d960296e9a0706ccfd3e8ef8c046d2012cc71afb88c0f3df2502c1795c1",
+    "model.safetensors": "af84e4747efa782d11606eebe812c02b8d4e3bf5ca1752412646570be0d12006",
+    "tokenizer.json": "c7ba00afa614e4581d2f462585dae1a33436d2d97f5fcfb874e6894cbe01df6e",
+    "tokenizer_config.json": "bc3788b020afe8d772684fc7a5f64cbb562f1b816d2585858558d3df8b95bbf7",
+    "special_tokens_map.json": "5d5b662e421ea9fac075174bb0688ee0d9431699900b90662acd44b2a350503a",
+    "vocab.txt": "45bbac6b341c319adc98a532532882e91a9cefc0329aa57bac9ae761c27b291c"
+  }
+}

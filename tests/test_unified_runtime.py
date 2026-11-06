@@ -192,7 +192,9 @@ def test_model_discovered_new_request_keeps_charged_budget_and_old_wait(tmp_path
         old = await instance.process('查询精氨酸布洛芬片说明书', 'u', 'c')
         old_state = instance.store.get(old['workflow']['id'], 'u', 'c')
         before = old_state.model_dump(mode='json')
-        text = '帮我找心内科的医生'
+        # Simple doctor paraphrases now use the local parser. Keep this case
+        # on the model path so it continues to test shared budget ownership.
+        text = '帮我找能看心内科疾病的医生'
         decision = dict(kind='new', plan=dict(goal=text, tasks=[dict(id='doctor', fragment=text,
             action='search_doctors', agent='appointment', arguments={'department': '心血管内科'}, completion='items')]))
         client = ScriptedClient([reply(decision)])

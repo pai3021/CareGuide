@@ -1,0 +1,362 @@
+{
+  "protocol": "native-classifier-candidate-routing-smoke-v1",
+  "at": "2026-11-05T08:52:59.347422+00:00",
+  "device": "cpu",
+  "scope": "Twelve selected synthetic development probes; actual existing local checkpoint; no remote candidates, Planner or tools.",
+  "provider_requests": 0,
+  "tools_executed": 0,
+  "production_deployed": false,
+  "calibration_or_representative_accuracy_evaluated": false,
+  "summary": {
+    "cases": 12,
+    "rule_plans": 1,
+    "candidate_plans": 0,
+    "unresolved": 11,
+    "unexpected_local_actions": 0
+  },
+  "rows": [
+    {
+      "id": "canonical",
+      "text": "查消化内科医生",
+      "expected_action_if_locally_accepted": "search_doctors",
+      "rule_plan": true,
+      "plan_source": "single",
+      "actions": [
+        "search_doctors"
+      ],
+      "arguments": [
+        {
+          "department": "消化内科"
+        }
+      ],
+      "classifier_label": null,
+      "classifier_confidence": null,
+      "classifier_margin": null,
+      "truncated": null,
+      "candidate_admission": {},
+      "diagnostics": [],
+      "unexpected_local_action": false
+    },
+    {
+      "id": "doctor_list",
+      "text": "给我列一份消化内科坐诊大夫的名单",
+      "expected_action_if_locally_accepted": "search_doctors",
+      "rule_plan": false,
+      "plan_source": "llm",
+      "actions": [],
+      "arguments": [],
+      "classifier_label": "其他",
+      "classifier_confidence": 0.8424019813537598,
+      "classifier_margin": 0.7469834759831429,
+      "truncated": false,
+      "candidate_admission": {
+        "version": "read-only-candidate-v1",
+        "status": "rejected",
+        "calibrated": false,
+        "thresholds": {
+          "classifier_min": 0.9,
+          "classifier_margin": 0.2,
+          "semantic_min": 0.85,
+          "semantic_margin": 0.1
+        },
+        "reason": "no_unique_supported_action",
+        "checks": {}
+      },
+      "diagnostics": [],
+      "unexpected_local_action": false
+    },
+    {
+      "id": "doctor_order",
+      "text": "消化内科坐诊大夫的名单给我列一下",
+      "expected_action_if_locally_accepted": "search_doctors",
+      "rule_plan": false,
+      "plan_source": "llm",
+      "actions": [],
+      "arguments": [],
+      "classifier_label": "其他",
+      "classifier_confidence": 0.9253895282745361,
+      "classifier_margin": 0.8909471966326237,
+      "truncated": false,
+      "candidate_admission": {
+        "version": "read-only-candidate-v1",
+        "status": "rejected",
+        "calibrated": false,
+        "thresholds": {
+          "classifier_min": 0.9,
+          "classifier_margin": 0.2,
+          "semantic_min": 0.85,
+          "semantic_margin": 0.1
+        },
+        "reason": "no_unique_supported_action",
+        "checks": {}
+      },
+      "diagnostics": [],
+      "unexpected_local_action": false
+    },
+    {
+      "id": "doctor_alias",
+      "text": "推荐一下心内科有哪些坐诊大夫",
+      "expected_action_if_locally_accepted": "search_doctors",
+      "rule_plan": false,
+      "plan_source": "llm",
+      "actions": [],
+      "arguments": [],
+      "classifier_label": "就医建议",
+      "classifier_confidence": 0.732020914554596,
+      "classifier_margin": 0.5211755335330963,
+      "truncated": false,
+      "candidate_admission": {
+        "version": "read-only-candidate-v1",
+        "status": "rejected",
+        "calibrated": false,
+        "thresholds": {
+          "classifier_min": 0.9,
+          "classifier_margin": 0.2,
+          "semantic_min": 0.85,
+          "semantic_margin": 0.1
+        },
+        "reason": "no_unique_supported_action",
+        "checks": {}
+      },
+      "diagnostics": [],
+      "unexpected_local_action": false
+    },
+    {
+      "id": "slots",
+      "text": "麻烦提供消化内科明天下午剩余号源的信息",
+      "expected_action_if_locally_accepted": "list_available_slots",
+      "rule_plan": false,
+      "plan_source": "llm",
+      "actions": [],
+      "arguments": [],
+      "classifier_label": "appointment_action",
+      "classifier_confidence": 0.8330677151679993,
+      "classifier_margin": 0.748934268951416,
+      "truncated": false,
+      "candidate_admission": {
+        "version": "read-only-candidate-v1",
+        "status": "rejected",
+        "calibrated": false,
+        "thresholds": {
+          "classifier_min": 0.9,
+          "classifier_margin": 0.2,
+          "semantic_min": 0.85,
+          "semantic_margin": 0.1
+        },
+        "reason": "no_unique_supported_action",
+        "checks": {}
+      },
+      "diagnostics": [],
+      "unexpected_local_action": false
+    },
+    {
+      "id": "label",
+      "text": "请展示精氨酸布洛芬片0.2g说明书里注意的地方",
+      "expected_action_if_locally_accepted": "lookup_drug_label",
+      "rule_plan": false,
+      "plan_source": "llm",
+      "actions": [],
+      "arguments": [],
+      "classifier_label": "其他",
+      "classifier_confidence": 0.9200215339660645,
+      "classifier_margin": 0.8912689220160246,
+      "truncated": false,
+      "candidate_admission": {
+        "version": "read-only-candidate-v1",
+        "status": "rejected",
+        "calibrated": false,
+        "thresholds": {
+          "classifier_min": 0.9,
+          "classifier_margin": 0.2,
+          "semantic_min": 0.85,
+          "semantic_margin": 0.1
+        },
+        "reason": "no_unique_supported_action",
+        "checks": {}
+      },
+      "diagnostics": [],
+      "unexpected_local_action": false
+    },
+    {
+      "id": "missing_spec",
+      "text": "关于精氨酸布洛芬片不能用的情况请给我展示一下",
+      "expected_action_if_locally_accepted": "lookup_drug_label",
+      "rule_plan": false,
+      "plan_source": "llm",
+      "actions": [],
+      "arguments": [],
+      "classifier_label": "其他",
+      "classifier_confidence": 0.8900041580200195,
+      "classifier_margin": 0.8630607333034277,
+      "truncated": false,
+      "candidate_admission": {
+        "version": "read-only-candidate-v1",
+        "status": "rejected",
+        "calibrated": false,
+        "thresholds": {
+          "classifier_min": 0.9,
+          "classifier_margin": 0.2,
+          "semantic_min": 0.85,
+          "semantic_margin": 0.1
+        },
+        "reason": "no_unique_supported_action",
+        "checks": {}
+      },
+      "diagnostics": [],
+      "unexpected_local_action": false
+    },
+    {
+      "id": "unknown_constraint",
+      "text": "给我列一份消化内科坐诊大夫的名单，预算200元",
+      "expected_action_if_locally_accepted": null,
+      "rule_plan": false,
+      "plan_source": "llm",
+      "actions": [],
+      "arguments": [],
+      "classifier_label": "appointment_action",
+      "classifier_confidence": 0.5523211359977722,
+      "classifier_margin": 0.24779397249221802,
+      "truncated": false,
+      "candidate_admission": {
+        "version": "read-only-candidate-v1",
+        "status": "rejected",
+        "calibrated": false,
+        "thresholds": {
+          "classifier_min": 0.9,
+          "classifier_margin": 0.2,
+          "semantic_min": 0.85,
+          "semantic_margin": 0.1
+        },
+        "reason": "no_unique_supported_action",
+        "checks": {}
+      },
+      "diagnostics": [],
+      "unexpected_local_action": false
+    },
+    {
+      "id": "negation",
+      "text": "给我列一份消化内科坐诊大夫的名单，先不要预约",
+      "expected_action_if_locally_accepted": null,
+      "rule_plan": false,
+      "plan_source": "llm",
+      "actions": [],
+      "arguments": [],
+      "classifier_label": "appointment_action",
+      "classifier_confidence": 0.9410600066184998,
+      "classifier_margin": 0.9208567980676889,
+      "truncated": false,
+      "candidate_admission": {
+        "version": "read-only-candidate-v1",
+        "status": "rejected",
+        "calibrated": false,
+        "thresholds": {
+          "classifier_min": 0.9,
+          "classifier_margin": 0.2,
+          "semantic_min": 0.85,
+          "semantic_margin": 0.1
+        },
+        "reason": "no_unique_supported_action",
+        "checks": {
+          "list_available_slots": "action_anchor_missing",
+          "search_doctors": "complex_or_restricted_expression"
+        }
+      },
+      "diagnostics": [],
+      "unexpected_local_action": false
+    },
+    {
+      "id": "multiple",
+      "text": "给我列一份消化内科和心内科坐诊大夫名单",
+      "expected_action_if_locally_accepted": null,
+      "rule_plan": false,
+      "plan_source": "llm",
+      "actions": [],
+      "arguments": [],
+      "classifier_label": "其他",
+      "classifier_confidence": 0.8203858137130737,
+      "classifier_margin": 0.7106786668300629,
+      "truncated": false,
+      "candidate_admission": {
+        "version": "read-only-candidate-v1",
+        "status": "rejected",
+        "calibrated": false,
+        "thresholds": {
+          "classifier_min": 0.9,
+          "classifier_margin": 0.2,
+          "semantic_min": 0.85,
+          "semantic_margin": 0.1
+        },
+        "reason": "no_unique_supported_action",
+        "checks": {}
+      },
+      "diagnostics": [],
+      "unexpected_local_action": false
+    },
+    {
+      "id": "history",
+      "text": "给我列一份那个科室坐诊大夫名单",
+      "expected_action_if_locally_accepted": null,
+      "rule_plan": false,
+      "plan_source": "llm",
+      "actions": [],
+      "arguments": [],
+      "classifier_label": "appointment_action",
+      "classifier_confidence": 0.47873297333717346,
+      "classifier_margin": 0.059551894664764404,
+      "truncated": false,
+      "candidate_admission": {
+        "version": "read-only-candidate-v1",
+        "status": "rejected",
+        "calibrated": false,
+        "thresholds": {
+          "classifier_min": 0.9,
+          "classifier_margin": 0.2,
+          "semantic_min": 0.85,
+          "semantic_margin": 0.1
+        },
+        "reason": "no_unique_supported_action",
+        "checks": {}
+      },
+      "diagnostics": [],
+      "unexpected_local_action": false
+    },
+    {
+      "id": "write",
+      "text": "给我列一份消化内科号源并准备预约",
+      "expected_action_if_locally_accepted": null,
+      "rule_plan": false,
+      "plan_source": "llm",
+      "actions": [],
+      "arguments": [],
+      "classifier_label": "appointment_action",
+      "classifier_confidence": 0.9665443897247314,
+      "classifier_margin": 0.9590092925354838,
+      "truncated": false,
+      "candidate_admission": {
+        "version": "read-only-candidate-v1",
+        "status": "rejected",
+        "calibrated": false,
+        "thresholds": {
+          "classifier_min": 0.9,
+          "classifier_margin": 0.2,
+          "semantic_min": 0.85,
+          "semantic_margin": 0.1
+        },
+        "reason": "no_unique_supported_action",
+        "checks": {
+          "list_available_slots": "unconsumed_text",
+          "search_doctors": "action_anchor_missing"
+        }
+      },
+      "diagnostics": [],
+      "unexpected_local_action": false
+    }
+  ],
+  "source_sha256": {
+    "careguide/orchestration/candidate_routing.py": "65448df15916979af68529082304ab3a9669c86465a5cf8ba10e8d6680e4b150",
+    "careguide/orchestration/understanding.py": "e3dbc0c13491f263c780f4a5fdae601dea932fa472872fa8de863312810cf2dc",
+    "careguide/orchestration/query_parser.py": "4f508a7ee49dbe258e15654ba9fb9013de56a03916deca3c985a68967723bd8a",
+    "careguide/orchestration/unified.py": "5c9355f5943783ba39b4dfc3141201bb7f0ebb55cec2cdf5dfab2eee046a13f3",
+    "scripts/evaluate_candidate_routing.py": "514c4d787086be19ef725a90363cf3cfcee26748f7ac4be462c1fa95b0395bf4"
+  }
+}

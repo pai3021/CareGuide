@@ -177,12 +177,15 @@ class UnifiedRuntime(OrchestrationRuntime):
             try:
                 async with asyncio.timeout(max(.001, started+budget.limits.request_seconds-time.monotonic())):
                     await self.understanding.enrich(message, understood, budget=budget, scope=(user_id, conv_id),
-                                                   allow_remote=self.engine.client is not None)
+                        allow_remote=self.engine.client is not None, message_id=message_id, at=at,
+                        allow_candidate_plan=not workflow_event)
             except TimeoutError:
                 understood.diagnostics.append('understanding_request_deadline')
+        if proposal is None and not workflow_event:
+            proposal, metadata = compose_plan(message, understood)
         metadata['local_understanding'] = understood.model_dump(mode='json')
         context = build_context(message, message_id, at, history, state, understood)
-        if fresh and proposal:
+        if proposal and not workflow_event and (fresh or message != state.goal or not state.tasks):
             decision = RequestDecision(kind='new', plan=proposal)
         elif not workflow_event and message == state.goal and state.tasks:
             decision = RequestDecision(kind='run', workflow_id=state.id, base_version=state.version)
@@ -197,7 +200,7 @@ class UnifiedRuntime(OrchestrationRuntime):
                         decision, events = await self.planner.decide(context, budget=budget)
                 except PlanningFailure as exc:
                     return self._reply(state, budget, message, started, failures=[exc.failure],
-                                       signals={'plan_source': 'llm', 'planning_events': exc.events})
+                                       signals={**metadata, 'plan_source': 'llm', 'planning_events': exc.events})
                 metadata = {**metadata, 'plan_source': 'llm', 'recognition_source': understood.recognition_source}
         if decision.kind == 'direct':
             from careguide.orchestration.general_answering import direct_allowed

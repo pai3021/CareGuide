@@ -1,0 +1,8 @@
+{
+  "dataset_version": "business-intent-eval-v1",
+  "dataset_sha256": "9da79f4e7d8bb58b52f4c3bcc3591e5c5a43c4b97fe43f28422a3eeb101320c9",
+  "cases": 64,
+  "source": "synthetic evaluation only",
+  "frozen_before_first_native_run": true,
+  "policy": "No training, threshold selection or result-driven edits on this set"
+}

@@ -1,0 +1,184 @@
+{
+  "evaluation": "fixed dev instruction/model/pool comparison",
+  "case_count": 100,
+  "results": {
+    "cached_cn_06b40": {
+      "metrics": {
+        "case_count": 100,
+        "mrr_at_10": 0.40032936507936506,
+        "recall_at_1": 0.32,
+        "recall_at_5": 0.51,
+        "recall_at_10": 0.6,
+        "ndcg_at_10": 0.4474727223350773
+      },
+      "candidate_coverage": 0.8,
+      "api_seconds_mean": 0.8054323850106448,
+      "input_tokens": 710935,
+      "reused_baseline": true
+    },
+    "english_06b40": {
+      "metrics": {
+        "case_count": 100,
+        "mrr_at_10": 0.4179285714285714,
+        "recall_at_1": 0.34,
+        "recall_at_5": 0.53,
+        "recall_at_10": 0.6,
+        "ndcg_at_10": 0.4612478145258922
+      },
+      "candidate_coverage": 0.8,
+      "api_seconds_mean": 0.8368186870124191,
+      "input_tokens": 690935,
+      "reused_baseline": false
+    },
+    "english_4b40": {
+      "metrics": {
+        "case_count": 100,
+        "mrr_at_10": 0.46557539682539684,
+        "recall_at_1": 0.38,
+        "recall_at_5": 0.55,
+        "recall_at_10": 0.72,
+        "ndcg_at_10": 0.5242761835392021
+      },
+      "candidate_coverage": 0.8,
+      "api_seconds_mean": 1.2858157929964364,
+      "input_tokens": 690935,
+      "reused_baseline": false
+    },
+    "english_4b100": {
+      "metrics": {
+        "case_count": 100,
+        "mrr_at_10": 0.4509563492063492,
+        "recall_at_1": 0.37,
+        "recall_at_5": 0.54,
+        "recall_at_10": 0.69,
+        "ndcg_at_10": 0.5063062528480176
+      },
+      "candidate_coverage": 0.86,
+      "api_seconds_mean": 2.445586047023535,
+      "input_tokens": 1711607,
+      "reused_baseline": false
+    }
+  },
+  "paired": {
+    "cached_cn_06b40__to__english_06b40": {
+      "absolute_delta": 0,
+      "bootstrap_95_interval": [
+        -0.04,
+        0.04
+      ],
+      "bootstrap_samples": 2000,
+      "gained": 2,
+      "lost": 2
+    },
+    "english_06b40__to__english_4b40": {
+      "absolute_delta": 0.12,
+      "bootstrap_95_interval": [
+        0.06,
+        0.18
+      ],
+      "bootstrap_samples": 2000,
+      "gained": 12,
+      "lost": 0
+    },
+    "cached_cn_06b40__to__english_4b40": {
+      "absolute_delta": 0.12,
+      "bootstrap_95_interval": [
+        0.06,
+        0.18
+      ],
+      "bootstrap_samples": 2000,
+      "gained": 12,
+      "lost": 0
+    },
+    "english_4b40__to__english_4b100": {
+      "absolute_delta": -0.03,
+      "bootstrap_95_interval": [
+        -0.09,
+        0.03
+      ],
+      "bootstrap_samples": 2000,
+      "gained": 3,
+      "lost": 6
+    },
+    "cached_cn_06b40__to__english_4b100": {
+      "absolute_delta": 0.09,
+      "bootstrap_95_interval": [
+        0.02,
+        0.16
+      ],
+      "bootstrap_samples": 2000,
+      "gained": 12,
+      "lost": 3
+    }
+  },
+  "arms": {
+    "cached_cn_06b40": {
+      "model": "Qwen/Qwen3-Reranker-0.6B",
+      "instruction": "根据中文医疗查询与候选段落能否直接回答该问题进行相关性排序。",
+      "pool_size": 40,
+      "cached": true
+    },
+    "english_06b40": {
+      "model": "Qwen/Qwen3-Reranker-0.6B",
+      "instruction": "Rank the candidate passages by whether they can directly answer the Chinese medical query.",
+      "pool_size": 40,
+      "cached": false
+    },
+    "english_4b40": {
+      "model": "Qwen/Qwen3-Reranker-4B",
+      "instruction": "Rank the candidate passages by whether they can directly answer the Chinese medical query.",
+      "pool_size": 40,
+      "cached": false
+    },
+    "english_4b100": {
+      "model": "Qwen/Qwen3-Reranker-4B",
+      "instruction": "Rank the candidate passages by whether they can directly answer the Chinese medical query.",
+      "pool_size": 100,
+      "cached": false
+    }
+  },
+  "cross_pool_score_diagnostic": {
+    "shared_query_document_pairs": 4000,
+    "same_relative_order_queries": 9,
+    "maximum_score_difference": 0.035561591386795044,
+    "mean_score_difference": 0.0022467992668293844,
+    "interpretation": "Changing candidate sets was accompanied by score variation; do not assume exact per-pair score invariance or infer one pool result from another."
+  },
+  "frozen_test_run": false,
+  "scope": "Exploratory reused dev pilot. No clinical-quality or production-latency claim.",
+  "identity": {
+    "plan_sha256": "f26038d64eec5e27f93689ce320c5f053c886ba8af5155179e0164f84c6b2df1",
+    "endpoint": "https://api.siliconflow.cn/v1/rerank",
+    "arms": {
+      "cached_cn_06b40": {
+        "model": "Qwen/Qwen3-Reranker-0.6B",
+        "instruction": "根据中文医疗查询与候选段落能否直接回答该问题进行相关性排序。",
+        "pool_size": 40,
+        "cached": true
+      },
+      "english_06b40": {
+        "model": "Qwen/Qwen3-Reranker-0.6B",
+        "instruction": "Rank the candidate passages by whether they can directly answer the Chinese medical query.",
+        "pool_size": 40,
+        "cached": false
+      },
+      "english_4b40": {
+        "model": "Qwen/Qwen3-Reranker-4B",
+        "instruction": "Rank the candidate passages by whether they can directly answer the Chinese medical query.",
+        "pool_size": 40,
+        "cached": false
+      },
+      "english_4b100": {
+        "model": "Qwen/Qwen3-Reranker-4B",
+        "instruction": "Rank the candidate passages by whether they can directly answer the Chinese medical query.",
+        "pool_size": 100,
+        "cached": false
+      }
+    }
+  },
+  "attempted_requests": 300,
+  "response_sha256": "0173f99b710fbdf07bf49b8ce5ef920bae664844227eca424b7b18de342b782e",
+  "published_response_sha256": "a07edeaa54a5ad642990718df026b494701b85f49deef96744ecf6a823e30df6",
+  "published_plan_sha256": "f26038d64eec5e27f93689ce320c5f053c886ba8af5155179e0164f84c6b2df1",
+  "new_input_tokens": 3093477
+}

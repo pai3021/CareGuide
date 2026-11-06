@@ -22,11 +22,17 @@ referenced by CareGuide are listed below.
   dimensions without redistributing its code, prompts, datasets, or scores.
 - `hfl/chinese-roberta-wwm-ext`, Qwen embedding/reranker models, MiMo, and
   DeepSeek remain subject to their providers' model terms and service policies.
+- **[BAAI/bge-m3](https://huggingface.co/BAAI/bge-m3)** is MIT licensed.
+  The optional local sparse-retrieval experiment uses a pinned official encoder
+  and sparse head; downloaded checkpoints are not redistributed in Git.
+  Its sparse computation follows the MIT-licensed
+  **[FlagEmbedding](https://github.com/FlagOpen/FlagEmbedding)** implementation.
 
 ## Repository boundaries
 
-- Model checkpoints, provider credentials, Chroma stores, traces, and generated
-  evaluation outputs are excluded from Git.
+- Model checkpoints, provider credentials, Chroma stores, traces, and bulk
+  runtime evaluation outputs are excluded from Git. Sanitized score caches and
+  selected reports are published separately for reproducibility.
 - Public medical passages are research data and have not been clinically
   reviewed by CareGuide.
 - Synthetic hospital resources do not represent real clinicians, availability,

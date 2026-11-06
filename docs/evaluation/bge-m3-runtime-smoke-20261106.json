@@ -1,0 +1,123 @@
+{
+  "unique_query_count": 3,
+  "configuration_count": 2,
+  "check_count": 6,
+  "embedding_api_requests": 0,
+  "llm_requests": 0,
+  "model": "BAAI/bge-m3",
+  "quantization": "dynamic_int8",
+  "cache_sha256": "0a4bc9c32ae4ee5c592c2f6e23b4c2a3410917afc5cdef28aae2ff0b5efaa558",
+  "native_output_capture_sha256": "a9d70271e55f3b57ef4c5d0a59ba49b9da3183a853bc8132249221567b6bee34",
+  "sparse_query_max_error_vs_singleton_checkpoint": 0.0,
+  "checks": [
+    {
+      "case_id": "careguide-kuake-53370",
+      "configuration": "tuned_rrf",
+      "matches_final_singleton_query_cache": true,
+      "native_top10": [
+        "kuake-ir-945539",
+        "kuake-ir-683720",
+        "kuake-ir-68011",
+        "kuake-ir-771601",
+        "kuake-ir-321824",
+        "kuake-ir-295020",
+        "kuake-ir-371746",
+        "kuake-ir-871329",
+        "kuake-ir-794025",
+        "kuake-ir-809133"
+      ],
+      "bge_metadata_present": true
+    },
+    {
+      "case_id": "careguide-kuake-38071",
+      "configuration": "tuned_rrf",
+      "matches_final_singleton_query_cache": true,
+      "native_top10": [
+        "kuake-ir-674858",
+        "kuake-ir-798077",
+        "kuake-ir-66023",
+        "kuake-ir-9890",
+        "kuake-ir-281815",
+        "kuake-ir-280743",
+        "kuake-ir-80871",
+        "kuake-ir-440186",
+        "kuake-ir-424687",
+        "kuake-ir-469578"
+      ],
+      "bge_metadata_present": true
+    },
+    {
+      "case_id": "careguide-kuake-96116",
+      "configuration": "tuned_rrf",
+      "matches_final_singleton_query_cache": true,
+      "native_top10": [
+        "kuake-ir-37716",
+        "kuake-ir-946007",
+        "kuake-ir-161766",
+        "kuake-ir-447109",
+        "kuake-ir-695920",
+        "kuake-ir-14363",
+        "kuake-ir-19987",
+        "kuake-ir-922845",
+        "kuake-ir-334807",
+        "kuake-ir-678855"
+      ],
+      "bge_metadata_present": true
+    },
+    {
+      "case_id": "careguide-kuake-53370",
+      "configuration": "tuned_minmax",
+      "matches_final_singleton_query_cache": true,
+      "native_top10": [
+        "kuake-ir-945539",
+        "kuake-ir-771601",
+        "kuake-ir-683720",
+        "kuake-ir-68011",
+        "kuake-ir-321824",
+        "kuake-ir-371746",
+        "kuake-ir-295020",
+        "kuake-ir-871329",
+        "kuake-ir-300304",
+        "kuake-ir-794025"
+      ],
+      "bge_metadata_present": true
+    },
+    {
+      "case_id": "careguide-kuake-38071",
+      "configuration": "tuned_minmax",
+      "matches_final_singleton_query_cache": true,
+      "native_top10": [
+        "kuake-ir-674858",
+        "kuake-ir-798077",
+        "kuake-ir-9890",
+        "kuake-ir-66023",
+        "kuake-ir-281815",
+        "kuake-ir-280743",
+        "kuake-ir-469578",
+        "kuake-ir-366290",
+        "kuake-ir-80871",
+        "kuake-ir-424687"
+      ],
+      "bge_metadata_present": true
+    },
+    {
+      "case_id": "careguide-kuake-96116",
+      "configuration": "tuned_minmax",
+      "matches_final_singleton_query_cache": true,
+      "native_top10": [
+        "kuake-ir-37716",
+        "kuake-ir-946007",
+        "kuake-ir-695920",
+        "kuake-ir-447109",
+        "kuake-ir-14363",
+        "kuake-ir-161766",
+        "kuake-ir-922845",
+        "kuake-ir-19987",
+        "kuake-ir-334807",
+        "kuake-ir-761026"
+      ],
+      "bge_metadata_present": true
+    }
+  ],
+  "scope": "Actual runtime outputs compared against the final singleton-query cache; 3 public dev queries under 2 fusion configurations. Cached real Qwen embeddings and a Chroma copy; no fresh quality benchmark."
+}

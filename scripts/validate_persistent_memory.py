@@ -73,7 +73,7 @@ async def run():
         print(json.dumps(report, ensure_ascii=False))
     finally:
         await connection.delete(manager._wm_key(user, conv), manager._summary_key(user, conv))
-        for suffix in ('_episodic',):
+        for suffix in ('_episodic', '_long_term'):
             client.delete_collection(prefix+suffix)
         await manager.close()
         temporary.cleanup()

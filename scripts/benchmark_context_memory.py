@@ -185,8 +185,9 @@ async def real_services(directory):
             await connection.delete(manager._wm_key(user, conversation), manager._summary_key(user, conversation))
         if client:
             names = [item.name if hasattr(item, 'name') else str(item) for item in client.list_collections()]
-            if prefix+'_episodic' in names:
-                client.delete_collection(prefix+'_episodic')
+            for suffix in ('_episodic', '_long_term'):
+                if prefix+suffix in names:
+                    client.delete_collection(prefix+suffix)
         await connection.aclose()
 
 

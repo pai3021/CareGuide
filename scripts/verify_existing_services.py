@@ -165,13 +165,13 @@ async def run(args):
     assert (await manager._get_profile('cg-qa-other-'+nonce)) == {}
     await redis_client.expire(manager._wm_key(actor, conversation), 120)
     report['checks']['persistent_memory'] = {'redis_ttl_seconds': await redis_client.ttl(
-        manager._wm_key(actor, conversation)), 'chroma_collections': [prefix+'_episodic', prefix+'_user_profile'],
+        manager._wm_key(actor, conversation)), 'chroma_collections': [prefix+'_episodic', prefix+'_user_profile', prefix+'_long_term'],
         'model_calls_scripted': len(provider.calls), 'projection_documents': len(stored['documents']),
         'temporary_not_persisted': True, 'explicit_correction': 'afternoon', 'user_isolation': True}
     await memory.close()
     report['state_dir'] = str(folder)
     report['retained_qa_resources'] = [resource['resourceType']+'/'+resource['id'] for resource in resources]
-    report['retention'] = 'QA FHIR resources and two QA Chroma collections retained; own Redis key expires in 120s. No existing data deleted.'
+    report['retention'] = 'QA FHIR resources and three QA Chroma collections retained; own Redis key expires in 120s. No existing data deleted.'
     return report
 
 

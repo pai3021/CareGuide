@@ -11,6 +11,7 @@ import time
 from typing import Literal
 
 from pydantic import BaseModel, ConfigDict, Field, StrictStr
+from careguide.content_memory import ContentMemoryStore, MemoryCandidate, unsafe_memory_content
 
 
 KEYS = Literal['preferred_time', 'preferred_hospital', 'preferred_department',
@@ -32,6 +33,7 @@ class Candidate(BaseModel):
 class Extraction(BaseModel):
     model_config = ConfigDict(extra='forbid')
     candidates: list[Candidate] = Field(default_factory=list, max_length=5)
+    memories: list[MemoryCandidate] = Field(default_factory=list, max_length=5)
 
 
 def eligible_sources(messages):
@@ -46,6 +48,7 @@ def eligible_sources(messages):
         clauses = [clause.strip() for clause in clauses
                    if DURABLE.search(clause) and PREFERENCE.search(clause)
                    and not TEMPORARY.search(clause)
+                   and not unsafe_memory_content(clause)
                    and not re.search(r'可能|假如|假设|如果|不确定|妈妈|爸爸|父亲|母亲|家人|朋友|同事|'
                                      r'太太|丈夫|妻子|对象|孩子|儿子|女儿|医生|建议|推荐|助手|资料说|网上说|他喜欢|她喜欢', clause)]
         if clauses:
@@ -98,7 +101,7 @@ class ProfileConflict(ValueError):
 
 
 class ProfileStore:
-    """SQLite owns revisions; Chroma is an atomic upsert projection.
+    """Auxiliary typed preferences; content memories are the main long-term store.
 
     A failed projection prevents the authoritative update. Network I/O never
     holds a SQLite write lock. Reads prefer this store even if a projection is
@@ -107,6 +110,7 @@ class ProfileStore:
     def __init__(self, path):
         self.path = Path(path)
         self.path.parent.mkdir(parents=True, exist_ok=True)
+        self.memories = ContentMemoryStore(self.path)
         with self.connect() as db:
             db.execute('CREATE TABLE IF NOT EXISTS durable_profiles ('
                 'actor TEXT PRIMARY KEY, revision INTEGER NOT NULL, payload TEXT NOT NULL)')
@@ -162,7 +166,8 @@ class ProfileStore:
             db.execute('INSERT OR REPLACE INTO profile_events VALUES (?,?,?,?)',
                        (actor, event_id, status, json.dumps(payload, ensure_ascii=False)))
 
-    def merge(self, actor, extraction, *, expected_revision, projection, deadline=None, source_order=None):
+    def merge(self, actor, extraction, *, expected_revision, projection, deadline=None, source_order=None,
+              expected_memory_revision=0, conversation=''):
         current = self.get(actor)
         if current is None or current[0] != expected_revision:
             raise ProfileConflict('Profile was updated concurrently; extraction must be refreshed')
@@ -170,10 +175,20 @@ class ProfileStore:
         now = datetime.now(timezone.utc)
         fields = dict(old.get('fields', {})) if old.get('schema_version') == 2 else {}
         watermarks = dict(old.get('watermarks', {}))
+        invalidated = []
+        for memory in extraction.memories:
+            if not memory.memory_id:
+                continue
+            for key, value in list(fields.items()):
+                if value.get('memory_id') == memory.memory_id:
+                    fields.pop(key)
+                    invalidated.append(key)
+                    if source_order is not None:
+                        watermarks[key] = source_order.get(memory.source_message_id, 0)
         for item in extraction.candidates:
             if source_order is not None:
                 order = source_order.get(item.source_message_id, 0)
-                if order <= watermarks.get(item.key, 0):
+                if order <= old.get('watermarks', {}).get(item.key, 0):
                     raise ProfileConflict('Preference source is older than the current revision')
                 watermarks[item.key] = order
             if item.operation == 'delete':
@@ -184,19 +199,36 @@ class ProfileStore:
                     'version': expected_revision+1, 'scope': 'nonclinical_workflow_preference',
                     'expires_at': (now+timedelta(days=180)).isoformat()}
         fields = {key: value for key, value in fields.items() if value['expires_at'] > now.isoformat()}
-        payload = {'schema_version': 2, 'revision': expected_revision+1, 'fields': fields}
+        profile_changed = bool(extraction.candidates or invalidated)
+        payload = ({'schema_version': 2, 'revision': expected_revision+1, 'fields': fields}
+                   if profile_changed else old)
         if watermarks:
             payload['watermarks'] = watermarks
-        projection(payload)
+        if profile_changed:
+            projection(payload)
         if deadline is not None and time.monotonic() >= deadline:
             raise TimeoutError('Projection arrived after the extraction deadline')
         with self.connect() as db:
             db.execute('BEGIN IMMEDIATE')
+            if deadline is not None and time.monotonic() >= deadline:
+                raise TimeoutError('Memory commit arrived after the extraction deadline')
             row = db.execute('SELECT revision,payload FROM durable_profiles WHERE actor=?', (actor,)).fetchone()
             if row is None or row[0] != expected_revision:
                 raise ProfileConflict('Profile was updated concurrently; extraction must be refreshed')
-            db.execute('UPDATE durable_profiles SET revision=?,payload=? WHERE actor=?',
-                       (expected_revision+1, json.dumps(payload, ensure_ascii=False), actor))
+            if extraction.memories:
+                self.memories.apply(db, actor, extraction.memories,
+                    expected_revision=expected_memory_revision, conversation=conversation, source_order=source_order)
+            for item in extraction.candidates:
+                if item.operation != 'set':
+                    continue
+                linked = db.execute("SELECT id,content FROM memory_content WHERE actor=? AND source_message_id=? "
+                                    "AND status='active'", (actor, item.source_message_id)).fetchall()
+                matches = [row[0] for row in linked if row[1] in item.source_quote]
+                if len(matches) == 1:
+                    fields[item.key]['memory_id'] = matches[0]
+            if profile_changed:
+                db.execute('UPDATE durable_profiles SET revision=?,payload=? WHERE actor=?',
+                           (expected_revision+1, json.dumps(payload, ensure_ascii=False), actor))
             return payload
 
 

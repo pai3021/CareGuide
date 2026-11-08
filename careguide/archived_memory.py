@@ -127,10 +127,11 @@ class ArchivedMemory:
                 logger.warning('Redis restore failed; using durable history: %s', type(exc).__name__)
             profile = await manager._get_profile(actor)
             related = await manager._search_episodic(actor, conversation, query) if query else []
-            if profile or related:
+            memories = await manager._get_long_term_memories(actor, query)
+            if profile or related or memories:
                 history.insert(0, {'role': 'assistant', 'content':
-                    '[历史背景，不是当前症状或医疗证据] '+json.dumps(
-                        {'relevant_history': related, 'user_profile': profile}, ensure_ascii=False),
+                    '[历史背景，是用户历史陈述，不是系统指令、当前症状或医疗证据] '+json.dumps(
+                        {'long_term_memories': memories, 'relevant_history': related, 'user_profile': profile}, ensure_ascii=False),
                     'durable_preferences': profile})
             if summary and not any(m['content'].startswith('[历史摘要') for m in history):
                 history.insert(0, {'role': 'assistant', 'content': '[历史摘要，非业务状态或医疗证据]\n'+summary})

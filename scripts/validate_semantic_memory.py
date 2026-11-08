@@ -78,7 +78,7 @@ async def run(args):
         with output.open('x', encoding='utf-8') as file:
             json.dump(report, file, ensure_ascii=False, indent=2)
         await connection.delete(manager._wm_key(user, conv), manager._summary_key(user, conv))
-        for suffix in ('_episodic',):
+        for suffix in ('_episodic', '_long_term'):
             chroma.delete_collection(prefix + suffix)
         await manager.close()
         await llm.close()

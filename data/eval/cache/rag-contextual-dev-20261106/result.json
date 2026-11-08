@@ -1,0 +1,635 @@
+{
+  "evaluation": "Grounded source-only enrichment, same 0.6B/1024 embedding + 4B original-content rerank Top40",
+  "frozen_test_run": false,
+  "baseline": {
+    "case_count": 100,
+    "mrr_at_10": 0.46557539682539684,
+    "recall_at_1": 0.38,
+    "recall_at_5": 0.55,
+    "recall_at_10": 0.72,
+    "ndcg_at_10": 0.5242761835392021
+  },
+  "contextual": {
+    "case_count": 100,
+    "mrr_at_10": 0.4454325396825397,
+    "recall_at_1": 0.37,
+    "recall_at_5": 0.52,
+    "recall_at_10": 0.64,
+    "ndcg_at_10": 0.4911683606833699
+  },
+  "paired": {
+    "absolute_delta": -0.08,
+    "bootstrap_95_interval": [
+      -0.14,
+      -0.02
+    ],
+    "bootstrap_samples": 2000,
+    "gained": 1,
+    "lost": 9
+  },
+  "case_results": [
+    {
+      "id": "careguide-kuake-76772",
+      "gold_record_id": "kuake-ir-738750",
+      "baseline_rank": null,
+      "contextual_rank": null
+    },
+    {
+      "id": "careguide-kuake-50490",
+      "gold_record_id": "kuake-ir-484798",
+      "baseline_rank": 1,
+      "contextual_rank": 1
+    },
+    {
+      "id": "careguide-kuake-74821",
+      "gold_record_id": "kuake-ir-719993",
+      "baseline_rank": 1,
+      "contextual_rank": 1
+    },
+    {
+      "id": "careguide-kuake-45108",
+      "gold_record_id": "kuake-ir-433889",
+      "baseline_rank": 1,
+      "contextual_rank": 1
+    },
+    {
+      "id": "careguide-kuake-54402",
+      "gold_record_id": "kuake-ir-523125",
+      "baseline_rank": 1,
+      "contextual_rank": 1
+    },
+    {
+      "id": "careguide-kuake-53553",
+      "gold_record_id": "kuake-ir-514604",
+      "baseline_rank": null,
+      "contextual_rank": null
+    },
+    {
+      "id": "careguide-kuake-63117",
+      "gold_record_id": "kuake-ir-606569",
+      "baseline_rank": 2,
+      "contextual_rank": 2
+    },
+    {
+      "id": "careguide-kuake-54751",
+      "gold_record_id": "kuake-ir-526553",
+      "baseline_rank": 2,
+      "contextual_rank": 2
+    },
+    {
+      "id": "careguide-kuake-24325",
+      "gold_record_id": "kuake-ir-234405",
+      "baseline_rank": 8,
+      "contextual_rank": 8
+    },
+    {
+      "id": "careguide-kuake-99527",
+      "gold_record_id": "kuake-ir-954703",
+      "baseline_rank": 7,
+      "contextual_rank": null
+    },
+    {
+      "id": "careguide-kuake-36430",
+      "gold_record_id": "kuake-ir-350065",
+      "baseline_rank": 4,
+      "contextual_rank": 4
+    },
+    {
+      "id": "careguide-kuake-43685",
+      "gold_record_id": "kuake-ir-420895",
+      "baseline_rank": null,
+      "contextual_rank": null
+    },
+    {
+      "id": "careguide-kuake-181",
+      "gold_record_id": "kuake-ir-1925",
+      "baseline_rank": 2,
+      "contextual_rank": 3
+    },
+    {
+      "id": "careguide-kuake-35586",
+      "gold_record_id": "kuake-ir-342079",
+      "baseline_rank": 1,
+      "contextual_rank": 1
+    },
+    {
+      "id": "careguide-kuake-77141",
+      "gold_record_id": "kuake-ir-742220",
+      "baseline_rank": null,
+      "contextual_rank": null
+    },
+    {
+      "id": "careguide-kuake-1075",
+      "gold_record_id": "kuake-ir-10660",
+      "baseline_rank": null,
+      "contextual_rank": null
+    },
+    {
+      "id": "careguide-kuake-89549",
+      "gold_record_id": "kuake-ir-860743",
+      "baseline_rank": null,
+      "contextual_rank": null
+    },
+    {
+      "id": "careguide-kuake-12716",
+      "gold_record_id": "kuake-ir-122743",
+      "baseline_rank": 2,
+      "contextual_rank": 2
+    },
+    {
+      "id": "careguide-kuake-77851",
+      "gold_record_id": "kuake-ir-749293",
+      "baseline_rank": 1,
+      "contextual_rank": 1
+    },
+    {
+      "id": "careguide-kuake-56643",
+      "gold_record_id": "kuake-ir-544511",
+      "baseline_rank": 1,
+      "contextual_rank": 1
+    },
+    {
+      "id": "careguide-kuake-83622",
+      "gold_record_id": "kuake-ir-803886",
+      "baseline_rank": 1,
+      "contextual_rank": 1
+    },
+    {
+      "id": "careguide-kuake-75502",
+      "gold_record_id": "kuake-ir-726281",
+      "baseline_rank": 9,
+      "contextual_rank": 7
+    },
+    {
+      "id": "careguide-kuake-5243",
+      "gold_record_id": "kuake-ir-50820",
+      "baseline_rank": 1,
+      "contextual_rank": 1
+    },
+    {
+      "id": "careguide-kuake-64909",
+      "gold_record_id": "kuake-ir-625082",
+      "baseline_rank": 1,
+      "contextual_rank": 1
+    },
+    {
+      "id": "careguide-kuake-23071",
+      "gold_record_id": "kuake-ir-221499",
+      "baseline_rank": 1,
+      "contextual_rank": 1
+    },
+    {
+      "id": "careguide-kuake-66622",
+      "gold_record_id": "kuake-ir-641378",
+      "baseline_rank": 1,
+      "contextual_rank": 1
+    },
+    {
+      "id": "careguide-kuake-72085",
+      "gold_record_id": "kuake-ir-693927",
+      "baseline_rank": null,
+      "contextual_rank": 6
+    },
+    {
+      "id": "careguide-kuake-67475",
+      "gold_record_id": "kuake-ir-649497",
+      "baseline_rank": 1,
+      "contextual_rank": 1
+    },
+    {
+      "id": "careguide-kuake-87657",
+      "gold_record_id": "kuake-ir-842975",
+      "baseline_rank": 10,
+      "contextual_rank": null
+    },
+    {
+      "id": "careguide-kuake-92967",
+      "gold_record_id": "kuake-ir-893485",
+      "baseline_rank": null,
+      "contextual_rank": null
+    },
+    {
+      "id": "careguide-kuake-41603",
+      "gold_record_id": "kuake-ir-400850",
+      "baseline_rank": 1,
+      "contextual_rank": 1
+    },
+    {
+      "id": "careguide-kuake-96803",
+      "gold_record_id": "kuake-ir-929113",
+      "baseline_rank": 6,
+      "contextual_rank": 7
+    },
+    {
+      "id": "careguide-kuake-94927",
+      "gold_record_id": "kuake-ir-911632",
+      "baseline_rank": 1,
+      "contextual_rank": 1
+    },
+    {
+      "id": "careguide-kuake-76988",
+      "gold_record_id": "kuake-ir-741031",
+      "baseline_rank": null,
+      "contextual_rank": null
+    },
+    {
+      "id": "careguide-kuake-88284",
+      "gold_record_id": "kuake-ir-849259",
+      "baseline_rank": 1,
+      "contextual_rank": 2
+    },
+    {
+      "id": "careguide-kuake-25483",
+      "gold_record_id": "kuake-ir-245328",
+      "baseline_rank": null,
+      "contextual_rank": null
+    },
+    {
+      "id": "careguide-kuake-22980",
+      "gold_record_id": "kuake-ir-220711",
+      "baseline_rank": 1,
+      "contextual_rank": 1
+    },
+    {
+      "id": "careguide-kuake-52265",
+      "gold_record_id": "kuake-ir-501857",
+      "baseline_rank": null,
+      "contextual_rank": null
+    },
+    {
+      "id": "careguide-kuake-55520",
+      "gold_record_id": "kuake-ir-533733",
+      "baseline_rank": null,
+      "contextual_rank": null
+    },
+    {
+      "id": "careguide-kuake-16728",
+      "gold_record_id": "kuake-ir-161570",
+      "baseline_rank": 1,
+      "contextual_rank": 1
+    },
+    {
+      "id": "careguide-kuake-68128",
+      "gold_record_id": "kuake-ir-655445",
+      "baseline_rank": null,
+      "contextual_rank": null
+    },
+    {
+      "id": "careguide-kuake-25941",
+      "gold_record_id": "kuake-ir-249686",
+      "baseline_rank": null,
+      "contextual_rank": null
+    },
+    {
+      "id": "careguide-kuake-24240",
+      "gold_record_id": "kuake-ir-233539",
+      "baseline_rank": 5,
+      "contextual_rank": 5
+    },
+    {
+      "id": "careguide-kuake-47305",
+      "gold_record_id": "kuake-ir-454279",
+      "baseline_rank": 6,
+      "contextual_rank": 7
+    },
+    {
+      "id": "careguide-kuake-50701",
+      "gold_record_id": "kuake-ir-486948",
+      "baseline_rank": 2,
+      "contextual_rank": 2
+    },
+    {
+      "id": "careguide-kuake-28658",
+      "gold_record_id": "kuake-ir-275971",
+      "baseline_rank": 10,
+      "contextual_rank": null
+    },
+    {
+      "id": "careguide-kuake-48553",
+      "gold_record_id": "kuake-ir-466473",
+      "baseline_rank": null,
+      "contextual_rank": null
+    },
+    {
+      "id": "careguide-kuake-27197",
+      "gold_record_id": "kuake-ir-261720",
+      "baseline_rank": 8,
+      "contextual_rank": null
+    },
+    {
+      "id": "careguide-kuake-55309",
+      "gold_record_id": "kuake-ir-531917",
+      "baseline_rank": 4,
+      "contextual_rank": 4
+    },
+    {
+      "id": "careguide-kuake-81937",
+      "gold_record_id": "kuake-ir-787760",
+      "baseline_rank": null,
+      "contextual_rank": null
+    },
+    {
+      "id": "careguide-kuake-91251",
+      "gold_record_id": "kuake-ir-876810",
+      "baseline_rank": 1,
+      "contextual_rank": 1
+    },
+    {
+      "id": "careguide-kuake-86989",
+      "gold_record_id": "kuake-ir-836308",
+      "baseline_rank": 1,
+      "contextual_rank": 1
+    },
+    {
+      "id": "careguide-kuake-62021",
+      "gold_record_id": "kuake-ir-596204",
+      "baseline_rank": null,
+      "contextual_rank": null
+    },
+    {
+      "id": "careguide-kuake-74627",
+      "gold_record_id": "kuake-ir-718195",
+      "baseline_rank": 4,
+      "contextual_rank": 4
+    },
+    {
+      "id": "careguide-kuake-69416",
+      "gold_record_id": "kuake-ir-667747",
+      "baseline_rank": 1,
+      "contextual_rank": 1
+    },
+    {
+      "id": "careguide-kuake-88221",
+      "gold_record_id": "kuake-ir-848594",
+      "baseline_rank": 1,
+      "contextual_rank": 1
+    },
+    {
+      "id": "careguide-kuake-53812",
+      "gold_record_id": "kuake-ir-517456",
+      "baseline_rank": null,
+      "contextual_rank": null
+    },
+    {
+      "id": "careguide-kuake-44522",
+      "gold_record_id": "kuake-ir-428571",
+      "baseline_rank": null,
+      "contextual_rank": null
+    },
+    {
+      "id": "careguide-kuake-94944",
+      "gold_record_id": "kuake-ir-911787",
+      "baseline_rank": 2,
+      "contextual_rank": 2
+    },
+    {
+      "id": "careguide-kuake-50731",
+      "gold_record_id": "kuake-ir-487300",
+      "baseline_rank": 2,
+      "contextual_rank": 2
+    },
+    {
+      "id": "careguide-kuake-84254",
+      "gold_record_id": "kuake-ir-809490",
+      "baseline_rank": null,
+      "contextual_rank": null
+    },
+    {
+      "id": "careguide-kuake-16418",
+      "gold_record_id": "kuake-ir-158261",
+      "baseline_rank": 1,
+      "contextual_rank": 1
+    },
+    {
+      "id": "careguide-kuake-79368",
+      "gold_record_id": "kuake-ir-763821",
+      "baseline_rank": 1,
+      "contextual_rank": 1
+    },
+    {
+      "id": "careguide-kuake-42190",
+      "gold_record_id": "kuake-ir-406753",
+      "baseline_rank": 1,
+      "contextual_rank": 1
+    },
+    {
+      "id": "careguide-kuake-70883",
+      "gold_record_id": "kuake-ir-682082",
+      "baseline_rank": 1,
+      "contextual_rank": 1
+    },
+    {
+      "id": "careguide-kuake-55157",
+      "gold_record_id": "kuake-ir-530411",
+      "baseline_rank": 1,
+      "contextual_rank": 1
+    },
+    {
+      "id": "careguide-kuake-68045",
+      "gold_record_id": "kuake-ir-654569",
+      "baseline_rank": 1,
+      "contextual_rank": 1
+    },
+    {
+      "id": "careguide-kuake-65058",
+      "gold_record_id": "kuake-ir-626581",
+      "baseline_rank": 1,
+      "contextual_rank": 1
+    },
+    {
+      "id": "careguide-kuake-14429",
+      "gold_record_id": "kuake-ir-138945",
+      "baseline_rank": 10,
+      "contextual_rank": null
+    },
+    {
+      "id": "careguide-kuake-48323",
+      "gold_record_id": "kuake-ir-464395",
+      "baseline_rank": 8,
+      "contextual_rank": 8
+    },
+    {
+      "id": "careguide-kuake-10616",
+      "gold_record_id": "kuake-ir-102574",
+      "baseline_rank": 4,
+      "contextual_rank": 4
+    },
+    {
+      "id": "careguide-kuake-36424",
+      "gold_record_id": "kuake-ir-350016",
+      "baseline_rank": null,
+      "contextual_rank": null
+    },
+    {
+      "id": "careguide-kuake-980",
+      "gold_record_id": "kuake-ir-9855",
+      "baseline_rank": 1,
+      "contextual_rank": 1
+    },
+    {
+      "id": "careguide-kuake-67832",
+      "gold_record_id": "kuake-ir-652705",
+      "baseline_rank": null,
+      "contextual_rank": null
+    },
+    {
+      "id": "careguide-kuake-29795",
+      "gold_record_id": "kuake-ir-286811",
+      "baseline_rank": 7,
+      "contextual_rank": 7
+    },
+    {
+      "id": "careguide-kuake-2519",
+      "gold_record_id": "kuake-ir-24993",
+      "baseline_rank": 10,
+      "contextual_rank": 9
+    },
+    {
+      "id": "careguide-kuake-91373",
+      "gold_record_id": "kuake-ir-877984",
+      "baseline_rank": null,
+      "contextual_rank": null
+    },
+    {
+      "id": "careguide-kuake-11207",
+      "gold_record_id": "kuake-ir-108746",
+      "baseline_rank": 3,
+      "contextual_rank": null
+    },
+    {
+      "id": "careguide-kuake-33920",
+      "gold_record_id": "kuake-ir-326434",
+      "baseline_rank": 1,
+      "contextual_rank": 1
+    },
+    {
+      "id": "careguide-kuake-31548",
+      "gold_record_id": "kuake-ir-303929",
+      "baseline_rank": 7,
+      "contextual_rank": null
+    },
+    {
+      "id": "careguide-kuake-7844",
+      "gold_record_id": "kuake-ir-76436",
+      "baseline_rank": 1,
+      "contextual_rank": 1
+    },
+    {
+      "id": "careguide-kuake-94223",
+      "gold_record_id": "kuake-ir-905305",
+      "baseline_rank": 5,
+      "contextual_rank": 7
+    },
+    {
+      "id": "careguide-kuake-57731",
+      "gold_record_id": "kuake-ir-554953",
+      "baseline_rank": 6,
+      "contextual_rank": 6
+    },
+    {
+      "id": "careguide-kuake-45135",
+      "gold_record_id": "kuake-ir-434086",
+      "baseline_rank": 7,
+      "contextual_rank": 7
+    },
+    {
+      "id": "careguide-kuake-28449",
+      "gold_record_id": "kuake-ir-273959",
+      "baseline_rank": 10,
+      "contextual_rank": 8
+    },
+    {
+      "id": "careguide-kuake-68290",
+      "gold_record_id": "kuake-ir-656858",
+      "baseline_rank": null,
+      "contextual_rank": null
+    },
+    {
+      "id": "careguide-kuake-94713",
+      "gold_record_id": "kuake-ir-909570",
+      "baseline_rank": 3,
+      "contextual_rank": null
+    },
+    {
+      "id": "careguide-kuake-33310",
+      "gold_record_id": "kuake-ir-320747",
+      "baseline_rank": 1,
+      "contextual_rank": 1
+    },
+    {
+      "id": "careguide-kuake-42762",
+      "gold_record_id": "kuake-ir-412214",
+      "baseline_rank": 1,
+      "contextual_rank": 1
+    },
+    {
+      "id": "careguide-kuake-57396",
+      "gold_record_id": "kuake-ir-551694",
+      "baseline_rank": 10,
+      "contextual_rank": null
+    },
+    {
+      "id": "careguide-kuake-36132",
+      "gold_record_id": "kuake-ir-347247",
+      "baseline_rank": 3,
+      "contextual_rank": 3
+    },
+    {
+      "id": "careguide-kuake-88581",
+      "gold_record_id": "kuake-ir-852193",
+      "baseline_rank": null,
+      "contextual_rank": null
+    },
+    {
+      "id": "careguide-kuake-52788",
+      "gold_record_id": "kuake-ir-507178",
+      "baseline_rank": 1,
+      "contextual_rank": 1
+    },
+    {
+      "id": "careguide-kuake-10864",
+      "gold_record_id": "kuake-ir-105389",
+      "baseline_rank": 1,
+      "contextual_rank": 1
+    },
+    {
+      "id": "careguide-kuake-17272",
+      "gold_record_id": "kuake-ir-166948",
+      "baseline_rank": 1,
+      "contextual_rank": 1
+    },
+    {
+      "id": "careguide-kuake-46177",
+      "gold_record_id": "kuake-ir-443540",
+      "baseline_rank": null,
+      "contextual_rank": null
+    },
+    {
+      "id": "careguide-kuake-75543",
+      "gold_record_id": "kuake-ir-726699",
+      "baseline_rank": 2,
+      "contextual_rank": 2
+    },
+    {
+      "id": "careguide-kuake-6899",
+      "gold_record_id": "kuake-ir-67191",
+      "baseline_rank": 1,
+      "contextual_rank": 1
+    },
+    {
+      "id": "careguide-kuake-6179",
+      "gold_record_id": "kuake-ir-60339",
+      "baseline_rank": null,
+      "contextual_rank": null
+    },
+    {
+      "id": "careguide-kuake-44030",
+      "gold_record_id": "kuake-ir-424153",
+      "baseline_rank": null,
+      "contextual_rank": null
+    }
+  ],
+  "evaluation_plan_sha256": "b11630d72b7e58708ed2667d14c960f6127f4c1923de4d743f5fb443d67ffac3",
+  "scores_sha256": "535460277d8f3c32bf8ff127c900c4cd2275d4c3b08a3d147e5bc930f618f0ed",
+  "responses_sha256": "da6fb65e125fbb01bb265b03f12a12a2f23c6f423495b831fe78614dae6faac7"
+}

@@ -25,6 +25,29 @@ def semantic_embedding():
         encoding_format=os.environ.get('CAREGUIDE_EMBEDDING_FORMAT', 'float'))
 
 
+def memory_embedding():
+    """Memory has its own query instruction; RAG provider settings stay unchanged."""
+    mode = os.environ.get('CAREGUIDE_MEMORY_VECTOR_MODE', 'auto').strip().casefold()
+    if mode not in {'auto', 'disabled', 'remote'}:
+        raise ValueError('Unknown SQLite memory vector mode')
+    if mode == 'disabled':
+        return None
+    key = os.environ.get('CAREGUIDE_EMBEDDING_API_KEY', '')
+    if not key or key.startswith('YOUR_'):
+        if mode == 'remote':
+            raise ValueError('Memory vector retrieval requires CAREGUIDE_EMBEDDING_API_KEY')
+        return None
+    from careguide.retrieval.embedding_provider import OpenAICompatibleEmbeddingFunction
+    return OpenAICompatibleEmbeddingFunction(api_key=key,
+        base_url=os.environ.get('CAREGUIDE_EMBEDDING_BASE_URL', 'https://api.siliconflow.cn/v1'),
+        model=os.environ.get('CAREGUIDE_EMBEDDING_MODEL', 'Qwen/Qwen3-Embedding-0.6B'),
+        dimensions=int(os.environ.get('CAREGUIDE_EMBEDDING_DIMENSIONS', '1024')),
+        encoding_format=os.environ.get('CAREGUIDE_EMBEDDING_FORMAT', 'float'),
+        query_instruction='Retrieve relevant user-authored personal memories and past conversation summaries.',
+        batch_size=16, timeout=float(os.environ.get('CAREGUIDE_MEMORY_VECTOR_TIMEOUT', '1.5')),
+        max_retries=0)
+
+
 def intent_semantic_retriever(mode=None):
     """Separate business index and instruction, reusing the existing provider configuration."""
     from careguide.orchestration.semantic_intent import SemanticIntentRetriever, INSTRUCTION, record_response
@@ -219,7 +242,7 @@ def get_chat_runtime():
         max_tool_rounds=int(os.environ.get('CAREGUIDE_MAX_TOOL_ROUNDS', '5')),
         business_store=BusinessStore(business_path), knowledge_backend=knowledge_backend,
         appointment_service=appointment_service)
-    memory_mode = os.environ.get('CAREGUIDE_MEMORY_MODE', 'session')
+    memory_mode = os.environ.get('CAREGUIDE_MEMORY_MODE', 'sqlite')
     if memory_mode == 'redis_chroma':
         from careguide.conversation_memory import MemoryManager
         manager = MemoryManager(redis_url=os.environ.get('CAREGUIDE_REDIS_URL', 'redis://127.0.0.1:6380/0'),
@@ -234,13 +257,24 @@ def get_chat_runtime():
         memory = PersistentMemory(manager)
     elif memory_mode == 'session':
         memory = SessionMemory()
+    elif memory_mode == 'sqlite':
+        from careguide.sqlite_memory import SQLiteMemoryBackend
+        cache_mode = os.environ.get('CAREGUIDE_MEMORY_CACHE', 'none')
+        if cache_mode not in {'none', 'redis'}:
+            raise ValueError('Unknown SQLite memory cache')
+        memory = SQLiteMemoryBackend(business_path, client=client, model=model,
+            embedding=memory_embedding(),
+            vector_timeout=float(os.environ.get('CAREGUIDE_MEMORY_VECTOR_TIMEOUT', '1.5')),
+            min_score=float(os.environ.get('CAREGUIDE_MEMORY_VECTOR_MIN_SCORE', '0.3')),
+            redis_url=os.environ.get('CAREGUIDE_REDIS_URL', 'redis://127.0.0.1:6380/0')
+            if cache_mode == 'redis' else None)
     else:
         raise ValueError('Unknown memory mode')
-    if os.environ.get('CAREGUIDE_SESSION_ARCHIVE', '0') == '1':
+    if memory_mode == 'sqlite' or os.environ.get('CAREGUIDE_SESSION_ARCHIVE', '0') == '1':
         from careguide.archived_memory import ArchivedMemory
         from careguide.context_memory import ContextSettings
-        if int(os.environ.get('CAREGUIDE_MEMORY_REVIEW_INTERVAL', '0')) and memory_mode != 'redis_chroma':
-            raise ValueError('Periodic profile review requires redis_chroma mode')
+        if int(os.environ.get('CAREGUIDE_MEMORY_REVIEW_INTERVAL', '0')) and memory_mode not in {'redis_chroma', 'sqlite'}:
+            raise ValueError('Periodic profile review requires sqlite or redis_chroma mode')
         settings = None
         if os.environ.get('CAREGUIDE_TOKEN_CONTEXT', '0') == '1':
             if client is None:

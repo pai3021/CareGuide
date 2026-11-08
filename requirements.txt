@@ -14,3 +14,4 @@ langgraph-sdk==0.3.15
 langchain-core==1.6.10
 langsmith==0.4.49
 aiosqlite==0.21.0
+sqlite-vec==0.1.9

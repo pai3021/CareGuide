@@ -8,9 +8,11 @@ import argparse
 import asyncio
 import hashlib
 import json
+import math
 from pathlib import Path
 from tempfile import TemporaryDirectory
 import time
+from statistics import median
 from types import SimpleNamespace
 import uuid
 
@@ -19,6 +21,7 @@ from careguide.context_memory import ContextSettings, estimate_tokens
 from careguide.conversation_memory import MemoryManager
 from careguide.profile_memory import ProfileStore
 from careguide.task_context import PersistentMemory, SessionMemory
+from careguide.sqlite_memory import SQLiteMemoryBackend
 
 
 class FixtureModel:
@@ -105,27 +108,35 @@ async def measure(mode, directory):
     model, connection = FixtureModel(), FixtureRedis()
     manager = fixture_manager(directory/f'{mode}.sqlite3', model, connection)
     memory = SessionMemory() if mode == 'session_baseline' else PersistentMemory(manager)
-    if mode == 'enhanced':
+    archived = mode in {'enhanced', 'sqlite_only'}
+    if archived:
+        if mode == 'sqlite_only':
+            memory = SQLiteMemoryBackend(directory/f'{mode}.sqlite3', client=model, model=manager._model)
         memory = ArchivedMemory(memory, directory/f'{mode}.sqlite3', client=model, model=manager._model,
             settings=ContextSettings(window=8192, input_cap=2400, output_reserve=256, margin=128,
                                      summary_tokens=256))
-    counts, started = [], time.perf_counter()
+    counts, turn_ms, started = [], [], time.perf_counter()
     for index in range(30):
+        turn_started = time.perf_counter()
         text = f'第{index}轮，人民医院上午预约仍需确认。'+('补充历史信息。'*(3 if index % 3 else 55))
         history = await memory.history('fixture-user', 'fixture-conversation', query=text)
         payload = [{'role': 'system', 'content': '只有用户确认后才可执行预约。'}]+history+[
             {'role': 'user', 'content': text}]
-        if mode == 'enhanced':
+        if archived:
             with memory.request_context('fixture-user', 'fixture-conversation', str(index)) as policy:
                 payload = await policy.prepare(payload, output=256)
         counts.append(estimate_tokens({'messages': payload, 'tools': []}))
         await memory.add('fixture-user', 'fixture-conversation', 'user', text)
         await memory.add('fixture-user', 'fixture-conversation', 'assistant', '仅查询，尚未执行预约。')
-    if mode == 'enhanced':
+        turn_ms.append((time.perf_counter()-turn_started)*1000)
+    if archived:
         raw_count = len(memory.store.messages('fixture-user', 'fixture-conversation'))
         original_store = memory.store
         await memory.close()
-        memory = ArchivedMemory(PersistentMemory(fixture_manager(directory/f'{mode}.sqlite3', model, FixtureRedis())),
+        backend = (SQLiteMemoryBackend(directory/f'{mode}.sqlite3', client=model, model='synthetic-fixture')
+                   if mode == 'sqlite_only' else
+                   PersistentMemory(fixture_manager(directory/f'{mode}.sqlite3', model, FixtureRedis())))
+        memory = ArchivedMemory(backend,
                                 directory/f'{mode}.sqlite3', client=model, model='synthetic-fixture',
                                 settings=ContextSettings(window=8192, input_cap=2400, output_reserve=256,
                                                          margin=128, summary_tokens=256))
@@ -141,6 +152,8 @@ async def measure(mode, directory):
     return {'mode': mode, 'turns': 30, 'estimated_input_tokens_sum': sum(counts),
             'estimated_input_tokens_peak': max(counts), 'summary_model_calls': model.calls,
             'archived_chat_messages': raw_count, 'context_present_after_cache_loss': bool(restored),
+            'fixture_turn_ms_p50': round(median(turn_ms), 3),
+            'fixture_turn_ms_p95': round(sorted(turn_ms)[math.ceil(.95*len(turn_ms))-1], 3),
             'fixture_elapsed_ms': round((time.perf_counter()-started)*1000, 3)}
 
 
@@ -194,7 +207,8 @@ async def real_services(directory):
 async def run(args):
     with TemporaryDirectory(prefix='context-benchmark-', dir='tmp') as temporary:
         directory = Path(temporary)
-        rows = [await measure(mode, directory) for mode in ('session_baseline', 'redis_chroma_baseline', 'enhanced')]
+        rows = [await measure(mode, directory) for mode in (
+            'session_baseline', 'redis_chroma_baseline', 'enhanced', 'sqlite_only')]
         report = {'protocol': 'careguide-context-control-v1', 'seed': 'fixed-30-turn-transcript',
             'model': 'scripted fixture', 'token_count_method': 'UTF-8 heuristic; not provider usage',
             'episodic_retrieval': 'disabled in synthetic comparisons to isolate context behavior; checked separately with real services',
@@ -203,7 +217,8 @@ async def run(args):
         report['source_sha256'] = {str(path).replace('\\', '/'): hashlib.sha256(path.read_bytes()).hexdigest()
             for path in [Path('careguide')/name for name in (
                 'session_store.py', 'archived_memory.py', 'context_memory.py', 'conversation_memory.py',
-                'profile_memory.py', 'task_context.py', 'llm_utils.py', 'api.py', 'runtime.py')]
+                'profile_memory.py', 'task_context.py', 'llm_utils.py', 'api.py', 'runtime.py',
+                'memory_types.py', 'long_term_memory.py', 'sqlite_memory.py')]
             + [Path('scripts/benchmark_context_memory.py')]}
         if args.real_services:
             report['real_services'] = await real_services(directory)

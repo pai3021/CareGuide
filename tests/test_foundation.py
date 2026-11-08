@@ -50,5 +50,7 @@ def test_capabilities_do_not_claim_unimplemented_integrations():
     assert health.status_code == 200
     assert health.json()['integrations']['intent_classifier']['status'] == 'available'
     assert health.json()['integrations']['memory']['status'] == 'ok'
-    assert health.json()['integrations']['memory']['backend'] == 'session'
-    assert result['memory']['backend'] == 'session'
+    assert health.json()['integrations']['memory']['backend'] == 'sqlite'
+    assert health.json()['integrations']['memory']['cache'] == 'none'
+    assert health.json()['integrations']['memory']['session_archive'] == 'sqlite'
+    assert result['memory']['backend'] == 'sqlite'

@@ -195,9 +195,10 @@ def test_production_factory_passes_real_embedding_candidates_to_one_planner(monk
             assert semantic['status'] == 'retrieved' and semantic['remote_calls'] == 2
             assert any(row['source'] == 'semantic_embedding' for row in payload['local_understanding']['candidates'])
             assert 'vectors' not in json.dumps(payload)
-            assert options[0]['max_retries'] == 0 and options[0]['query_instruction'] == INSTRUCTION
-            assert options[0]['base_url'] == 'https://api.siliconflow.cn/v1'
-            assert options[0]['model'] == 'Qwen/Qwen3-Embedding-0.6B'
+            intent_options = [option for option in options if option.get('query_instruction') == INSTRUCTION]
+            assert len(intent_options) == 1 and intent_options[0]['max_retries'] == 0
+            assert intent_options[0]['base_url'] == 'https://api.siliconflow.cn/v1'
+            assert intent_options[0]['model'] == 'Qwen/Qwen3-Embedding-0.6B'
             next_query = http.post('/chat', json={'message': '查消化内科医生', 'user_id': 'u', 'conv_id': 'c'}).json()
             assert next_query['workflow_status'] == 'completed'
             # Local routing still skips embedding/planning; final answer attempts one stream.

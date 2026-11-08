@@ -171,6 +171,10 @@ def test_archive_adapter_with_real_workflow_runtime_preserves_trace_and_tool_rou
         tool_reply('lookup_drug_label', valid_plan()['tasks'][1]['arguments']),
         {'content': 'Only sourced information.'}])
     engine, original, monitor = configured(monkeypatch, tmp_path, client)
+    # The factory now already archives by default. Test one adapter over its
+    # backend rather than nesting archives and writing every turn twice.
+    if isinstance(original, ArchivedMemory):
+        original = original.memory
     memory = ArchivedMemory(original, tmp_path/'runtime.sqlite3', client=client, model='offline',
                             settings=ContextSettings())
     app.dependency_overrides[get_chat_runtime] = lambda: (engine, memory, monitor)

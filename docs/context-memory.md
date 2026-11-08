@@ -2,15 +2,35 @@
 
 ## 存储职责
 
-SQLite 保存获准留存的完整聊天原文、模型实际使用的工具调用及结果、累计摘要覆盖边界、请求重试记录，以及正式长期记忆。长期记忆以自然语言 `content` 条目为主体，时段、医院等固定偏好只是辅助业务字段。Redis 保存近期消息和当前摘要缓存。ChromaDB 分别保存历史情景摘要和长期内容条目的语义索引。工作流执行事实仍由现有 WorkflowStore、ActionStore 和医院接口管理；LangGraph checkpoint 保存流程控制状态。
+开启归档后，SQLite 保存获准留存的完整聊天原文、模型实际使用的工具调用及结果、累计摘要覆盖边界、请求重试记录，以及正式长期记忆。长期记忆以自然语言 `content` 条目为主体，时段、医院等固定偏好只是辅助业务字段。默认 `sqlite` 模式将这些能力统一在同一数据库，已配置 Embedding 时使用 sqlite-vec 召回长期内容和历史情景摘要，FTS5 补充正式长期条目，不初始化 Memory Chroma；Redis 仅在显式开启时镜像近期缓存。兼容的 `redis_chroma` 模式继续使用原 Redis / Chroma 链路。RAG 的 BM25、Chroma、混合检索与重排配置独立于 Memory。工作流执行事实仍由现有 WorkflowStore、ActionStore 和医院接口管理；LangGraph checkpoint 保存流程控制状态。
 
 压缩不会删除 SQLite 原文，也不会把历史摘要升级为当前症状、医疗证据或业务成功凭据。用户偏好的正常写入不再依赖 ChromaDB；`CAREGUIDE_LEGACY_PROFILE_PROJECTION=1` 仅用于兼容旧双写行为。
 
 ## 启用与回退
 
-默认仍为 `CAREGUIDE_MEMORY_MODE=session`，新归档、token 管理及周期复盘默认关闭；本次改造没有修改本机 `.env` 或重启服务。
+默认使用 `CAREGUIDE_MEMORY_MODE=sqlite`，自动启用完整会话归档，Redis 缓存、token 管理及周期复盘默认关闭。未设置模式时，Python 和 Docker 均选择 SQLite；已有环境变量或 `.env` 中显式指定的模式仍优先，本次未修改实际 `.env` 或重启服务。
 
-要启用完整持久方案，在运行环境中设置：
+默认 SQLite 可在没有模型密钥时归档和恢复会话。要同时启用 token 管理和周期复盘，在配置模型后设置：
+
+```dotenv
+CAREGUIDE_MEMORY_MODE=sqlite
+CAREGUIDE_SESSION_ARCHIVE=1
+CAREGUIDE_TOKEN_CONTEXT=1
+CAREGUIDE_MEMORY_CACHE=none
+CAREGUIDE_MEMORY_REVIEW_INTERVAL=10
+```
+
+`sqlite` 模式始终启用会话归档，即使 `SESSION_ARCHIVE=0` 也不会关闭它。Token 管理需要已配置的摘要模型；长期记忆提取也使用已配置的模型客户端。`MEMORY_CACHE=redis` 可显式启用近期缓存，使用现有 `CAREGUIDE_REDIS_URL`；缓存故障不会阻止已经归档的历史恢复或正式记忆提交。当前读路径仍会读取 SQLite，开启缓存不代表减少 SQL 读取或已有性能收益。所有正式记忆和偏好直接复用原表，无需复制旧 Chroma 集合。旧画像不会被自动导入。
+
+SQLite 模式现已接入 `sqlite-vec==0.1.9`，向量写在同一个数据库的 `memory_vectors` 表。`CAREGUIDE_MEMORY_VECTOR_MODE=auto`（默认）在配置有效 `CAREGUIDE_EMBEDDING_API_KEY` 时复用现有 Embedding 服务、模型和维度；`remote` 要求配置密钥，`disabled` 显式关闭向量检索。Memory 使用独立的用户记忆查询指令，不修改 RAG 的指令或索引。未配置 Embedding 时不伪造向量，不下载本地模型。
+
+本轮使用 sqlite-vec 的标量余弦距离在有效用户候选上做精确 KNN，未使用 ANN。向量身份包含模型、维度、服务地址和查询指令的指纹；不同空间不混搜。正式条目在同一 SQL 查询内校验用户、版本、正文哈希、状态和期限，再按距离排序；情景向量也回查同用户的归档摘要和内容哈希。新增、更正、删除及过期后的索引差异按用户在后续读取时处理，迟到的 embedding 结果提交前再次核对来源，旧向量不能覆盖正式正文。
+
+摘要压缩时继续保留来源边界，将情景摘要保存在 SQLite 的 `memory_episodes`；之后向量化以支持跨会话召回，不写入 Memory Chroma。没有启用 token 压缩或尚未产生摘要时，不会凭空产生情景记忆。每次读取最多回填 16 条缺失向量，再用同一次 query embedding 同时检索长期条目和情景摘要；正式长期记忆最多 5 条 / 2400 字符，情景摘要最多 5 条。FTS5 仍只索引正式长期条目，不索引完整聊天原文。
+
+向量路径总墙钟预算由 `CAREGUIDE_MEMORY_VECTOR_TIMEOUT` 控制，默认 1.5 秒、最大 2 秒，原生 provider 不重试；另有逐用户每日最多 100 次向量模型请求预算，进度保存在 SQLite。失败、预算耗尽或超时后回退 FTS5 / 近期有效条目；原文与正式记忆提交不依赖 embedding 成功。超时返回后的模型线程不负责写库，因此不能通过迟到结果复活旧条目。`/health` 和 `/capabilities` 的 Memory 字段显示 `vector_configured` 和 `vector_status`（ready / disabled / unavailable）；`VECTOR_MIN_SCORE` 默认 0.3，仅是配置阈值，尚未经过真实模型调参。详细验证见 [sqlite-vec 接入验收](evaluation/memory-sqlite-vec-20261108.md)。
+
+原完整持久化与语义索引方案继续保留：
 
 ```dotenv
 CAREGUIDE_MEMORY_MODE=redis_chroma
@@ -20,9 +40,11 @@ CAREGUIDE_MEMORY_REVIEW_INTERVAL=10
 CAREGUIDE_LEGACY_PROFILE_PROJECTION=0
 ```
 
-SQLite 复用 `CAREGUIDE_BUSINESS_DB`，使用独立的 `memory_*` 表；辅助偏好继续使用 `durable_profiles`，提取事件使用 `profile_events`。Docker 已映射配置并使用现有业务持久卷。只需归档及恢复时可关闭 token 管理；`session` 加归档也支持重启恢复，但该模式没有长期记忆提取器或 Chroma 检索。周期记忆复盘需启用 `redis_chroma`。
+SQLite 复用 `CAREGUIDE_BUSINESS_DB`，使用独立的 `memory_*` 表；辅助偏好继续使用 `durable_profiles`，提取事件使用 `profile_events`。Docker 已映射配置并使用现有业务持久卷。只需归档及恢复时可关闭 token 管理；`session` 加归档也支持重启恢复，但该模式没有长期记忆提取器或 Chroma 检索。周期记忆复盘可使用 `sqlite` 或 `redis_chroma`。
 
-关闭归档开关不会删除已有归档，但旧运行方式不会读取这些记录。关闭 token 管理会恢复原持久模式的消息条数压缩策略。新记录从开关启用后开始归档，无法恢复此前已过期、未保存的原文。
+需要原进程内轻量模式时显式设置 `MEMORY_MODE=session`、`SESSION_ARCHIVE=0`、`TOKEN_CONTEXT=0`、`MEMORY_REVIEW_INTERVAL=0`；上面的变量名在实际环境中均带 `CAREGUIDE_` 前缀。
+
+关闭归档开关不会删除已有归档，但旧运行方式不会读取这些记录；`sqlite` 模式例外，它始终归档。关闭 token 管理后，归档读取回到近期消息窗口；无归档的兼容持久模式保留原消息条数摘要策略。新记录从归档启用后开始保留，无法恢复此前已过期、未保存的原文。
 
 ## 归档、重试与恢复
 
@@ -79,6 +101,10 @@ python -m scripts.audit_legacy_profiles --profile-db data/runtime/medical.sqlite
 该工具只读并输出计数，不暴露画像内容，不创建或删除集合。当前本机服务检查到 `careguide_user_profile` 不存在，`careguide_semantic_user_profile` 有五条没有对应 SQLite 主记录的旧格式记录。它们仍原样保留，未被自动提升为已验证偏好；旧自由文本不能绕过现在的来源校验。迁移时应重新确认明确偏好，再走当前提取流程；确认无需旧记录后另行清理集合。本轮没有删除已有画像。
 
 ## 验证与结果边界
+
+2026-11-08 的 sqlite-vec 接入新增 16 项原生向量测试，最终完整后端回归 **778 passed, 1 warning**。覆盖跨进程向量恢复、长期记忆与情景摘要召回、用户与版本隔离、迟到写入、无效向量、故障回退，以及旧 Chroma 索引状态隔离。测试使用受控向量和合成消息，不代表真实 Embedding 或提取模型的效果；详见 [接入验收](evaluation/memory-sqlite-vec-20261108.md)。
+
+2026-11-08 的 SQLite Memory 首轮收敛新增 10 项测试，完整后端回归 760 passed。固定 30 轮对照中，两种归档方案均保留 60 条消息，估算输入 token 相同；固定 FTS5 关键词探针命中 8/8，改写探针命中 3/8。随后按用户选择将默认模式切换为 SQLite；真实模型提取质量和相对向量召回仍待评测。配置、五项验收和测试范围见 [SQLite 收敛验收](evaluation/memory-sqlite-convergence-20261108.md)。
 
 2026-11-08 的 content 长期记忆改造新增 32 项测试，发布范围内后端回归为 737 passed、1 条既有依赖弃用警告。覆盖开放字段内容、用户原文校验、重启／跨会话读取、用户隔离、正文与辅助字段关联更新、更正删除、过期与旧版本过滤、旧复盘边界、Redis 故障，以及真实本地 Chroma API 读写和延迟清理；提取模型与向量内容均为测试夹具，尚未评测真实模型的提取保真度或语义检索质量。
 

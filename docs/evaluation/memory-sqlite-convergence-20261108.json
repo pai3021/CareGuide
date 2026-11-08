@@ -1,0 +1,249 @@
+{
+  "protocol": "careguide-sqlite-memory-v1",
+  "scope": "Synthetic storage/control-flow comparison and 16 hand-authored FTS5 probes; not a real-model quality benchmark",
+  "token_method": "UTF-8 heuristic, not provider usage",
+  "legacy_semantic_retrieval": "disabled to isolate compaction and persistence",
+  "models": "scripted fixtures",
+  "hospital_actions_executed": false,
+  "context_comparison": [
+    {
+      "mode": "enhanced",
+      "turns": 30,
+      "estimated_input_tokens_sum": 40778,
+      "estimated_input_tokens_peak": 1938,
+      "summary_model_calls": 8,
+      "archived_chat_messages": 60,
+      "context_present_after_cache_loss": true,
+      "fixture_turn_ms_p50": 16.776,
+      "fixture_turn_ms_p95": 42.425,
+      "fixture_elapsed_ms": 689.269
+    },
+    {
+      "mode": "sqlite_only",
+      "turns": 30,
+      "estimated_input_tokens_sum": 40778,
+      "estimated_input_tokens_peak": 1938,
+      "summary_model_calls": 8,
+      "archived_chat_messages": 60,
+      "context_present_after_cache_loss": true,
+      "fixture_turn_ms_p50": 18.671,
+      "fixture_turn_ms_p95": 42.978,
+      "fixture_elapsed_ms": 742.654
+    }
+  ],
+  "fts5_retrieval": {
+    "lexical": {
+      "queries": 8,
+      "recall_at_5": 1.0
+    },
+    "paraphrase": {
+      "queries": 8,
+      "recall_at_5": 0.375
+    }
+  },
+  "retrieval_probes": [
+    {
+      "kind": "lexical",
+      "query": "简短回答",
+      "expected_content": "我习惯使用简短回答",
+      "hit_at_5": true,
+      "retrieved_contents": [
+        "我习惯使用简短回答"
+      ]
+    },
+    {
+      "kind": "paraphrase",
+      "query": "别解释得太啰嗦",
+      "expected_content": "我习惯使用简短回答",
+      "hit_at_5": false,
+      "retrieved_contents": [
+        "我平时只能周末去医院",
+        "我平时使用公共交通就诊",
+        "我平时坐轮椅出行",
+        "我习惯用中文交流",
+        "我有一个需要照顾的父亲"
+      ]
+    },
+    {
+      "kind": "lexical",
+      "query": "轮夜班",
+      "expected_content": "我平时工作需要轮夜班",
+      "hit_at_5": true,
+      "retrieved_contents": [
+        "我平时工作需要轮夜班"
+      ]
+    },
+    {
+      "kind": "paraphrase",
+      "query": "白天我通常要补觉",
+      "expected_content": "我平时工作需要轮夜班",
+      "hit_at_5": false,
+      "retrieved_contents": [
+        "我平时只能周末去医院",
+        "我平时使用公共交通就诊",
+        "我平时坐轮椅出行",
+        "我习惯用中文交流",
+        "我有一个需要照顾的父亲"
+      ]
+    },
+    {
+      "kind": "lexical",
+      "query": "南京出发",
+      "expected_content": "我长期从南京出发看病",
+      "hit_at_5": true,
+      "retrieved_contents": [
+        "我长期从南京出发看病"
+      ]
+    },
+    {
+      "kind": "paraphrase",
+      "query": "考虑我跨城就医的路程",
+      "expected_content": "我长期从南京出发看病",
+      "hit_at_5": false,
+      "retrieved_contents": [
+        "我平时只能周末去医院",
+        "我平时使用公共交通就诊",
+        "我平时坐轮椅出行",
+        "我习惯用中文交流",
+        "我有一个需要照顾的父亲"
+      ]
+    },
+    {
+      "kind": "lexical",
+      "query": "照顾父亲",
+      "expected_content": "我有一个需要照顾的父亲",
+      "hit_at_5": true,
+      "retrieved_contents": [
+        "我有一个需要照顾的父亲"
+      ]
+    },
+    {
+      "kind": "paraphrase",
+      "query": "安排时间时考虑家里的老人",
+      "expected_content": "我有一个需要照顾的父亲",
+      "hit_at_5": true,
+      "retrieved_contents": [
+        "我平时只能周末去医院",
+        "我平时使用公共交通就诊",
+        "我平时坐轮椅出行",
+        "我习惯用中文交流",
+        "我有一个需要照顾的父亲"
+      ]
+    },
+    {
+      "kind": "lexical",
+      "query": "中文交流",
+      "expected_content": "我习惯用中文交流",
+      "hit_at_5": true,
+      "retrieved_contents": [
+        "我习惯用中文交流"
+      ]
+    },
+    {
+      "kind": "paraphrase",
+      "query": "不要使用英文解释",
+      "expected_content": "我习惯用中文交流",
+      "hit_at_5": false,
+      "retrieved_contents": [
+        "我习惯使用简短回答",
+        "我平时使用公共交通就诊"
+      ]
+    },
+    {
+      "kind": "lexical",
+      "query": "轮椅出行",
+      "expected_content": "我平时坐轮椅出行",
+      "hit_at_5": true,
+      "retrieved_contents": [
+        "我平时坐轮椅出行"
+      ]
+    },
+    {
+      "kind": "paraphrase",
+      "query": "要选择无障碍通道",
+      "expected_content": "我平时坐轮椅出行",
+      "hit_at_5": true,
+      "retrieved_contents": [
+        "我平时只能周末去医院",
+        "我平时使用公共交通就诊",
+        "我平时坐轮椅出行",
+        "我习惯用中文交流",
+        "我有一个需要照顾的父亲"
+      ]
+    },
+    {
+      "kind": "lexical",
+      "query": "公共交通",
+      "expected_content": "我平时使用公共交通就诊",
+      "hit_at_5": true,
+      "retrieved_contents": [
+        "我平时使用公共交通就诊"
+      ]
+    },
+    {
+      "kind": "paraphrase",
+      "query": "地铁公交能不能到",
+      "expected_content": "我平时使用公共交通就诊",
+      "hit_at_5": true,
+      "retrieved_contents": [
+        "我平时只能周末去医院",
+        "我平时使用公共交通就诊",
+        "我平时坐轮椅出行",
+        "我习惯用中文交流",
+        "我有一个需要照顾的父亲"
+      ]
+    },
+    {
+      "kind": "lexical",
+      "query": "周末去医院",
+      "expected_content": "我平时只能周末去医院",
+      "hit_at_5": true,
+      "retrieved_contents": [
+        "我平时只能周末去医院"
+      ]
+    },
+    {
+      "kind": "paraphrase",
+      "query": "工作日我没法去",
+      "expected_content": "我平时只能周末去医院",
+      "hit_at_5": false,
+      "retrieved_contents": [
+        "我平时工作需要轮夜班"
+      ]
+    }
+  ],
+  "scripted_source_checks": [
+    {
+      "expected": "skipped",
+      "actual": "skipped"
+    },
+    {
+      "expected": "skipped",
+      "actual": "skipped"
+    },
+    {
+      "expected": "updated",
+      "actual": "updated"
+    },
+    {
+      "expected": "unavailable",
+      "actual": "unavailable"
+    }
+  ],
+  "scripted_source_checks_passed": 4,
+  "real_model_extraction_accuracy": null,
+  "real_embedding_recall_comparison": null,
+  "source_sha256": {
+    "careguide/sqlite_memory.py": "2c0da5695c3fe6a65616b1d490cb6261708a790dfa003137fdf113637f078fb1",
+    "careguide/long_term_memory.py": "da51d47761c1e80c7213dffaaf29d4fc3e695eb395a91dcfd8d8cbe26c2cb2f0",
+    "careguide/memory_types.py": "d8ce44f9a5e23dec80d34faf4dbb24f012a09a5a5a5c3a491ee3411d8efb5105",
+    "careguide/archived_memory.py": "995b6ad7134d2c682044c0a7f677e339c4f2fc04fa6c16587937ad71e83b9b93",
+    "careguide/session_store.py": "415ad52cd1c3fc1fdc56fe10ede284e462ac09af89b7206cdeb07a1acf12e934",
+    "careguide/context_memory.py": "9c292be9ecd2bc5dbfb113280eb38e334d181d704bd9c8c0baa3971728296461",
+    "careguide/content_memory.py": "33dcf3ee7f9806d86e1922255792a75471a4f23693429203783be02a090f6fc2",
+    "careguide/profile_memory.py": "5fecdf26e0ff81e26bcf95f70a702baea22a5792a0a97cabbe0b02daf5c8f900",
+    "careguide/conversation_memory.py": "0b336a1614ad823d4001fec787118ec8bcb5fed9eaf94a804a9cce0c9efa55de",
+    "D:/mycode/CareGuide/scripts/evaluate_sqlite_memory.py": "06f50448e027d4225f9e8cd4a22867f0c8f0b848592a63cdffe576e11d03cf66",
+    "scripts/benchmark_context_memory.py": "bbe2a3264ed1d6688cbe924bb6975a04185fb35b89cfd951150e195fa43dd641"
+  }
+}

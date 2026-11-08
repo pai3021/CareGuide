@@ -127,7 +127,7 @@ class PersistentMemory:
         return history
 
     async def add(self, user_id, conv_id, role, content):
-        from careguide.conversation_memory import MsgRole
+        from careguide.memory_types import MsgRole
         await self.manager.add_message(user_id, conv_id, MsgRole(role), content)
         if role == 'assistant':
             return await self.manager.update_profile(user_id, conv_id)

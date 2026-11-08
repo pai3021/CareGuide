@@ -20,7 +20,7 @@ CareGuide 是一个用于医疗资料查询和预约流程演示的 Agent 项目
 
 轻量意图理解模块内采用规则优先、分类与语义默认并行、统一准入的调度，也可显式切换 `on_demand`。严格规则或候选准入通过后生成查医生、查号源、药品说明书等对应任务；候选准入首批仅支持三种单目标只读查询，参数来自当前请求，未知条件与候选冲突交回 Planner。缺规格时复用参数追问。旧分类权重尚未针对细粒度业务动作重训，64 条合成业务样例的本地消融未观察到新增分类准入；可关闭该分类源以便后续对照，仅语义与联合策略尚未实测。方法与边界见 [业务动作评测](docs/evaluation/business-intent-eval-v1.md) 和 [编排说明](docs/orchestration/implementation.md#分层理解与候选获取)。
 
-可选启用 SQLite 完整会话归档与恢复、按 token 预算的四阶段压缩，以及周期长期记忆复盘。长期记忆以开放的自然语言 `content` 条目为主体，固定偏好辅助业务查询；SQLite 保存正文与来源，Chroma 提供语义索引，本地 FTS5 支持索引故障时的检索。默认仍为进程内 `session` 记忆，新能力需显式配置。存储职责、开关、重试语义和验证范围见 [Context 与 Memory 说明](docs/context-memory.md)。
+默认使用 `CAREGUIDE_MEMORY_MODE=sqlite`，在同一 SQLite 数据库保存完整会话、摘要、长期记忆及其来源和版本，支持重启恢复。已配置 Embedding 时，默认通过 sqlite-vec 召回正式长期记忆和历史情景摘要，FTS5 补充长期条目；无 Embedding 配置或向量调用失败时使用本地文本检索。按 token 预算压缩和周期复盘需显式开启。该模式不依赖 Redis 或 Memory Chroma，Redis 可单独开启为近期缓存，RAG 向量检索仍独立使用 Chroma。原 `session` 与 `redis_chroma` 模式保留以便对照和回退。存储职责、开关、检索差异和验证范围见 [Context 与 Memory 说明](docs/context-memory.md)。
 
 ## 仓库结构
 
@@ -34,7 +34,7 @@ CareGuide 是一个用于医疗资料查询和预约流程演示的 Agent 项目
 
 ## 快速开始
 
-需要 Python 3.12。默认配置使用 BM25、进程内会话记忆和内存合成医院；基础模式不需要模型 API 密钥。
+需要 Python 3.12。默认配置使用 BM25、SQLite 会话记忆和内存合成医院；基础模式不需要模型 API 密钥，自动长期记忆提取和 token 压缩需要已配置模型。
 
 动态规划和自然语言回答需要配置兼容 Chat Completions 的模型。公开配置默认 `mimo-v2.6-flash`；其他兼容服务可显式覆盖模型及地址。已知医生＋药品组合及医生→号源→确认模板支持无模型运行；原分类模型路径沿用 `CAREGUIDE_QIC_MODEL_PATH`。分类或语义分数只作线索，未启用未经校准的直接接受。以下示例不需要密钥：
 
